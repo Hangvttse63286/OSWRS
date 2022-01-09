@@ -1,0 +1,10 @@
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\config\SecurityConfig.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\payload\SignUpDto.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\entity\User.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\entity\Role.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\DemoApplication.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\repository\RoleRepository.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\controller\AuthController.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\repository\UserRepository.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\security\CustomUserDetailsService.java
+E:\eclipse-workspace\demo\src\main\java\com\example\demo\payload\LoginDto.java
