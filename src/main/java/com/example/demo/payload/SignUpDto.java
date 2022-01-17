@@ -1,7 +1,7 @@
 package com.example.demo.payload;
 
 import java.util.Date;
-
+import java.util.Set;
 
 import lombok.Data;
 
@@ -15,6 +15,7 @@ public class SignUpDto {
     private String phone_number;
     private int gender_id;
     private Date birthday;
+    private Set<String> role;
 
 	public String getUsername() {
 		return username;
@@ -63,6 +64,12 @@ public class SignUpDto {
 	}
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
+	}
+	public Set<String> getRole() {
+		return role;
+	}
+	public void setRole(Set<String> role) {
+		this.role = role;
 	}
     
     

@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import com.example.demo.common.ERole;
+
 @Setter
 @Getter
 @Entity
@@ -15,8 +17,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 60)
-    private String name;
+    private ERole name;
 
 	public long getId() {
 		return id;
@@ -26,11 +29,11 @@ public class Role {
 		this.id = id;
 	}
 
-	public String getName() {
+	public ERole getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(ERole name) {
 		this.name = name;
 	}
     
