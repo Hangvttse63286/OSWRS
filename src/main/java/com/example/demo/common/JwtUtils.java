@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.service.UserDetailsImpl;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -32,11 +33,13 @@ public class JwtUtils {
 	public String generateJwtToken(Authentication authentication) {
 		
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-		
+		Date date = new Date();
+	    long t = date.getTime();
+	    Date expirationTime = new Date(t + Long.parseLong(jwtExpirationMs));
 		return Jwts.builder()
 				.setSubject(userPrincipal.getUsername())
 				.setIssuedAt(new Date())
-				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+				.setExpiration(expirationTime)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
 				.compact();
 	}
@@ -63,4 +66,9 @@ public class JwtUtils {
 		
 		return false;
 	}
+	
+	public Date getExpiredDateFromToken(String token) {
+		  Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+		  return claims.getExpiration();
+		}
 }

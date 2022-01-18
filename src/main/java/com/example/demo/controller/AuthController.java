@@ -3,12 +3,14 @@ package com.example.demo.controller;
 import com.example.demo.common.ERole;
 import com.example.demo.common.JwtUtils;
 import com.example.demo.entity.Role;
+import com.example.demo.entity.Token;
 import com.example.demo.entity.User;
 import com.example.demo.payload.JwtResponse;
 import com.example.demo.payload.LoginDto;
 import com.example.demo.payload.SignUpDto;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.TokenRepository;
 import com.example.demo.service.UserDetailsImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,9 @@ public class AuthController {
 
     @Autowired
     private RoleRepository roleRepository;
+    
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -59,6 +64,13 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
+        
+        Token newToken = new Token();
+        newToken.setToken(jwt);
+        newToken.setUser(userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get());
+        newToken.setExpired_at(jwtUtils.getExpiredDateFromToken(jwt));
+        
+        tokenRepository.save(newToken);
         
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
