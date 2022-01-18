@@ -50,6 +50,7 @@ public class AccountService {
 			case "user":
 				Role userRole = roleRepository.findByName(ERole.ROLE_USER).get();
 				roles.add(userRole);
+				break;
 			}
 		});
 		
