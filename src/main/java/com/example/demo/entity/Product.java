@@ -1,29 +1,45 @@
-//package com.example.demo.entity;
-//
-//import javax.persistence.Entity;
-//import javax.persistence.GeneratedValue;
-//import javax.persistence.GenerationType;
-//import javax.persistence.Id;
-//import javax.persistence.Table;
-//import lombok.Data;
-//
-//@Data
-//@Entity
-//@Table(name = "products")
-//
-//public class Product {
-//
-//	@Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private long id;
-//	private String product_status_id;
-//	private String name;
-//	private String description_details;
-//	private int point_rate;
-//	private int stock;
-//	private String size;
-//	private double price;
-//	private boolean is_deleted;
-//	
-//	priavte Set<Category> categories;
-//}
+package com.example.demo.entity;
+
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "products")
+
+public class Product {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+	private String product_status_id;
+	private String name;
+	private String description_details;
+	private int point_rate;
+	private int stock;
+	private String size;
+	private double price;
+	private boolean is_deleted;
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "product_categories",
+        joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
+	private Set<Category> categories;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id")
+	private Discount discount;
+}

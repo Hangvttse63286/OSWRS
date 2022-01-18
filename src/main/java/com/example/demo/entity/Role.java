@@ -10,7 +10,7 @@ import com.example.demo.common.ERole;
 @Setter
 @Getter
 @Entity
-@Table(name = "Roles")
+@Table(name = "roles")
 public class Role {
 
     @Id

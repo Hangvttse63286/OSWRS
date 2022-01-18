@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "token", uniqueConstraints = {
+@Table(name = "tokens", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"token"})
 })
 public class Token {

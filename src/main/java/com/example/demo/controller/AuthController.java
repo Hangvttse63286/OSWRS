@@ -109,7 +109,7 @@ public class AuthController {
         user.setGender_id(signUpDto.getGender_id());
         user.setDate_joined(Calendar.getInstance().getTime());
 
-        Set<String> strRoles = signUpDto.getRole();
+        Set<String> strRoles = signUpDto.getRoles();
         Set<Role> roles = new HashSet<>();
         
         if(strRoles == null) {
