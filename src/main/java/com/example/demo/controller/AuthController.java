@@ -7,14 +7,18 @@ import com.example.demo.entity.Token;
 import com.example.demo.entity.User;
 import com.example.demo.payload.JwtResponse;
 import com.example.demo.payload.LoginDto;
+import com.example.demo.payload.MessageResponse;
 import com.example.demo.payload.SignUpDto;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.TokenRepository;
+import com.example.demo.service.AuthService;
 import com.example.demo.service.UserDetailsImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,6 +59,9 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     
     @Autowired
+    private AuthService authService;
+    
+    @Autowired
     private JwtUtils jwtUtils;
 
     @PostMapping("/signin")
@@ -63,21 +70,23 @@ public class AuthController {
                 loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        ResponseCookie  jwtCookie = jwtUtils.generateJwtCookie(userDetails);
         
         Token newToken = new Token();
-        newToken.setToken(jwt);
+        newToken.setToken(jwtCookie.getValue().toString());
         newToken.setUser(userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get());
-        newToken.setExpired_at(jwtUtils.getExpiredDateFromToken(jwt));
+        newToken.setExpired_at(jwtUtils.getExpiredDateFromToken(jwtCookie.getValue().toString()));
         
         tokenRepository.save(newToken);
         
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        
         List<String> roles = userDetails.getAuthorities().stream()
         		.map(item -> item.getAuthority())
         		.collect(Collectors.toList());
         
-        return ResponseEntity.ok(new JwtResponse(jwt, 
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+        		.body(new JwtResponse(jwtCookie.getValue().toString(), 
         										 userDetails.getId(), 
         										 userDetails.getUsername(), 
         										 userDetails.getEmail(), 
@@ -98,49 +107,16 @@ public class AuthController {
         }
 
         // create user object
-        User user = new User();
-        user.setFirst_name(signUpDto.getFirst_name());
-        user.setLast_name(signUpDto.getLast_name());
-        user.setUsername(signUpDto.getUsername());
-        user.setEmail(signUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        user.setPhone_number(signUpDto.getPhone_number());
-        user.setBirthday(signUpDto.getBirthday());
-        user.setGender_id(signUpDto.getGender_id());
-        user.setDate_joined(Calendar.getInstance().getTime());
+        authService.registerUser(signUpDto);
 
-        Set<String> strRoles = signUpDto.getRoles();
-        Set<Role> roles = new HashSet<>();
-        
-        if(strRoles == null) {
-        	Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-        			.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        	roles.add(userRole);
-        } else {
-        	strRoles.forEach(role -> {
-        		switch (role) {
-        		case "admin":
-        			Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-        				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        			roles.add(adminRole);
-        			break;
-        		case "staff":
-        			Role staffRole = roleRepository.findByName(ERole.ROLE_STAFF)
-        				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        			roles.add(staffRole);
-        			break;
-        		default:
-        			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-        				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        			roles.add(userRole);
-        		}
-        	});
-        }
-        
-        user.setRoles(roles);
-        userRepository.save(user);
-
-        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 
     }
+    
+	@PostMapping("/signout")
+	public ResponseEntity<?> logoutUser() {
+		ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.body(new MessageResponse("You've been signed out!"));
+	}
 }

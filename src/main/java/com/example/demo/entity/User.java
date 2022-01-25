@@ -42,6 +42,9 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date date_joined;
     
+    @OneToOne(mappedBy = "user")
+    private Verification verification;
+    
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
@@ -159,6 +162,14 @@ public class User {
 
 	public void setDate_joined(Date date_joined) {
 		this.date_joined = date_joined;
+	}
+
+	public Verification getVerification() {
+		return verification;
+	}
+
+	public void setVerification(Verification verification) {
+		this.verification = verification;
 	}
     
 	

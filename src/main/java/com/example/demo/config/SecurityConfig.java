@@ -58,6 +58,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-ui.html#/**",
             "/webjars/**"
     };
+    
+    private static final String[] ROLE_LIST = {
+            "USER", 
+            "STAFF", 
+            "ADMIN"
+    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -70,7 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers("/api/admin/**").permitAll()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/user").hasAnyRole(ROLE_LIST)
                 .anyRequest()
                 .authenticated()
                 .and()

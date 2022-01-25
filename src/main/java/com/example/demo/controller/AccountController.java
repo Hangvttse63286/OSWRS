@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class AccountController {
     private AccountService accountService;
     
     @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUser() {
         if (accountService.findAll() != null)
         	return new ResponseEntity<>(accountService.findAll(), HttpStatus.OK);
@@ -32,6 +34,7 @@ public class AccountController {
     }
     
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUser(@PathVariable Long id) {
         if (accountService.findById(id) != null)
         	return new ResponseEntity<>(accountService.findById(id), HttpStatus.OK);
@@ -40,6 +43,7 @@ public class AccountController {
     }
     
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeRoles(@PathVariable Long id, @RequestBody RoleChangeDto roleChangeDto) {
     	if (accountService.findById(id) != null)
     		return new ResponseEntity<>(accountService.changeRole(id, roleChangeDto), HttpStatus.OK);
@@ -47,7 +51,8 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
     	if (accountService.findById(id) != null)
     		return new ResponseEntity<>(accountService.deleteAcc(id), HttpStatus.OK);

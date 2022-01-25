@@ -1,23 +1,26 @@
 package com.example.demo.payload;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
-public class UpdateUserDto {
-	private Long id;
-	private String email;
+import com.example.demo.entity.Role;
+
+public class UserDto {
 	private String username;
+    private String email;
+    private String password;
     private String first_name;
     private String last_name;
     private String phone_number;
     private int gender_id;
     private Date birthday;
-    
-	public Long getId() {
-		return id;
+    private List<String> roles;
+	public String getUsername() {
+		return username;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getEmail() {
 		return email;
@@ -25,11 +28,11 @@ public class UpdateUserDto {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getUsername() {
-		return username;
+	public String getPassword() {
+		return password;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getFirst_name() {
 		return first_name;
@@ -60,6 +63,12 @@ public class UpdateUserDto {
 	}
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
+	}
+	public List<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(List<String> set) {
+		this.roles = set;
 	}
     
     
