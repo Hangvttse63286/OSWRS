@@ -187,7 +187,7 @@ public class AuthService {
 		
 		mailContent += "<h3><a href=\"" + verifyURL + "\">VERIFY</a></h3>";
 		
-		mailContent += "<p>PThank you<br>OSWRS Store</p>";
+		mailContent += "<p>Thank you<br>OSWRS Store</p>";
 		
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
