@@ -73,7 +73,7 @@ public class UserService {
 	}
 	
 	public boolean checkIfValidOldPassword (Long id, String oldPassword) {
-		if (userRepository.getById(id).getPassword().equals(passwordEncoder.encode(oldPassword)))
+		if (passwordEncoder.matches(oldPassword, userRepository.getById(id).getPassword()))
 			return true;
 		return false;
 	}
