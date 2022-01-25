@@ -9,7 +9,6 @@ import com.example.demo.entity.Role;
 public class UserDto {
 	private String username;
     private String email;
-    private String password;
     private String first_name;
     private String last_name;
     private String phone_number;
@@ -27,12 +26,6 @@ public class UserDto {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	public String getFirst_name() {
 		return first_name;
