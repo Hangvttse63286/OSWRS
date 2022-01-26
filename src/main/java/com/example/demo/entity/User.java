@@ -45,6 +45,9 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Verification verification;
     
+    @OneToOne(mappedBy = "user")
+    private PasswordResetToken passwordResetToken;
+    
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
@@ -170,6 +173,14 @@ public class User {
 
 	public void setVerification(Verification verification) {
 		this.verification = verification;
+	}
+
+	public PasswordResetToken getPasswordResetToken() {
+		return passwordResetToken;
+	}
+
+	public void setPasswordResetToken(PasswordResetToken passwordResetToken) {
+		this.passwordResetToken = passwordResetToken;
 	}
     
 	

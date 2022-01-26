@@ -19,15 +19,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.common.JwtUtils;
 import com.example.demo.payload.JwtResponse;
 import com.example.demo.payload.LoginDto;
 import com.example.demo.payload.MessageResponse;
+import com.example.demo.payload.ResetPasswordDto;
 import com.example.demo.payload.SignUpDto;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.TokenRepository;
@@ -96,6 +99,30 @@ public class AuthController {
     	if(authService.verify(code))
     		return ResponseEntity.ok(new MessageResponse("User verified successfully!"));
     	return new ResponseEntity<>("Error: Email verification failed!", HttpStatus.BAD_REQUEST);
+    }
+    
+    @PostMapping("/forgot_password")
+    public ResponseEntity<?> forgotPassword(@RequestParam(name = "email") String email, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
+    	if(authService.getUserByEmail(email) == null)
+    		return new ResponseEntity<>("Error: Invalid email!", HttpStatus.BAD_REQUEST);
+    	authService.updateResetPasswordToken(email, req);
+    	return ResponseEntity.ok(new MessageResponse("We hanve sent a reset password link to your email. Please check."));
+    }
+    
+    @GetMapping("/forgot_password/reset")
+    public ResponseEntity<?> verifyPasswordResetToken(@Param("token") String token) {
+    	if(authService.validatePasswordResetToken(token))
+    		return new ResponseEntity<>(token, HttpStatus.OK);
+    	return new ResponseEntity<>("Error: Email verification failed!", HttpStatus.BAD_REQUEST);
+    }
+    
+    @PostMapping("/forgot_password/reset")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+    	if(authService.validatePasswordResetToken(resetPasswordDto.getToken())) {
+    		authService.resetPassword(resetPasswordDto);
+    		return new ResponseEntity<>("Your password is changed successfully. Please login with the new password.", HttpStatus.OK);
+    	}
+    	return new ResponseEntity<>("Invalid token!", HttpStatus.BAD_REQUEST);
     }
     
 	@PostMapping("/signout")

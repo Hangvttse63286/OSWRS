@@ -25,15 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.common.ERole;
 import com.example.demo.common.JwtUtils;
+import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.Token;
 import com.example.demo.entity.User;
 import com.example.demo.entity.Verification;
 import com.example.demo.payload.JwtResponse;
 import com.example.demo.payload.LoginDto;
+import com.example.demo.payload.ResetPasswordDto;
 import com.example.demo.payload.SignUpDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VerificationRepository;
+import com.example.demo.repository.PasswordResetTokenRepository;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -43,6 +46,9 @@ import com.example.demo.repository.TokenRepository;
 @Service
 @Transactional
 public class AuthService {
+	@Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+	
 	@Autowired
     private AuthenticationManager authenticationManager;
 	
@@ -79,6 +85,10 @@ public class AuthService {
 	        return true;
 	    }
 		return false;
+	}
+	
+	public User getUserByEmail(String email) {
+		return userRepository.findByUsernameOrEmail(email, email).get();
 	}
 	
 	public void setLogoutStatus(Authentication authentication) throws NullPointerException {
@@ -174,20 +184,41 @@ public class AuthService {
         verificationRepository.save(verification);
         userRepository.save(user);
         
-        sendVerificationEmail(user,req);
+        sendVerificationEmail(user,req, 0);
 	}
+	
+	
 
-	private void sendVerificationEmail(User user, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
-		String subject = "Please verify your registration";
-		String senderName = "OSWRS Store";
-		String mailContent = "<p>Dear " + user.getFirst_name() + " " + user.getLast_name() + ",</p>";
-		mailContent += "<p>Please click the link below to verify to your registration:</p>";
-		
-		String verifyURL = req.getRequestURL().toString() + "/verify?code=" + user.getVerification().getVerificationCode();
-		
-		mailContent += "<h3><a href=\"" + verifyURL + "\">VERIFY</a></h3>";
-		
-		mailContent += "<p>Thank you<br>OSWRS Store</p>";
+	public void sendVerificationEmail(User user, HttpServletRequest req, int type) throws UnsupportedEncodingException, MessagingException {
+		String subject;
+		String senderName;
+		String mailContent;
+		String verifyURL;
+		if (type == 0) {
+			subject = "Please verify your registration";
+			senderName = "OSWRS Store";
+			mailContent = "<p>Dear " + user.getFirst_name() + " " + user.getLast_name() + ",</p>";
+			mailContent += "<p>Please click the link below to verify to your registration:</p>";
+			
+			verifyURL = req.getRequestURL().toString() + "/verify?code=" + user.getVerification().getVerificationCode();
+			
+			mailContent += "<h3><a href=\"" + verifyURL + "\">VERIFY</a></h3>";
+			
+			mailContent += "<p>Thank you<br>OSWRS Store</p>";
+		}
+		else {
+			subject = "Here's the link to reset your password";
+			senderName = "OSWRS Store Support";
+			mailContent = "<p>Dear " + user.getFirst_name() + " " + user.getLast_name() + ",</p>";
+			mailContent += "<p>You have requested to reset your password:</p>";
+			mailContent += "<p>Please click the link below to change your password:</p>";
+			
+			verifyURL = req.getRequestURL().toString() + "/reset?token=" + user.getPasswordResetToken().getToken();
+			
+			mailContent += "<h3><a href=\"" + verifyURL + "\">CHANGE MY PASSWORD</a></h3>";
+			
+			mailContent += "<p>Thank you<br>OSWRS Store</p>";
+		}
 		
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -200,8 +231,6 @@ public class AuthService {
 		
 		mailSender.send(message);
 	}
-	
-
 
 	public boolean verify(String code) {
 		Verification verification = verificationRepository.findByVerificationCode(code).get();
@@ -212,5 +241,39 @@ public class AuthService {
 			verificationRepository.save(verification);
 			return true;
 		}
+	}
+	
+	public void updateResetPasswordToken(String email, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
+		User user = userRepository.findByUsernameOrEmail(email, email).get();
+		PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser(user);
+		String token = RandomString.make(45);
+		
+		if(passwordResetToken != null) {
+			passwordResetToken.setToken(token);
+			passwordResetTokenRepository.save(passwordResetToken);
+		} else {
+			passwordResetToken = new PasswordResetToken();
+			passwordResetToken.setToken(token);
+			passwordResetToken.setUser(user);
+			user.setPasswordResetToken(passwordResetToken);
+			userRepository.save(user);
+			passwordResetTokenRepository.save(passwordResetToken);
+		}
+		
+		sendVerificationEmail(user,req, 1);
+	}
+	
+	public Boolean validatePasswordResetToken(String token) {
+        final PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
+        if (passToken != null) {
+            return true;
+        }
+        return false;
+	}
+	
+	public void resetPassword(ResetPasswordDto resetPasswordDto) {
+		User user = passwordResetTokenRepository.findByToken(resetPasswordDto.getToken()).getUser();
+		user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+		userRepository.save(user);
 	}
 }
