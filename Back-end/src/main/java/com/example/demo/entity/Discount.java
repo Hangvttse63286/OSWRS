@@ -1,5 +1,8 @@
 package com.example.demo.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -28,6 +31,7 @@ public class Discount {
     private String description;
     private Double percentage;
     private boolean is_active;
+    private Set<Product> products = new HashSet<>();
 	public long getId() {
 		return id;
 	}
@@ -57,6 +61,12 @@ public class Discount {
 	}
 	public void setIs_active(boolean is_active) {
 		this.is_active = is_active;
+	}
+	public Set<Product> getProducts() {
+		return products;
+	}
+	public void setProducts(Set<Product> products) {
+		this.products = products;
 	}
     
     

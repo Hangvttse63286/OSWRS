@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,6 +65,18 @@ public class UserController {
     			return new ResponseEntity<>("Change password successfully!", HttpStatus.OK);
     		} else
     			return new ResponseEntity<>("Error: Invalid password.", HttpStatus.BAD_REQUEST);
+    	}
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    }
+    
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUSer() {
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    		userService.deleteUser(userDetails.getId());
+    		return new ResponseEntity<>("Delete user successfully!", HttpStatus.OK);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
