@@ -26,5 +26,8 @@ public class Category {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 60)
-    private ECategory name;
+    private ECategory category_name ;
+    
+    private boolean is_deleted;
+    
 }
