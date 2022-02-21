@@ -40,6 +40,18 @@ public class UserController {
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
 	
+	@GetMapping("/profile/updateInfo")
+	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+    public ResponseEntity<?> getUpdateInfo() {
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    		
+    	    return new ResponseEntity<>(userService.findByUsername(userDetails.getUsername()), HttpStatus.OK);
+    	}
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    }
+	
     @PostMapping("/profile/updateInfo")
     @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> updateInfo(@RequestBody UpdateUserDto updateUserDto) {

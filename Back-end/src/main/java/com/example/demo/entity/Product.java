@@ -29,15 +29,15 @@ public class Product {
 
 	@Id
     private String product_id;
-	
+
 	private String product_status_id;
 	private String product_name;
 	private String description_list;
 	private String description_details;
 	private String search_word;
 	private long discount_id;
-	
-	
+
+
 //	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "product_categories",
 //        joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
@@ -47,11 +47,11 @@ public class Product {
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "discount_id")
 //	private Discount discount;
-	
+
 //	public void setCategories(Set<Category> categories) {
 //		this.categories = categories;
 //	}
-	
+
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
 	}
@@ -71,7 +71,7 @@ public class Product {
 	}public void setSearch_word(String search_word) {
 		this.search_word = search_word;
 	}
-	
+
 //	public Set<Category> getCategories() {
 //		return categories;
 //	}
@@ -96,6 +96,6 @@ public class Product {
 	public String getSearch_word() {
 		return search_word;
 	}
-	
-	
+
+
 }
