@@ -26,28 +26,25 @@ public class User {
     private String last_name;
     private String phone_number;
     private int gender_id;
-    
+
     @Temporal(TemporalType.DATE)
     private Date birthday;
-    
+
     @Column(columnDefinition = "boolean default true")
-    private boolean is_activate;
-    
-    @Column(columnDefinition = "boolean default false")
-    private boolean is_superuser;
-    
+    private boolean is_active;
+
     @Temporal(TemporalType.DATE)
     private Date last_login;
-    
+
     @Temporal(TemporalType.DATE)
     private Date date_joined;
-    
+
     @OneToOne(mappedBy = "user")
     private Verification verification;
-    
+
     @OneToOne(mappedBy = "user")
     private PasswordResetToken passwordResetToken;
-    
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
@@ -135,20 +132,12 @@ public class User {
 		this.birthday = birthday;
 	}
 
-	public boolean isIs_activate() {
-		return is_activate;
+	public boolean isIs_active() {
+		return is_active;
 	}
 
-	public void setIs_activate(boolean is_activate) {
-		this.is_activate = is_activate;
-	}
-
-	public boolean isIs_superuser() {
-		return is_superuser;
-	}
-
-	public void setIs_superuser(boolean is_superuser) {
-		this.is_superuser = is_superuser;
+	public void setIs_active(boolean is_active) {
+		this.is_active = is_active;
 	}
 
 	public Date getLast_login() {
@@ -167,6 +156,14 @@ public class User {
 		this.date_joined = date_joined;
 	}
 
+	public PasswordResetToken getPasswordResetToken() {
+		return passwordResetToken;
+	}
+
+	public void setPasswordResetToken(PasswordResetToken passwordResetToken) {
+		this.passwordResetToken = passwordResetToken;
+	}
+
 	public Verification getVerification() {
 		return verification;
 	}
@@ -175,14 +172,6 @@ public class User {
 		this.verification = verification;
 	}
 
-	public PasswordResetToken getPasswordResetToken() {
-		return passwordResetToken;
-	}
 
-	public void setPasswordResetToken(PasswordResetToken passwordResetToken) {
-		this.passwordResetToken = passwordResetToken;
-	}
-    
-	
-    
+
 }

@@ -20,14 +20,14 @@ public class Verification {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-	
+
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-	
+
 	@Column(name="verification_code", length = 64, updatable = false)
 	private String verificationCode;
-	
+
 	private boolean enabled;
 
 	public long getId() {
@@ -61,6 +61,6 @@ public class Verification {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
-	
+
+
 }

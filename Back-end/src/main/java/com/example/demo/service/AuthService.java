@@ -48,91 +48,91 @@ import com.example.demo.repository.TokenRepository;
 public class AuthService {
 	@Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
-	
+
 	@Autowired
     private AuthenticationManager authenticationManager;
-	
+
 	@Autowired
     private UserRepository userRepository;
-	
+
 	@Autowired
     private VerificationRepository verificationRepository;
-	
+
 	@Autowired
     private RoleRepository roleRepository;
-	
+
 	@Autowired
     private TokenRepository tokenRepository;
-	
+
 	@Autowired
     private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Autowired
     private JwtUtils jwtUtils;
-	
+
 	public boolean existsByEmail(String email) {
 		if(userRepository.existsByEmail(email)){
 	        return true;
 	    }
 		return false;
 	}
-	
+
 	public boolean existsByUsername(String username) {
 		if(userRepository.existsByUsername(username)){
 	        return true;
 	    }
 		return false;
 	}
-	
+
 	public User getUserByEmail(String email) {
 		return userRepository.findByUsernameOrEmail(email, email).get();
 	}
-	
+
 	public void setLogoutStatus(Authentication authentication) throws NullPointerException {
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		User user = userRepository.findByUsername(userDetails.getUsername()).get();
-		user.setIs_activate(false);
+		user.setIs_active(false);
 		userRepository.save(user);
 	}
-	
+
 	public JwtResponse loginUser (LoginDto loginDto) {
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getUsernameOrEmail(), loginDto.getPassword()));
-		
+
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         if(!userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get().getVerification().isEnabled())
         	return null;
         ResponseCookie  jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-        
+
         Token newToken = new Token();
         newToken.setToken(jwtCookie.getValue().toString());
         newToken.setUser(userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get());
         newToken.setExpired_at(jwtUtils.getExpiredDateFromToken(jwtCookie.getValue().toString()));
-        
+
         tokenRepository.save(newToken);
-        
+
         User user = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get();
-        user.setIs_activate(true);
+        user.setIs_active(true);
         user.setLast_login(Calendar.getInstance().getTime());
-        
+
         userRepository.save(user);
-        
+
         List<String> roles = userDetails.getAuthorities().stream()
         		.map(item -> item.getAuthority())
         		.collect(Collectors.toList());
-        
-        return new JwtResponse(jwtCookie.getValue().toString(), 
-				 userDetails.getId(), 
-				 userDetails.getUsername(), 
-				 userDetails.getEmail(), 
+
+        return new JwtResponse(jwtCookie.getValue().toString(),
+				 userDetails.getId(),
+				 userDetails.getUsername(),
+				 userDetails.getEmail(),
 				 roles);
 	}
-	
+
 	public void registerUser (SignUpDto signUpDto, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
 		User user = new User();
         user.setFirst_name(signUpDto.getFirst_name());
@@ -147,7 +147,7 @@ public class AuthService {
 
         Set<String> strRoles = signUpDto.getRoles();
         Set<Role> roles = new HashSet<>();
-        
+
         if(strRoles == null) {
         	Role userRole = roleRepository.findByName(ERole.ROLE_USER)
         			.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -172,22 +172,22 @@ public class AuthService {
         		}
         	});
         }
-        
+
         user.setRoles(roles);
-        
+
         Verification verification = new Verification();
         verification.setEnabled(false);
         verification.setVerificationCode(RandomString.make(64));
         verification.setUser(user);
-        
+
         user.setVerification(verification);
         verificationRepository.save(verification);
         userRepository.save(user);
-        
+
         sendVerificationEmail(user,req, 0);
 	}
-	
-	
+
+
 
 	public void sendVerificationEmail(User user, HttpServletRequest req, int type) throws UnsupportedEncodingException, MessagingException {
 		String subject;
@@ -199,11 +199,11 @@ public class AuthService {
 			senderName = "OSWRS Store";
 			mailContent = "<p>Dear " + user.getFirst_name() + " " + user.getLast_name() + ",</p>";
 			mailContent += "<p>Please click the link below to verify to your registration:</p>";
-			
+
 			verifyURL = req.getRequestURL().toString() + "/verify?code=" + user.getVerification().getVerificationCode();
-			
+
 			mailContent += "<h3><a href=\"" + verifyURL + "\">VERIFY</a></h3>";
-			
+
 			mailContent += "<p>Thank you<br>OSWRS Store</p>";
 		}
 		else {
@@ -212,23 +212,23 @@ public class AuthService {
 			mailContent = "<p>Dear " + user.getFirst_name() + " " + user.getLast_name() + ",</p>";
 			mailContent += "<p>You have requested to reset your password:</p>";
 			mailContent += "<p>Please click the link below to change your password:</p>";
-			
+
 			verifyURL = req.getRequestURL().toString() + "/reset?token=" + user.getPasswordResetToken().getToken();
-			
+
 			mailContent += "<h3><a href=\"" + verifyURL + "\">CHANGE MY PASSWORD</a></h3>";
-			
+
 			mailContent += "<p>Thank you<br>OSWRS Store</p>";
 		}
-		
+
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
-		
+
 		helper.setFrom("oswrs.store@gmail.com", senderName);
 		helper.setTo(user.getEmail());
 		helper.setSubject(subject);
-		
+
 		helper.setText(mailContent, true);
-		
+
 		mailSender.send(message);
 	}
 
@@ -242,12 +242,12 @@ public class AuthService {
 			return true;
 		}
 	}
-	
+
 	public void updateResetPasswordToken(String email, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
 		User user = userRepository.findByUsernameOrEmail(email, email).get();
 		PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser(user);
 		String token = RandomString.make(45);
-		
+
 		if(passwordResetToken != null) {
 			passwordResetToken.setToken(token);
 			passwordResetTokenRepository.save(passwordResetToken);
@@ -259,10 +259,10 @@ public class AuthService {
 			userRepository.save(user);
 			passwordResetTokenRepository.save(passwordResetToken);
 		}
-		
+
 		sendVerificationEmail(user,req, 1);
 	}
-	
+
 	public Boolean validatePasswordResetToken(String token) {
         final PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
         if (passToken != null) {
@@ -270,7 +270,7 @@ public class AuthService {
         }
         return false;
 	}
-	
+
 	public void resetPassword(ResetPasswordDto resetPasswordDto) {
 		User user = passwordResetTokenRepository.findByToken(resetPasswordDto.getToken()).getUser();
 		user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));

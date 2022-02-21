@@ -18,7 +18,7 @@ import com.example.demo.service.AccountService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/admin/accounts")
+@RequestMapping("/api/admin/account")
 public class AccountController {
     
     @Autowired
@@ -42,7 +42,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
-    @PutMapping("/{id}")
+    @PutMapping("/change_role/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeRoles(@PathVariable Long id, @RequestBody RoleChangeDto roleChangeDto) {
     	if (accountService.findById(id) != null)
@@ -51,7 +51,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
     	if (accountService.findById(id) != null)

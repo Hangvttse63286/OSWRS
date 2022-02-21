@@ -21,4 +21,48 @@ public class Product_SKU {
 	private String size;
 	private float price;
 	private boolean is_deleted;
+	public long getProduct_sku_id() {
+		return product_sku_id;
+	}
+	public void setProduct_sku_id(long product_sku_id) {
+		this.product_sku_id = product_sku_id;
+	}
+	public long getProduct_id() {
+		return product_id;
+	}
+	public void setProduct_id(long product_id) {
+		this.product_id = product_id;
+	}
+	public int getStock() {
+		return stock;
+	}
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+	public int getSale_limit() {
+		return sale_limit;
+	}
+	public void setSale_limit(int sale_limit) {
+		this.sale_limit = sale_limit;
+	}
+	public String getSize() {
+		return size;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
+	public float getPrice() {
+		return price;
+	}
+	public void setPrice(float price) {
+		this.price = price;
+	}
+	public boolean isIs_deleted() {
+		return is_deleted;
+	}
+	public void setIs_deleted(boolean is_deleted) {
+		this.is_deleted = is_deleted;
+	}
+
+
 }
