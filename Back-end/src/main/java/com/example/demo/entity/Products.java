@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,8 +16,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import lombok.Data;
 import lombok.Getter;
@@ -25,7 +32,7 @@ import lombok.Setter;
 @Data
 @Entity
 @Table(name = "products", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
-public class Product {
+public class Products {
 
 	@Id
     private String product_id;
@@ -36,22 +43,91 @@ public class Product {
 	private String description_details;
 	private String search_word;
 	private long discount_id;
+<<<<<<< Updated upstream:Back-end/src/main/java/com/example/demo/entity/Product.java
 	
 	
+=======
+<<<<<<< Updated upstream:Back-end/src/main/java/com/example/demo/entity/Product.java
+
+
+>>>>>>> Stashed changes:Back-end/src/main/java/com/example/demo/entity/Products.java
 //	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "product_categories",
 //        joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
 //        inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
 //	private Set<Category> categories = new HashSet<>();
+=======
+	
 
+	
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "product_categories",
+        joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
+	private Collection<Category> categories = new ArrayList();
+
+>>>>>>> Stashed changes:Back-end/src/main/java/com/example/demo/entity/Products.java
+
+	@OneToMany(mappedBy = "products", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Product_SKU> productSKUs;
+	
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "discount_id")
 //	private Discount discount;
+<<<<<<< Updated upstream:Back-end/src/main/java/com/example/demo/entity/Product.java
 	
 //	public void setCategories(Set<Category> categories) {
 //		this.categories = categories;
 //	}
 	
+=======
+<<<<<<< Updated upstream:Back-end/src/main/java/com/example/demo/entity/Product.java
+
+//	public void setCategories(Set<Category> categories) {
+//		this.categories = categories;
+//	}
+
+=======
+	
+	
+	
+//	@OneToMany(mappedBy = "products")
+//    private Set<Product_Image> product_Image;
+    
+	public Products() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Products(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs ) {
+		this.product_id= product_id;
+		this.description_details= description_details;
+		this.description_list= description_list;
+		this.discount_id= discount_id;
+		this.product_name= product_name;
+		this.product_status_id= product_status_id;
+		this.search_word= search_word;
+		this.categories= categories;
+		this.productSKUs= product_SKUs;
+	}
+	
+	public Collection<Category> getCategories() {
+		return categories;
+	}
+	
+	public void setProductSKUs(Set<Product_SKU> productSKUs) {
+		this.productSKUs = productSKUs;
+	}
+	
+	public Set<Product_SKU> getProductSKUs() {
+		return productSKUs;
+	}
+	
+	public void setCategories(Collection<Category> categories) {
+		this.categories = categories;
+	}
+	
+>>>>>>> Stashed changes:Back-end/src/main/java/com/example/demo/entity/Products.java
+>>>>>>> Stashed changes:Back-end/src/main/java/com/example/demo/entity/Products.java
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
 	}

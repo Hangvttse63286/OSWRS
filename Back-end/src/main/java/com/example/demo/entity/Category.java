@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,7 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.example.demo.common.ECategory;
 
@@ -17,7 +21,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "categories")
+@Table(name = "categories", uniqueConstraints = {@UniqueConstraint(columnNames = {"category_name"})})
 public class Category {
 
 	@Id
@@ -29,5 +33,37 @@ public class Category {
     private ECategory category_name ;
     
     private boolean is_deleted;
+
+//    @ManyToMany(mappedBy = "categories")
+//    private Collection<Products> products;
     
+    public Category() {
+
+    }
+    
+    public Category(long id, ECategory category_name, boolean is_deleted) {
+    	this.category_name= category_name;
+    	this.id= id;
+    	this.is_deleted= is_deleted;
+    }
+    
+    public void setId(long id) {
+		this.id = id;
+	}
+    public long getId() {
+		return id;
+	}
+    public void setCategory_name(ECategory category_name) {
+		this.category_name = category_name;
+	}
+    public ECategory getCategory_name() {
+		return category_name;
+	}
+    
+    public void setIs_deleted(boolean is_deleted) {
+		this.is_deleted = is_deleted;
+	}
+    public boolean isIs_deleted() {
+		return is_deleted;
+	}
 }
