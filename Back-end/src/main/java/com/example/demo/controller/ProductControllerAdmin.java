@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -17,8 +18,6 @@ import com.example.demo.entity.Category;
 import com.example.demo.entity.Products;
 import com.example.demo.payload.CategoryDTO;
 import com.example.demo.payload.ProductDTO;
-<<<<<<< HEAD
-=======
 <<<<<<< Updated upstream
 import com.example.demo.repository.ProductRepository;
 =======
@@ -28,7 +27,6 @@ import com.example.demo.payload.ProductSkuDTO;
 import com.example.demo.repository.ProductRepository;
 >>>>>>> Stashed changes
 >>>>>>> Stashed changes
->>>>>>> add products-fearture
 import com.example.demo.service.ProductService;
 
 
