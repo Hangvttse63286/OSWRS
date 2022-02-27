@@ -1,5 +1,11 @@
 package com.example.demo.payload;
 
+import java.util.Collection;
+import java.util.Set;
+
+import com.example.demo.entity.Category;
+import com.example.demo.entity.Product_SKU;
+
 public class ProductDTO {
     private String product_id;
 	private String product_status_id;
@@ -8,6 +14,40 @@ public class ProductDTO {
 	private String description_details;
 	private String search_word;
 	private long discount_id;
+	private Collection<Category> categories;
+	private Set<Product_SKU> productSKUs;
+	
+	public ProductDTO() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public ProductDTO(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs ) {
+		this.product_id= product_id;
+		this.description_details= description_details;
+		this.description_list= description_list;
+		this.discount_id= discount_id;
+		this.product_name= product_name;
+		this.product_status_id= product_status_id;
+		this.search_word= search_word;
+		this.categories= categories;
+		this.productSKUs= product_SKUs;
+	}
+	
+	public void setProductSKUs(Set<Product_SKU> productSKUs) {
+		this.productSKUs = productSKUs;
+	}
+	
+	public Set<Product_SKU> getProductSKUs() {
+		return productSKUs;
+	}
+
+	public void setCategories(Collection<Category> categories) {
+		this.categories = categories;
+	}
+	
+	public Collection<Category> getCategories() {
+		return categories;
+	}
 	
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
@@ -29,9 +69,6 @@ public class ProductDTO {
 		this.search_word = search_word;
 	}
 	
-//	public Set<Category> getCategories() {
-//		return categories;
-//	}
 	public String getDescription_details() {
 		return description_details;
 	}
