@@ -18,6 +18,7 @@ import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_SKU;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderItemDto;
+import com.example.demo.payload.OrderStatusDto;
 import com.example.demo.repository.AddressRepository;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
@@ -174,9 +175,9 @@ public class OrderService {
 		if (orderDto.getPayment().equalsIgnoreCase(EPayment.COD.toString())) {
 			order.setOrderStatus(EOrderStatus.PROCCESSING);
 			order.setPayment(paymentRepository.findByName(EPayment.COD).get());
-		} else if (orderDto.getPayment().equalsIgnoreCase(EPayment.PAYPAL.toString())) {
+		} else if (orderDto.getPayment().equalsIgnoreCase(EPayment.VNPAY.toString())) {
 			order.setOrderStatus(EOrderStatus.PENDING);
-			order.setPayment(paymentRepository.findByName(EPayment.PAYPAL).get());
+			order.setPayment(paymentRepository.findByName(EPayment.VNPAY).get());
 		}
 		order.setUser(userRepository.findByUsername(orderDto.getUsername()).get());
 		order.setPaymentStatus(EPaymentStatus.PENDING);
@@ -205,10 +206,58 @@ public class OrderService {
 		return getOrderById(orderRepository.findLatestByUserId(order.getUser().getId()).get().getId());
 	}
 
-	public OrderDto UpdateOrder(OrderDto orderDto) {
+	public OrderDto changeOrderStatus (Long id, OrderStatusDto orderStatusDto) {
+		Order order = orderRepository.findById(id).get();
+		if (order == null)
+			return null;
+		switch (orderStatusDto.getOrderStatus()) {
+		case "INCOMPLETE":
+			order.setOrderStatus(EOrderStatus.INCOMPLETE);
+			break;
+		case "CANCELLED":
+			order.setOrderStatus(EOrderStatus.CANCELLED);
+			break;
+		case "DECLINED":
+			order.setOrderStatus(EOrderStatus.DECLINED);
+			break;
+		case "PENDING":
+			order.setOrderStatus(EOrderStatus.PENDING);
+			break;
+		case "PROCCESSING":
+			order.setOrderStatus(EOrderStatus.PROCCESSING);
+			break;
+		case "COMPLETED":
+			order.setOrderStatus(EOrderStatus.COMPLETED);
+			break;
+		}
+		switch (orderStatusDto.getPaymentStatus()) {
+		case "AWAITING_REFUND":
+			order.setPaymentStatus(EPaymentStatus.AWAITING_REFUND);
+			break;
+		case "DENIED":
+			order.setPaymentStatus(EPaymentStatus.DENIED);
+			break;
+		case "FAILED":
+			order.setPaymentStatus(EPaymentStatus.FAILED);
+			break;
+		case "PENDING":
+			order.setPaymentStatus(EPaymentStatus.PENDING);
+			break;
+		case "REFUNDED":
+			order.setPaymentStatus(EPaymentStatus.REFUNDED);
+			break;
+		case "COMPLETED":
+			order.setPaymentStatus(EPaymentStatus.COMPLETED);
+			break;
+		}
+		orderRepository.save(order);
+		return getOrderById(id);
+	}
+
+	public OrderDto UpdateOrder(Long id, OrderDto orderDto) {
 		Set<OrderItem> orderItemList = new HashSet<>();
 
-		Order order = orderRepository.findById(orderDto.getId())
+		Order order = orderRepository.findById(id)
 				.orElseThrow(() -> new NullPointerException("Error: No object found."));
 //		OrderItem orderItem = new OrderItem();
 		switch (orderDto.getOrderStatus()) {
@@ -271,7 +320,7 @@ public class OrderService {
 
 		orderRepository.save(order);
 
-		return getOrderById(orderRepository.findLatestByUserId(order.getUser().getId()).get().getId());
+		return getOrderById(id);
 	}
 
 	public void deleteOrder (Long id) {

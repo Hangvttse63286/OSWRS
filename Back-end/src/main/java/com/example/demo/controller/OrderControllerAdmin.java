@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.payload.OrderDto;
+import com.example.demo.payload.OrderStatusDto;
 import com.example.demo.payload.VoucherDto;
 import com.example.demo.service.OrderService;
 
@@ -24,7 +25,7 @@ import com.example.demo.service.OrderService;
 public class OrderControllerAdmin {
 	@Autowired
 	OrderService orderService;
-	
+
 	@GetMapping("/")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getAllOrder() {
@@ -33,7 +34,7 @@ public class OrderControllerAdmin {
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getOrder(@PathVariable Long id) {
@@ -42,13 +43,13 @@ public class OrderControllerAdmin {
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
     	return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.OK);
     }
-    
+
     @GetMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getUpdateOrder(@PathVariable Long id) {
@@ -57,7 +58,26 @@ public class OrderControllerAdmin {
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
+    @GetMapping("/change_status/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    public ResponseEntity<?> getOrderForStatusChange(@PathVariable Long id) {
+    	if (orderService.getOrderById(id) != null)
+        	return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/change_status/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> changeOrderStatus(@PathVariable Long id, OrderStatusDto orderStatusDto) {
+    	OrderDto updateResult = orderService.changeOrderStatus(id, orderStatusDto);
+    	if (updateResult != null)
+    		return new ResponseEntity<>(updateResult, HttpStatus.OK);
+    	else
+	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	 }
+
 //    @PutMapping("/update/{id}")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 //    public ResponseEntity<?> updateVoucher(@PathVariable Long id, @RequestBody VoucherDto voucherDto) {
@@ -69,7 +89,7 @@ public class OrderControllerAdmin {
 //    	else
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    }
-//    
+//
 //    @PutMapping("/change_status/{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
 //    public ResponseEntity<?> changeOrderStatus(@PathVariable Long id) {
@@ -79,7 +99,7 @@ public class OrderControllerAdmin {
 //    	else
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    }
-    
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
