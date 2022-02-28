@@ -27,12 +27,9 @@ public class Product_SKU {
 	private String size;
 	private float price;
 	private boolean is_deleted;
-<<<<<<< HEAD
-=======
 <<<<<<< Updated upstream
 =======
 <<<<<<< Updated upstream
->>>>>>> add products-fearture
 	public long getProduct_sku_id() {
 		return product_sku_id;
 	}
@@ -44,8 +41,6 @@ public class Product_SKU {
 	}
 	public void setProduct_id(long product_id) {
 		this.product_id = product_id;
-<<<<<<< HEAD
-=======
 =======
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -80,22 +75,16 @@ public class Product_SKU {
 	public String getSize() {
 		return size;
 >>>>>>> Stashed changes
->>>>>>> add products-fearture
 	}
 	public int getStock() {
 		return stock;
 	}
-<<<<<<< HEAD
-=======
 <<<<<<< Updated upstream
->>>>>>> add products-fearture
 	public void setStock(int stock) {
 		this.stock = stock;
 	}
 	public int getSale_limit() {
 		return sale_limit;
-<<<<<<< HEAD
-=======
 =======
 	public void setIs_deleted(boolean is_deleted) {
 		this.is_deleted = is_deleted;
@@ -109,15 +98,11 @@ public class Product_SKU {
 	public void setId(long id) {
 		this.id = id;
 >>>>>>> Stashed changes
->>>>>>> add products-fearture
 	}
 	public void setSale_limit(int sale_limit) {
 		this.sale_limit = sale_limit;
 	}
-<<<<<<< HEAD
-=======
 <<<<<<< Updated upstream
->>>>>>> add products-fearture
 	public String getSize() {
 		return size;
 	}
@@ -138,8 +123,6 @@ public class Product_SKU {
 	}
 
 
-<<<<<<< HEAD
-=======
 =======
 	public void setSize(String size) {
 		this.size = size;
@@ -149,5 +132,4 @@ public class Product_SKU {
 	}
 >>>>>>> Stashed changes
 >>>>>>> Stashed changes
->>>>>>> add products-fearture
 }
