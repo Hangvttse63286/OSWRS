@@ -27,7 +27,7 @@ import com.example.demo.service.UserService;
 public class OrderControllerUser {
 	@Autowired
 	OrderService orderService;
-	
+
 	@GetMapping("/")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAllOrder() {
@@ -37,12 +37,12 @@ public class OrderControllerUser {
     		if (!orderService.getOrderListByUser(userDetails.getUsername()).isEmpty())
             	return new ResponseEntity<>(orderService.getOrderListByUser(userDetails.getUsername()), HttpStatus.OK);
             else
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("No order found!", HttpStatus.NOT_FOUND);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
-		
+
     }
-    
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getOrder(@PathVariable Long id) {
@@ -51,13 +51,13 @@ public class OrderControllerUser {
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PostMapping("/create")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
     	return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteOrder(@PathVariable Long id) {

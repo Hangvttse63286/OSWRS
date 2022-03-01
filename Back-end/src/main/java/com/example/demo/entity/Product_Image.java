@@ -18,17 +18,17 @@ import lombok.Setter;
 @Entity
 @Table(name = "product_image", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_image_id"})})
 public class Product_Image {
-	
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long product_image_id;
 	private String product_id;
 	private String name;
 	private String url;
-	
-	@ManyToOne
-	private Products products;
-	
+
+//	@ManyToOne
+//	private Products products;
+
 	public String getName() {
 		return name;
 	}

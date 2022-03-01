@@ -316,6 +316,7 @@ public class VNPayService {
                 Order order = orderRepository.findById(Long.valueOf(vnpOrderInfo)).get();
                 order.setPaymentStatus(EPaymentStatus.COMPLETED);
                 order.setOrderStatus(EOrderStatus.PROCCESSING);
+                order.setPaymentDate(Calendar.getInstance().getTime());
                 orderRepository.saveAndFlush(order);
                 return "Thanh toan thanh cong don hang " + vnpOrderInfo + ". Ma giao dich: " + vnpTransactionNo;
             } else {

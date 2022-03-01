@@ -27,32 +27,17 @@ public class Product_SKU {
 	private String size;
 	private float price;
 	private boolean is_deleted;
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-	public long getProduct_sku_id() {
-		return product_sku_id;
-	}
-	public void setProduct_sku_id(long product_sku_id) {
-		this.product_sku_id = product_sku_id;
-	}
-	public long getProduct_id() {
-		return product_id;
-	}
-	public void setProduct_id(long product_id) {
-		this.product_id = product_id;
-=======
-	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="product_id") 
+    @JoinColumn(name="product_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
     private Products products;
-	
+
+
 	//, referencedColumnName="product_id"
-	public Product_SKU() {	
+	public Product_SKU() {
 	}
-	
-	public Product_SKU(long id, int stock, int sale_limit, String size, float price, boolean is_deleted, Products products) {	
+
+	public Product_SKU(long id, int stock, int sale_limit, String size, float price, boolean is_deleted, Products products) {
 		this.id= id;
 		this.stock= stock;
 		this.sale_limit= sale_limit;
@@ -61,75 +46,62 @@ public class Product_SKU {
 		this.is_deleted= is_deleted;
 		this.products= products;
 	}
-	
-	public Products getProducts() {
-		return products;
-	}
-	public float getPrice() {
-		return price;
-	}
 
-	public int getSale_limit() {
-		return sale_limit;
-	}
-	public String getSize() {
-		return size;
->>>>>>> Stashed changes
-	}
-	public int getStock() {
-		return stock;
-	}
-<<<<<<< Updated upstream
-	public void setStock(int stock) {
-		this.stock = stock;
-	}
-	public int getSale_limit() {
-		return sale_limit;
-=======
-	public void setIs_deleted(boolean is_deleted) {
-		this.is_deleted = is_deleted;
-	}
-	public void setPrice(float price) {
-		this.price = price;
-	}
 	public long getId() {
 		return id;
 	}
+
 	public void setId(long id) {
 		this.id = id;
->>>>>>> Stashed changes
 	}
+
+	public int getStock() {
+		return stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+
+	public int getSale_limit() {
+		return sale_limit;
+	}
+
 	public void setSale_limit(int sale_limit) {
 		this.sale_limit = sale_limit;
 	}
-<<<<<<< Updated upstream
+
 	public String getSize() {
 		return size;
 	}
+
 	public void setSize(String size) {
 		this.size = size;
 	}
+
 	public float getPrice() {
 		return price;
 	}
+
 	public void setPrice(float price) {
 		this.price = price;
 	}
+
 	public boolean isIs_deleted() {
 		return is_deleted;
 	}
+
 	public void setIs_deleted(boolean is_deleted) {
 		this.is_deleted = is_deleted;
 	}
 
+	public Products getProducts() {
+		return products;
+	}
 
-=======
-	public void setSize(String size) {
-		this.size = size;
+	public void setProducts(Products products) {
+		this.products = products;
 	}
-	public void setStock(int stock) {
-		this.stock = stock;
-	}
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
+
 }

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.sound.midi.SysexMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VoucherRepository;
+import com.example.demo.repository.ProductSKURepository;
 
 @Service
 @Transactional
@@ -41,8 +44,8 @@ public class OrderService {
 	@Autowired
 	AddressRepository addressRepository;
 
-//	@Autowired
-//	Product_SKURepository productSKURepository;
+	@Autowired
+	ProductSKURepository productSKURepository;
 
 	@Autowired
 	PaymentRepository paymentRepository;
@@ -54,17 +57,19 @@ public class OrderService {
 	AddressService addressService;
 
 	public List<OrderDto> getOrderList() {
-		if (orderRepository.findAll() == null) {
+		List<Order> orderList = orderRepository.findAll();
+		if (orderList.isEmpty()) {
 			return null;
 		}
 
-		List<OrderDto> orderList = new ArrayList<>();
+		List<OrderDto> orderListDto = new ArrayList<>();
 		List<OrderItemDto> orderItemList = new ArrayList<>();
 
-		OrderDto orderDto = new OrderDto();
+
 		OrderItemDto orderItemDto = new OrderItemDto();
 
-		for (Order order : orderRepository.findAll()) {
+		for (Order order : orderList) {
+			OrderDto orderDto = new OrderDto();
 			orderDto.setId(order.getId());
 			orderDto.setOrderStatus(order.getOrderStatus().toString());
 			orderDto.setUsername(order.getUser().getUsername());
@@ -72,7 +77,7 @@ public class OrderService {
 			orderDto.setPayment(order.getPayment().getName().toString());
 			for (OrderItem orderItem : order.getOrderItems()) {
 				orderItemDto.setOrderId(orderItem.getOrder().getId());
-				orderItemDto.setProductSKUId(orderItem.getProductSKU().getProduct_sku_id());
+				orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 				orderItemDto.setQuantity(orderItem.getQuantity());
 				orderItemDto.setPrice(orderItem.getPrice());
 				orderItemList.add(orderItemDto);
@@ -88,30 +93,31 @@ public class OrderService {
 				orderDto.setPaymentDate(order.getPaymentDate());
 			orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
 
-			orderList.add(orderDto);
+			orderListDto.add(orderDto);
 		}
-		return orderList;
+		return orderListDto;
 	}
 
 	public List<OrderDto> getOrderListByUser(String username) {
-		if (orderRepository.findByUser(userRepository.findByUsername(username).get()) == null) {
+		List<Order> orderList = orderRepository.findByUser(userRepository.findByUsername(username).get());
+		if (orderList.isEmpty()) {
 			return null;
 		}
 
-		List<OrderDto> orderList = new ArrayList<>();
+		List<OrderDto> orderListDto = new ArrayList<>();
 		List<OrderItemDto> orderItemList = new ArrayList<>();
 
-		OrderDto orderDto = new OrderDto();
 		OrderItemDto orderItemDto = new OrderItemDto();
 
-		for (Order order : orderRepository.findByUser(userRepository.findByUsername(username).get())) {
+		for (Order order : orderList) {
+			OrderDto orderDto = new OrderDto();
 			orderDto.setId(order.getId());
 			orderDto.setOrderStatus(order.getOrderStatus().toString());
 			orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 			orderDto.setPayment(order.getPayment().getName().toString());
 			for (OrderItem orderItem : order.getOrderItems()) {
 				orderItemDto.setOrderId(orderItem.getOrder().getId());
-				orderItemDto.setProductSKUId(orderItem.getProductSKU().getProduct_sku_id());
+				orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 				orderItemDto.setQuantity(orderItem.getQuantity());
 				orderItemDto.setPrice(orderItem.getPrice());
 				orderItemList.add(orderItemDto);
@@ -127,9 +133,9 @@ public class OrderService {
 				orderDto.setPaymentDate(order.getPaymentDate());
 			orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
 
-			orderList.add(orderDto);
+			orderListDto.add(orderDto);
 		}
-		return orderList;
+		return orderListDto;
 	}
 
 	public OrderDto getOrderById (Long id) {
@@ -146,8 +152,8 @@ public class OrderService {
 		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 		orderDto.setPayment(order.getPayment().getName().toString());
 		for (OrderItem orderItem : order.getOrderItems()) {
-			orderItemDto.setOrderId(orderItem.getOrder().getId());
-			orderItemDto.setProductSKUId(orderItem.getProductSKU().getProduct_sku_id());
+			orderItemDto.setOrderId(id);
+			orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 			orderItemDto.setQuantity(orderItem.getQuantity());
 			orderItemDto.setPrice(orderItem.getPrice());
 			orderItemList.add(orderItemDto);
@@ -170,7 +176,6 @@ public class OrderService {
 		Set<OrderItem> orderItemList = new HashSet<>();
 
 		Order order = new Order();
-		OrderItem orderItem = new OrderItem();
 
 		if (orderDto.getPayment().equalsIgnoreCase(EPayment.COD.toString())) {
 			order.setOrderStatus(EOrderStatus.PROCCESSING);
@@ -181,17 +186,7 @@ public class OrderService {
 		}
 		order.setUser(userRepository.findByUsername(orderDto.getUsername()).get());
 		order.setPaymentStatus(EPaymentStatus.PENDING);
-		for (OrderItemDto orderItemDto : orderDto.getOrderItemDtos()) {
-			orderItem.setOrder(orderRepository.findById(orderItemDto.getOrderId()).get());
-//			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
-//			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
-//			productSKURepository.save(productSKU);
-//			orderItem.setProductSKU(productSKU);
-			orderItem.setQuantity(orderItemDto.getQuantity());
-			orderItem.setPrice(orderItemDto.getPrice());
-			orderItemList.add(orderItem);
-		}
-		order.setOrderItems(orderItemList);
+
 		order.setSubTotal(orderDto.getSubTotal());
 		if (orderDto.getVoucherCode() != null)
 			order.setVoucher(voucherRepository.findByCode(orderDto.getVoucherCode()).get());
@@ -201,9 +196,23 @@ public class OrderService {
 		order.setPaymentDate(null);
 		order.setAddress(addressRepository.findById(orderDto.getAddressDto().getId()).get());
 
-		orderRepository.save(order);
+		orderRepository.saveAndFlush(order);
+		for (OrderItemDto orderItemDto : orderDto.getOrderItemDtos()) {
+			OrderItem orderItem = new OrderItem();
+			orderItem.setOrder(orderRepository.findById(order.getId()).get());
+			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
+			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
+			productSKURepository.save(productSKU);
+			orderItem.setProductSKU(productSKU);
+			orderItem.setQuantity(orderItemDto.getQuantity());
+			orderItem.setPrice(orderItemDto.getPrice());
+			orderItemList.add(orderItem);
+			orderItemRepository.saveAndFlush(orderItem);
+		}
+		order.setOrderItems(orderItemList);
+		orderRepository.saveAndFlush(order);
 
-		return getOrderById(orderRepository.findLatestByUserId(order.getUser().getId()).get().getId());
+		return getOrderById(order.getId());
 	}
 
 	public OrderDto changeOrderStatus (Long id, OrderStatusDto orderStatusDto) {
@@ -248,6 +257,7 @@ public class OrderService {
 			break;
 		case "COMPLETED":
 			order.setPaymentStatus(EPaymentStatus.COMPLETED);
+			order.setPaymentDate(Calendar.getInstance().getTime());
 			break;
 		}
 		orderRepository.save(order);
@@ -327,9 +337,9 @@ public class OrderService {
 		Order order = orderRepository.findById(id)
 				.orElseThrow(() -> new NullPointerException("Error: No object found."));
 		for (OrderItem orderItem : order.getOrderItems()) {
-//			Product_SKU productSKU = productSKURepository.findById(orderItem.getProductSKU().getId()).get();
-//			productSKU.setStock(productSKU.getStock()+orderItem.getQuantity());
-//			productSKURepository.save(productSKU);
+			Product_SKU productSKU = productSKURepository.findById(orderItem.getProductSKU().getId()).get();
+			productSKU.setStock(productSKU.getStock()+orderItem.getQuantity());
+			productSKURepository.save(productSKU);
 		}
 		orderRepository.deleteById(id);
 	}

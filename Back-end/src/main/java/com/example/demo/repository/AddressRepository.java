@@ -15,9 +15,5 @@ public interface AddressRepository extends JpaRepository<Address, Long>{
 	List<Address> findByUser(User user);
 	Optional<Address> findById(Long id);
 
-	@Modifying
-	@Query(value = "SELECT TOP 1 * FROM addresses b WHERE b.user_id=:user_id ORDER BY b.id DESC", nativeQuery=true)
-	Optional<Address> findLatestByUserId(@Param("user_id")Long userId);
-
 	void deleteById(Long id);
 }
