@@ -25,7 +25,6 @@ import com.example.demo.common.EPaymentStatus;
 
 import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "orders")
 public class Order {
