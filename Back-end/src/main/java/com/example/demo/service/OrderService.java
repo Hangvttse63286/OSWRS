@@ -63,19 +63,19 @@ public class OrderService {
 		}
 
 		List<OrderDto> orderListDto = new ArrayList<>();
-		List<OrderItemDto> orderItemList = new ArrayList<>();
-
-
-		OrderItemDto orderItemDto = new OrderItemDto();
 
 		for (Order order : orderList) {
 			OrderDto orderDto = new OrderDto();
+			List<OrderItemDto> orderItemList = new ArrayList<>();
+
 			orderDto.setId(order.getId());
 			orderDto.setOrderStatus(order.getOrderStatus().toString());
 			orderDto.setUsername(order.getUser().getUsername());
 			orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 			orderDto.setPayment(order.getPayment().getName().toString());
-			for (OrderItem orderItem : order.getOrderItems()) {
+			Set<OrderItem> orderItems = order.getOrderItems();
+			for (OrderItem orderItem : orderItems) {
+				OrderItemDto orderItemDto = new OrderItemDto();
 				orderItemDto.setOrderId(orderItem.getOrder().getId());
 				orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 				orderItemDto.setQuantity(orderItem.getQuantity());
@@ -105,17 +105,18 @@ public class OrderService {
 		}
 
 		List<OrderDto> orderListDto = new ArrayList<>();
-		List<OrderItemDto> orderItemList = new ArrayList<>();
-
-		OrderItemDto orderItemDto = new OrderItemDto();
 
 		for (Order order : orderList) {
 			OrderDto orderDto = new OrderDto();
+			List<OrderItemDto> orderItemList = new ArrayList<>();
+
 			orderDto.setId(order.getId());
 			orderDto.setOrderStatus(order.getOrderStatus().toString());
 			orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 			orderDto.setPayment(order.getPayment().getName().toString());
-			for (OrderItem orderItem : order.getOrderItems()) {
+			Set<OrderItem> orderItems = order.getOrderItems();
+			for (OrderItem orderItem : orderItems) {
+				OrderItemDto orderItemDto = new OrderItemDto();
 				orderItemDto.setOrderId(orderItem.getOrder().getId());
 				orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 				orderItemDto.setQuantity(orderItem.getQuantity());
@@ -144,14 +145,16 @@ public class OrderService {
 
 		List<OrderItemDto> orderItemList = new ArrayList<>();
 		OrderDto orderDto = new OrderDto();
-		OrderItemDto orderItemDto = new OrderItemDto();
+
 
 		orderDto.setId(order.getId());
 		orderDto.setOrderStatus(order.getOrderStatus().toString());
 		orderDto.setUsername(order.getUser().getUsername());
 		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 		orderDto.setPayment(order.getPayment().getName().toString());
-		for (OrderItem orderItem : order.getOrderItems()) {
+		Set<OrderItem> orderItems = order.getOrderItems();
+		for (OrderItem orderItem : orderItems) {
+			OrderItemDto orderItemDto = new OrderItemDto();
 			orderItemDto.setOrderId(id);
 			orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 			orderItemDto.setQuantity(orderItem.getQuantity());

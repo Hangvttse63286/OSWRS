@@ -24,10 +24,10 @@ public class AddressService {
 	public List<AddressDto> getAddressList (String username) {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new NullPointerException("Error: No object found."));
-		List<AddressDto> addressList = new ArrayList<>();
-		AddressDto addressDto = new AddressDto();
-
-		for (Address address : addressRepository.findByUser(user)) {
+		List<AddressDto> addressListDto = new ArrayList<>();
+		List<Address> addressList = addressRepository.findByUser(user);
+		for (Address address : addressList) {
+			AddressDto addressDto = new AddressDto();
 			addressDto.setId(address.getId());
 			addressDto.setReceiverName(address.getReceiverName());
 			addressDto.setProvince(address.getProvince());
@@ -38,9 +38,9 @@ public class AddressService {
 			addressDto.setPostalCode(address.getPostalCode());
 			addressDto.setPhoneNumber(address.getPhoneNumber());
 
-			addressList.add(addressDto);
+			addressListDto.add(addressDto);
 		}
-		return addressList;
+		return addressListDto;
 	}
 
 	public AddressDto getAddressById (Long id) {
