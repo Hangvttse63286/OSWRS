@@ -223,7 +223,7 @@ public class AuthService {
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 
-		helper.setFrom("oswrs.store@gmail.com", senderName);
+		helper.setFrom("vociri24@gmail.com", senderName);
 		helper.setTo(user.getEmail());
 		helper.setSubject(subject);
 
