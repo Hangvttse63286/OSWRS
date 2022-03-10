@@ -27,6 +27,7 @@ public class Product_SKU {
 	private String size;
 	private float price;
 	private boolean is_deleted;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
