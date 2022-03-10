@@ -7,17 +7,17 @@ import com.example.demo.entity.Products;
 
 public class CategoryDTO {
 	private long id;
-    private ECategory category_name ;
+    private String category_name ;
     private boolean is_deleted;
-//    private Collection<Products> products;
+    //private Collection<Products> products;
     
-    public CategoryDTO(long id, ECategory category_name, boolean is_deleted) {
+    public CategoryDTO(long id, String category_name, boolean is_deleted) {
     	this.category_name= category_name;
     	this.id= id;
     	this.is_deleted= is_deleted;
     }
     
-    public void setCategory_name(ECategory category_name) {
+    public void setCategory_name(String category_name) {
 		this.category_name = category_name;
 	}
     public void setIs_deleted(boolean is_deleted) {
@@ -25,7 +25,7 @@ public class CategoryDTO {
 	}
     
     
-    public ECategory getCategory_name() {
+    public String getCategory_name() {
 		return category_name;
 	}
     

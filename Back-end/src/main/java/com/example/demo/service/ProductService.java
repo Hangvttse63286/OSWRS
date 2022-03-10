@@ -7,24 +7,24 @@ import org.springframework.http.ResponseEntity;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.Products;
+import com.example.demo.payload.ProductIncludeSkuDTO;
+import com.example.demo.payload.ProductListDTO;
+import com.example.demo.payload.ProductDTO;
+import com.example.demo.payload.ProductIncludeImageDTO;
 
 public interface ProductService {
 	//Product
-	List<Products> listAllProducts();
-	Products createProduct(Products products);
-	Products updateProductById(String id, Products products);
+	List<ProductDTO> listAllProducts();
+	ProductDTO updateProductById(String id, ProductDTO products);
 	void deleteProduct(String id);
-	Products getProductById(String id);
-	
-	//Category
-	List<Category> listAllCategories();
-	List<Products> listProductByCategoryId(Long id);
+	ProductIncludeSkuDTO getProductByIdUser(String id);
+	ProductListDTO getProductByIdAdmin(String id);
+	ProductDTO getProductById(String id);
 	
 	//Product_SKU
-	List<Product_SKU> listAllProductSKU();
+	List<ProductIncludeImageDTO> listAllProductIncludeImage();
 	List<Products> listProductBySKUId(Long id);
-	Category updateCategoryById(Long id, Category categoryRequest);
-	Category createCategory(Category categoryRequest);
-	void deleteCategory(Long id);
 	void deleteProductSku(Long id);
+	Products createProductAll(ProductListDTO productRequest);
+	Products createProduct(ProductDTO productRequest);
 }

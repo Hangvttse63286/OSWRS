@@ -1,21 +1,27 @@
 package com.example.demo.payload;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-public class ProductDTO {
-	private String product_id;
+import com.example.demo.entity.Category;
+import com.example.demo.entity.Product_SKU;
+
+public class ProductIncludeSkuDTO {
+    private String product_id;
 	private String product_status_id;
 	private String product_name;
 	private String description_list;
 	private String description_details;
 	private String search_word;
 	private long discount_id;
+	private List<ProductSkuDTO> productSKUs;
 	
-	public ProductDTO() {
+	public ProductIncludeSkuDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProductDTO(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word ) {
+	public ProductIncludeSkuDTO(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, List<ProductSkuDTO> product_SKUs ) {
 		this.product_id= product_id;
 		this.description_details= description_details;
 		this.description_list= description_list;
@@ -23,6 +29,15 @@ public class ProductDTO {
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
 		this.search_word= search_word;
+		this.productSKUs= product_SKUs;
+	}
+	
+	public void setProductSKUs(List<ProductSkuDTO> productSKUs) {
+		this.productSKUs = productSKUs;
+	}
+	
+	public List<ProductSkuDTO> getProductSKUs() {
+		return productSKUs;
 	}
 
 	public void setDescription_details(String description_details) {
