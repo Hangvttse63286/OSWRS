@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class VNPayUtils {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl = "http://localhost:8080/api/payment/vnpay/return";
+    public static String vnp_Returnurl = "/return";
     public static String vnp_TmnCode = "UX45P9Q9";
     public static String vnp_HashSecret = "RBTLXUDHXORYNNDCBAZGAMJDVTAAZNQF";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
