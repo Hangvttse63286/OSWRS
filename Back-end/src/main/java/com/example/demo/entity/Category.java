@@ -21,16 +21,16 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "categories", uniqueConstraints = {@UniqueConstraint(columnNames = {"category_name"})})
+@Table(name = "categories", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Category {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Enumerated(EnumType.STRING)
+    //@Enumerated(EnumType.STRING)
     @Column(length = 60)
-    private ECategory category_name ;
+    private String name ;
     
     private boolean is_deleted;
 
@@ -41,8 +41,8 @@ public class Category {
 
     }
     
-    public Category(long id, ECategory category_name, boolean is_deleted) {
-    	this.category_name= category_name;
+    public Category(long id, String category_name, boolean is_deleted) {
+    	this.name= category_name;
     	this.id= id;
     	this.is_deleted= is_deleted;
     }
@@ -53,11 +53,11 @@ public class Category {
     public long getId() {
 		return id;
 	}
-    public void setCategory_name(ECategory category_name) {
-		this.category_name = category_name;
+    public void setCategory_name(String category_name) {
+		this.name = category_name;
 	}
-    public ECategory getCategory_name() {
-		return category_name;
+    public String getCategory_name() {
+		return name;
 	}
     
     public void setIs_deleted(boolean is_deleted) {
