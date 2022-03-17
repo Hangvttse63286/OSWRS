@@ -2,10 +2,12 @@ package com.example.demo.entity;
 
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.example.demo.common.ECategory;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,11 +34,12 @@ public class Category {
     //@Enumerated(EnumType.STRING)
     @Column(length = 60)
     private String name ;
-    
     private boolean is_deleted;
 
-//    @ManyToMany(mappedBy = "categories")
-//    private Collection<Products> products;
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+        targetEntity = Products.class)
+    @JsonBackReference
+    private Collection<Products> products;
     
     public Category() {
 

@@ -1,15 +1,20 @@
 package com.example.demo.controller;
 
+import java.io.File;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.hibernate.query.criteria.internal.expression.function.AggregationFunction.COUNT;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +22,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.example.demo.common.Helper;
 import com.example.demo.config.FileUploadUtil;
 import com.example.demo.entity.Category;
+import com.example.demo.entity.ImgurData;
+import com.example.demo.entity.ImgurResponse;
 import com.example.demo.entity.Products;
 import com.example.demo.payload.CategoryDTO;
+import com.example.demo.payload.ProductCreateDTO;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.payload.ProductDTO;
@@ -35,13 +44,16 @@ import com.example.demo.payload.ProductSkuDTO;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductImageService;
 import com.example.demo.service.ProductService;
+import com.google.gson.Gson;
+
+import lombok.experimental.var;
 
 
 
 @RestController
 @RequestMapping("/api/product/admin/")
 public class ProductControllerAdmin {
-
+	
 	@Autowired
 	private ModelMapper modelMapper;
 	
@@ -112,29 +124,32 @@ public class ProductControllerAdmin {
 		}
 	}
 	
-	@RequestMapping(value = "/createProductAll", method = RequestMethod.POST)
-	public ResponseEntity<ProductListDTO> createProductncludeImage(@RequestBody ProductListDTO productRequest,
-			@RequestParam("fileImage") MultipartFile[] multipartFile) throws Exception {
+	@RequestMapping(value = "/createProductAll", method = RequestMethod.POST, 
+			consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+	public ResponseEntity<ProductListDTO> createProductncludeImage(
+			@RequestPart("fileImage") MultipartFile[] multipartFile, ProductCreateDTO productRequest) throws Exception {
 		
 		List<ProductImageDTO> listImageDTOs= new ArrayList<ProductImageDTO>();
-		ProductImageDTO productImageDTO= new ProductImageDTO();
+		
+		Helper helper = new Helper();
 
 		for(MultipartFile multi: multipartFile) {
-			String mainImageName= StringUtils.cleanPath(multi.getOriginalFilename());
-			productImageDTO.setName(mainImageName);
+			
+			ImgurResponse res = helper.getDataImgurResponse(multi);
+			
+			ProductImageDTO productImageDTO= new ProductImageDTO();
+			
+			productImageDTO.setUrl(res.getData().getLink());
+			
+			productImageDTO.setName(multi.getOriginalFilename());
+			
 			listImageDTOs.add(productImageDTO);
 		}
+		
 		productRequest.setProductImage(listImageDTOs);
 	
-		Products savedProductIncludeImageDTO= productService.createProductAll(productRequest);
-
-		String uploadDir = "./product-image" + savedProductIncludeImageDTO.getProduct_id();
+		Products savedProductIncludeImageDTO = productService.createProductAll(productRequest);	
 		
-		for(MultipartFile multi: multipartFile) {
-			String fileName= StringUtils.cleanPath(multi.getOriginalFilename());
-			FileUploadUtil.saveFile(uploadDir, fileName, multi);
-		}		
-				
 		return new ResponseEntity<ProductListDTO>(HttpStatus.OK);
 	}
 

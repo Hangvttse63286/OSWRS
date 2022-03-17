@@ -56,7 +56,7 @@ public class Product_Image {
 	public void setProducts(Products products) {
 		this.products = products;
 	}
-
+	
 	public String getName() {
 		return name;
 	}

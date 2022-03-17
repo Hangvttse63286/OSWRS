@@ -23,6 +23,8 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +45,7 @@ public class Products {
 	private String description_details;
 	private String search_word;
 	private long discount_id;
+	private float price;
 
 //	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "product_categories",
@@ -51,7 +54,15 @@ public class Products {
 //	private Set<Category> categories = new HashSet<>();
 	
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY, cascade =
+        {
+                CascadeType.DETACH,
+                CascadeType.MERGE,
+                CascadeType.REFRESH,
+                CascadeType.PERSIST
+        },
+        targetEntity = Category.class)
+	@JsonManagedReference
     @JoinTable(name = "product_categories",
         joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
@@ -75,7 +86,7 @@ public class Products {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Products(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs ) {
+	public Products(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs ) {
 		this.product_id= product_id;
 		this.description_details= description_details;
 		this.description_list= description_list;
@@ -83,8 +94,16 @@ public class Products {
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
 		this.search_word= search_word;
+		this.price= price;
 		this.categories= categories;
 		this.productSKUs= product_SKUs;
+	}
+	
+	public void setPrice(float price) {
+		this.price = price;
+	}
+	public float getPrice() {
+		return price;
 	}
 	
 	public Collection<Category> getCategories() {

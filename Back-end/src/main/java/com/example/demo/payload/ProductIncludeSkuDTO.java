@@ -8,6 +8,7 @@ import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_SKU;
 
 public class ProductIncludeSkuDTO {
+	List<ProductImageDTO> productImage;
     private String product_id;
 	private String product_status_id;
 	private String product_name;
@@ -15,13 +16,15 @@ public class ProductIncludeSkuDTO {
 	private String description_details;
 	private String search_word;
 	private long discount_id;
+	private float price;
 	private List<ProductSkuDTO> productSKUs;
 	
 	public ProductIncludeSkuDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProductIncludeSkuDTO(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, List<ProductSkuDTO> product_SKUs ) {
+	public ProductIncludeSkuDTO(List<ProductImageDTO> productImage, String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
+		this.productImage= productImage;
 		this.product_id= product_id;
 		this.description_details= description_details;
 		this.description_list= description_list;
@@ -29,9 +32,22 @@ public class ProductIncludeSkuDTO {
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
 		this.search_word= search_word;
+		this.price= price;
 		this.productSKUs= product_SKUs;
 	}
 	
+	public void setProductImage(List<ProductImageDTO> productImage) {
+		this.productImage = productImage;
+	}
+	public List<ProductImageDTO> getProductImage() {
+		return productImage;
+	}
+	public void setPrice(float price) {
+		this.price = price;
+	}
+	public float getPrice() {
+		return price;
+	}
 	public void setProductSKUs(List<ProductSkuDTO> productSKUs) {
 		this.productSKUs = productSKUs;
 	}

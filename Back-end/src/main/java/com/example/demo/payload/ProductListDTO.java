@@ -12,13 +12,14 @@ public class ProductListDTO {
 	private String description_details;
 	private String search_word;
 	private long discount_id;
+	private float price;
 	private List<ProductSkuDTO> productSKUs;
 	
 	public ProductListDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProductListDTO(List<CategoryDTO> category, List<ProductImageDTO> productImage, String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, List<ProductSkuDTO> product_SKUs ) {
+	public ProductListDTO(List<CategoryDTO> category, List<ProductImageDTO> productImage, String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
 		this.category= category;
 		this.productImage= productImage;
 		this.product_id= product_id;
@@ -28,9 +29,15 @@ public class ProductListDTO {
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
 		this.search_word= search_word;
+		this.price= price;
 		this.productSKUs= product_SKUs;
 	}
-	
+	public void setPrice(float price) {
+		this.price = price;
+	}
+	public float getPrice() {
+		return price;
+	}
 	public void setProductImage(List<ProductImageDTO> productImage) {
 		this.productImage = productImage;
 	}

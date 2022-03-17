@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.common.ECategory;
 import com.example.demo.entity.Category;
+import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.Products;
 import com.example.demo.payload.CategoryDTO;
+import com.example.demo.payload.ProductImageDTO;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductSkuDTO;
 import com.example.demo.repository.CategoryRepository;
@@ -48,8 +50,7 @@ public class CategoryServiceImp implements CategoryService{
 	public CategoryDTO getCategoryById(Long id) {
 		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		CategoryDTO categoryDTO= new CategoryDTO();
-		
-		categoryDTO.setId(category.getId());
+
 		categoryDTO.setCategory_name(category.getCategory_name());
 		categoryDTO.setIs_deleted(category.isIs_deleted());
 		return categoryDTO;
@@ -97,7 +98,18 @@ public class CategoryServiceImp implements CategoryService{
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
 		
 		for(Products product: resultOptional) {
+			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
 			ProductIncludeSkuDTO productIncludeSkuDTO= new ProductIncludeSkuDTO();
+			for(Product_Image p: product.getProduct_Image()) {
+				ProductImageDTO pDto= new ProductImageDTO();
+				if(p.isPrimary() == true) {
+					pDto.setName(p.getName());
+					pDto.setProduct_image_id(p.getProduct_image_id());
+					pDto.setUrl(p.getUrl());
+					pList.add(pDto);
+				}
+			}
+			productIncludeSkuDTO.setProductImage(pList);
 			productIncludeSkuDTO.setProduct_id(product.getProduct_id());
 			productIncludeSkuDTO.setProduct_status_id(product.getProduct_status_id());
 			productIncludeSkuDTO.setProduct_name(product.getProduct_name());
@@ -105,13 +117,13 @@ public class CategoryServiceImp implements CategoryService{
 			productIncludeSkuDTO.setDescription_details(product.getDescription_details());
 			productIncludeSkuDTO.setSearch_word(product.getSearch_word());
 			productIncludeSkuDTO.setDiscount_id(product.getDiscount_id());
+			productIncludeSkuDTO.setPrice(product.getPrice());
 			for(Product_SKU pSKU: product.getProductSKUs()) {
 				ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 				productSkuDTO.setId(pSKU.getId());
 				productSkuDTO.setStock(pSKU.getStock());
 				productSkuDTO.setSale_limit(pSKU.getSale_limit());
 				productSkuDTO.setSize(pSKU.getSize());
-				productSkuDTO.setPrice(pSKU.getPrice());
 				productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
 				
 				productSkuDTOList.add(productSkuDTO);

@@ -9,7 +9,9 @@ import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.Products;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductListDTO;
+import com.example.demo.payload.ProductCreateDTO;
 import com.example.demo.payload.ProductDTO;
+import com.example.demo.payload.ProductImageDTO;
 import com.example.demo.payload.ProductIncludeImageDTO;
 
 public interface ProductService {
@@ -25,6 +27,6 @@ public interface ProductService {
 	List<ProductIncludeImageDTO> listAllProductIncludeImage();
 	List<Products> listProductBySKUId(Long id);
 	void deleteProductSku(Long id);
-	Products createProductAll(ProductListDTO productRequest);
+	Products createProductAll(ProductCreateDTO productRequest);
 	Products createProduct(ProductDTO productRequest);
 }

@@ -6,6 +6,7 @@ public class OrderItemDto {
 	private Long productSKUId;
 	private int quantity;
 	private Double price;
+	
 	public Long getOrderId() {
 		return orderId;
 	}
