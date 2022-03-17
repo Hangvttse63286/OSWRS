@@ -30,7 +30,7 @@ public class VNPayController {
 	@Autowired
 	private VNPayService vnpService;
 
-	@PostMapping("/create")
+	@PostMapping("/")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createVnpPayment(@RequestBody VNPayPaymentRequest vnpRequest, HttpServletRequest req) throws IOException {
 		VNPayPaymentResponse vnpResponse = vnpService.vnpCreatePayment(vnpRequest, req);

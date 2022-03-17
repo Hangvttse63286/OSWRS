@@ -220,7 +220,7 @@ public class VNPayService {
         } else {
             vnp_Params.put("vnp_Locale", "vn");
         }
-        vnp_Params.put("vnp_ReturnUrl", vnPayUtils.vnp_Returnurl);
+        vnp_Params.put("vnp_ReturnUrl", req.getRequestURL().toString() + VNPayUtils.vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
 
