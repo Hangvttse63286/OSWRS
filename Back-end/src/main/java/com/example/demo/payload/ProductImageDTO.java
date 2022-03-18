@@ -4,16 +4,20 @@ public class ProductImageDTO {
 	private long product_image_id;
 	private String name;
 	private String url;
+	private String productId;
+	private boolean primaries;
 	
 	
 	public ProductImageDTO() {
 	}
 
-	public ProductImageDTO(long product_image_id, String name, String url) {
+	public ProductImageDTO(long product_image_id, String name, String url, String productId, boolean primaries) {
 		super();
 		this.product_image_id = product_image_id;
 		this.name = name;
 		this.url = url;
+		this.productId= productId;
+		this.primaries= primaries;
 	}
 
 	public long getProduct_image_id() {
@@ -40,4 +44,16 @@ public class ProductImageDTO {
 		this.url = url;
 	}
 	
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	public String getProductId() {
+		return productId;
+	}
+	public void setPrimaries(boolean primaries) {
+		this.primaries = primaries;
+	}
+	public boolean isPrimaries() {
+		return primaries;
+	}
 }

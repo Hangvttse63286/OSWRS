@@ -37,10 +37,18 @@ public class ProductSKUControllerUser {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	@RequestMapping(value = "/getProductBySKUId/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getProductBySKUId(@PathVariable(name = "id") Long id) {
-		if(productSKUService.getProductSkuById(id) != null)
-			return new ResponseEntity<>(productSKUService.getProductSkuById(id), HttpStatus.OK);
+	@RequestMapping(value = "/getSkuById/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getSkuById(@PathVariable(name = "id") Long id) {
+		if(productSKUService.getSkuById(id) != null) {
+			return new ResponseEntity<>(productSKUService.getSkuById(id), HttpStatus.OK);
+		}
+		else
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+	@RequestMapping(value = "/getSKUByProductId/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getSKUByProductId(@PathVariable(name = "id") String id) {
+		if(productSKUService.getSKUByProductId(id) != null)
+			return new ResponseEntity<>(productSKUService.getSKUByProductId(id), HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

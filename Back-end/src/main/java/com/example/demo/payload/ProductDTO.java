@@ -10,12 +10,13 @@ public class ProductDTO {
 	private String description_details;
 	private String search_word;
 	private long discount_id;
+	private float price;
 	
 	public ProductDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProductDTO(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word ) {
+	public ProductDTO(String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, float price ) {
 		this.product_id= product_id;
 		this.description_details= description_details;
 		this.description_list= description_list;
@@ -23,8 +24,15 @@ public class ProductDTO {
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
 		this.search_word= search_word;
+		this.price= price;
 	}
 
+	public void setPrice(float price) {
+		this.price = price;
+	}
+	public float getPrice() {
+		return price;
+	}
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
 	}

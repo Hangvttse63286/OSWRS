@@ -18,11 +18,13 @@ import com.example.demo.entity.Products;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.payload.CategoryDTO;
+import com.example.demo.payload.ProductCreateDTO;
 import com.example.demo.payload.ProductDTO;
 import com.example.demo.payload.ProductImageDTO;
 import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.payload.ProductSkuDTO;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.ProductImageRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ProductSKURepository;
 
@@ -60,11 +62,12 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setDescription_details(product.getDescription_details());
 			productDTO.setSearch_word(product.getSearch_word());
 			productDTO.setDiscount_id(product.getDiscount_id());
-			
+			productDTO.setPrice(product.getPrice());
 			productDTOList.add(productDTO);
 		}
 		return productDTOList;
 	}
+	
 	
 	// get product by id [user]->ok
 	@Override
@@ -75,7 +78,15 @@ public class ProductServiceImp implements ProductService{
 		List<ProductIncludeSkuDTO> productDTOList= new ArrayList<ProductIncludeSkuDTO>();
 
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
-
+		List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
+		for(Product_Image p: products.getProduct_Image()) {
+			ProductImageDTO pDto= new ProductImageDTO();
+			pDto.setName(p.getName());
+			pDto.setProduct_image_id(p.getProduct_image_id());
+			pDto.setUrl(p.getUrl());
+			pList.add(pDto);
+		}
+		productIncludeSkuDTO.setProductImage(pList);
 		productIncludeSkuDTO.setProduct_id(products.getProduct_id());
 		productIncludeSkuDTO.setProduct_status_id(products.getProduct_status_id());
 		productIncludeSkuDTO.setProduct_name(products.getProduct_name());
@@ -83,13 +94,13 @@ public class ProductServiceImp implements ProductService{
 		productIncludeSkuDTO.setDescription_details(products.getDescription_details());
 		productIncludeSkuDTO.setSearch_word(products.getSearch_word());
 		productIncludeSkuDTO.setDiscount_id(products.getDiscount_id());
+		productIncludeSkuDTO.setPrice(products.getPrice());
 		for(Product_SKU pSKU: products.getProductSKUs()) {		
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 			productSkuDTO.setId(pSKU.getId());
 			productSkuDTO.setStock(pSKU.getStock());
 			productSkuDTO.setSale_limit(pSKU.getSale_limit());
 			productSkuDTO.setSize(pSKU.getSize());
-			productSkuDTO.setPrice(pSKU.getPrice());
 			productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
 			
 			productSkuDTOList.add(productSkuDTO);
@@ -126,58 +137,65 @@ public class ProductServiceImp implements ProductService{
 //		
 //	}
 	
-	//Create product(category+sku) - Admin
-		@Override
-		public Products createProductAll(ProductListDTO productRequest) {
-			 
-			Set<Product_Image> productImageDTOList= new HashSet<>();
-			Product_Image productImage= new Product_Image();
-			
-			Set<Category> categoryList= new HashSet<Category>();
-			Category cate= new Category();
-			
-			Category category= categoryRepository.findByName(productRequest.getCategory().get(0).getCategory_name());
-			
-			List<Product_SKU> product_SKU_List= new ArrayList<Product_SKU>();
-			Product_SKU product_SKU= new Product_SKU();
-			
-			Products products= new Products();
+	//Create product(category+image) - Admin
+	@Override
+	public Products createProductAll(ProductCreateDTO productRequest) {
+		Set<Product_Image> productImageList= new HashSet<>();
 
-			if(category == null) {
-				for(CategoryDTO c: productRequest.getCategory()) {
-					cate.setCategory_name(c.getCategory_name());
-					cate.setIs_deleted(c.isIs_deleted());
-					categoryList.add(cate);
-				}
-			}		
-			products.setCategories(categoryList);				
-			for(ProductImageDTO p: productRequest.getProductImage()) {
-				productImage.setName(p.getName());
-				productImage.setUrl("/product-images/" + products.getProduct_id() + p.getProduct_image_id());
-				productImageDTOList.add(productImage);
+		Set<Category> categoryList= new HashSet<Category>();
+		Category cate= new Category();
+		
+		Category category= categoryRepository.findByName(productRequest.getCategory().get(0).getCategory_name());
+		
+		List<Product_SKU> product_SKU_List= new ArrayList<Product_SKU>();
+		Product_SKU product_SKU= new Product_SKU();
+		
+		Products products= new Products();
+
+		if(category == null) {
+			for(CategoryDTO c: productRequest.getCategory()) {
+				cate.setCategory_name(c.getCategory_name());
+				cate.setIs_deleted(c.isIs_deleted());
+				categoryList.add(cate);
 			}
-			products.setProduct_Image(productImageDTOList);
-			products.setProduct_id(productRequest.getProduct_id());
-			products.setProduct_status_id(productRequest.getProduct_status_id());
-			products.setProduct_name(productRequest.getProduct_name());
-			products.setDescription_list(productRequest.getDescription_list());
-			products.setDescription_details(productRequest.getDescription_details());
-			products.setSearch_word(productRequest.getSearch_word());
-			products.setDiscount_id(productRequest.getDiscount_id());
-			for(ProductSkuDTO p: productRequest.getProductSKUs()) {
-				product_SKU.setId(p.getId());
-				product_SKU.setStock(p.getStock());
-				product_SKU.setSale_limit(p.getSale_limit());
-				product_SKU.setSize(p.getSize());
-				product_SKU.setPrice(p.getPrice());
-				product_SKU.setIs_deleted(p.isIs_deleted());
-				product_SKU_List.add(product_SKU);
-			}
-			products.setProductSKUs((Set<Product_SKU>) product_SKU_List);
-			
-			
-			return productRepository.save(products);		
+		}	
+		else {
+			categoryList.add(category);
 		}
+		products.setCategories(categoryList);				
+		for(ProductImageDTO p: productRequest.getProductImage()) {
+			Product_Image productImage= new Product_Image();
+			productImage.setName(p.getName());
+			productImage.setUrl(p.getUrl());
+			productImage.setProducts(productRepository.findById(productRequest.getProduct_id()).get());
+			productImageList.add(productImage);
+		}
+		products.setProduct_Image(productImageList);
+		products.setProduct_id(productRequest.getProduct_id());
+		products.setProduct_status_id(productRequest.getProduct_status_id());
+		products.setProduct_name(productRequest.getProduct_name());
+		products.setDescription_list(productRequest.getDescription_list());
+		products.setDescription_details(productRequest.getDescription_details());
+		products.setSearch_word(productRequest.getSearch_word());
+		products.setDiscount_id(productRequest.getDiscount_id());
+		products.setPrice(productRequest.getPrice());
+//		for(ProductSkuDTO p: productRequest.getProductSKUs()) {
+//			product_SKU.setId(p.getId());
+//			product_SKU.setStock(p.getStock());
+//			product_SKU.setSale_limit(p.getSale_limit());
+//			product_SKU.setSize(p.getSize());
+//			product_SKU.setIs_deleted(p.isIs_deleted());
+//			product_SKU_List.add(product_SKU);
+//		}
+//		
+//		Set<Product_SKU> product_SKUs = new HashSet<Product_SKU>();
+//		
+//		product_SKU_List.forEach(p -> { product_SKUs.add(p); });
+//		
+//		products.setProductSKUs(product_SKUs);
+		
+		return productRepository.save(products);		
+	}
 
 		@Override
 		public Products createProduct(ProductDTO productRequest) {
@@ -215,15 +233,24 @@ public class ProductServiceImp implements ProductService{
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
 		List<CategoryDTO> categoryDTOList= new ArrayList<CategoryDTO>();
 
+		List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
+		
 		CategoryDTO categoryDTO= new CategoryDTO();
 		for(Category c: products.getCategories()) {
 			categoryDTO.setId(c.getId());
 			categoryDTO.setCategory_name(c.getCategory_name());
 			categoryDTO.setIs_deleted(c.isIs_deleted());
-
+			categoryDTOList.add(categoryDTO);
 		}
-		categoryDTOList.add(categoryDTO);
 		ProductListDTO.setCategory(categoryDTOList);
+		for(Product_Image p: products.getProduct_Image()) {
+			ProductImageDTO pDto= new ProductImageDTO();
+			pDto.setName(p.getName());
+			pDto.setProduct_image_id(p.getProduct_image_id());
+			pDto.setUrl(p.getUrl());
+			pList.add(pDto);
+		}
+		ProductListDTO.setProductImage(pList);
 		ProductListDTO.setProduct_id(products.getProduct_id());
 		ProductListDTO.setProduct_status_id(products.getProduct_status_id());
 		ProductListDTO.setProduct_name(products.getProduct_name());
@@ -231,15 +258,14 @@ public class ProductServiceImp implements ProductService{
 		ProductListDTO.setDescription_details(products.getDescription_details());
 		ProductListDTO.setSearch_word(products.getSearch_word());
 		ProductListDTO.setDiscount_id(products.getDiscount_id());
+		ProductListDTO.setPrice(products.getPrice());
 		for(Product_SKU pSKU: products.getProductSKUs()) {		
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 			productSkuDTO.setId(pSKU.getId());
 			productSkuDTO.setStock(pSKU.getStock());
 			productSkuDTO.setSale_limit(pSKU.getSale_limit());
 			productSkuDTO.setSize(pSKU.getSize());
-			productSkuDTO.setPrice(pSKU.getPrice());
 			productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
-			
 			productSkuDTOList.add(productSkuDTO);
 		}
 		ProductListDTO.setProductSKUs(productSkuDTOList);
@@ -295,16 +321,16 @@ public class ProductServiceImp implements ProductService{
 	}
 
 
-	@Override
-	public List<Products> listProductBySKUId(Long id) {
-		List<Products> resultOptional= productRepository.findByProductSKUsId(id); 
-		if(resultOptional.isEmpty()) {
-			throw new NullPointerException("Error: No object found.");
-		}
-		else {
-			return resultOptional;
-		}
-	}
+//	@Override
+//	public List<Products> listProductBySKUId(Long id) {
+//		List<Products> resultOptional= productRepository.findByProductSKUsId(id); 
+//		if(resultOptional.isEmpty()) {
+//			throw new NullPointerException("Error: No object found.");
+//		}
+//		else {
+//			return resultOptional;
+//		}
+//	}
 
 	@Override
 	public List<ProductIncludeImageDTO> listAllProductIncludeImage() {
@@ -326,19 +352,30 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setDescription_details(product.getDescription_details());
 			productDTO.setSearch_word(product.getSearch_word());
 			productDTO.setDiscount_id(product.getDiscount_id());
-			
+			productDTO.setPrice(product.getPrice());			
 			for(Product_Image p: product.getProduct_Image()) {
 				ProductImageDTO pDto= new ProductImageDTO();
-				pDto.setName(p.getName());
-				pDto.setProduct_image_id(p.getProduct_image_id());
-				pDto.setUrl(p.getUrl());
-				pList.add(pDto);
+				if(p.isPrimary() == true) {
+					pDto.setName(p.getName());
+					pDto.setProduct_image_id(p.getProduct_image_id());
+					pDto.setUrl(p.getUrl());
+					pList.add(pDto);
+				}
 			}
 			productDTO.setProductImage(pList);
 			productList.add(productDTO);
 		}
 		return productList;
 	}
+
+	@Override
+	public List<Products> listProductBySKUId(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 
 
 

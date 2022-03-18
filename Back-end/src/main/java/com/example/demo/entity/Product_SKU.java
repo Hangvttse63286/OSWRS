@@ -25,12 +25,10 @@ public class Product_SKU {
 	private int stock;
 	private int sale_limit;
 	private String size;
-	private float price;
 	private boolean is_deleted;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
-	@OnDelete(action = OnDeleteAction.CASCADE)
     private Products products;
 
 
@@ -38,12 +36,11 @@ public class Product_SKU {
 	public Product_SKU() {
 	}
 
-	public Product_SKU(long id, int stock, int sale_limit, String size, float price, boolean is_deleted, Products products) {
+	public Product_SKU(long id, int stock, int sale_limit, String size, boolean is_deleted, Products products) {
 		this.id= id;
 		this.stock= stock;
 		this.sale_limit= sale_limit;
 		this.size= size;
-		this.price= price;
 		this.is_deleted= is_deleted;
 		this.products= products;
 	}
@@ -78,14 +75,6 @@ public class Product_SKU {
 
 	public void setSize(String size) {
 		this.size = size;
-	}
-
-	public float getPrice() {
-		return price;
-	}
-
-	public void setPrice(float price) {
-		this.price = price;
 	}
 
 	public boolean isIs_deleted() {

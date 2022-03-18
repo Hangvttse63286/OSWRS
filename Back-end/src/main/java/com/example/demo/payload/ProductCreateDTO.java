@@ -2,7 +2,7 @@ package com.example.demo.payload;
 
 import java.util.List;
 
-public class ProductListDTO {
+public class ProductCreateDTO {
 	private List<CategoryDTO> category;
 	private List<ProductImageDTO> productImage;
 	private String product_id;
@@ -13,13 +13,12 @@ public class ProductListDTO {
 	private String search_word;
 	private long discount_id;
 	private float price;
-	private List<ProductSkuDTO> productSKUs;
 	
-	public ProductListDTO() {
+	public ProductCreateDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProductListDTO(List<CategoryDTO> category, List<ProductImageDTO> productImage, String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
+	public ProductCreateDTO(List<CategoryDTO> category, List<ProductImageDTO> productImage, String product_id, String description_details, String description_list,  long discount_id, String product_name, String product_status_id, String search_word, float price) {
 		this.category= category;
 		this.productImage= productImage;
 		this.product_id= product_id;
@@ -30,7 +29,6 @@ public class ProductListDTO {
 		this.product_status_id= product_status_id;
 		this.search_word= search_word;
 		this.price= price;
-		this.productSKUs= product_SKUs;
 	}
 	public void setPrice(float price) {
 		this.price = price;
@@ -51,14 +49,6 @@ public class ProductListDTO {
 		return category;
 	}
 	
-	public void setProductSKUs(List<ProductSkuDTO> productSKUs) {
-		this.productSKUs = productSKUs;
-	}
-	
-	public List<ProductSkuDTO> getProductSKUs() {
-		return productSKUs;
-	}
-
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
 	}

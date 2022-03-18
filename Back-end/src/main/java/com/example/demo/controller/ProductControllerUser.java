@@ -18,6 +18,7 @@ import com.example.demo.payload.CategoryDTO;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.payload.ProductSkuDTO;
+import com.example.demo.service.ProductImageService;
 import com.example.demo.service.ProductService;
 
 @RestController
@@ -28,6 +29,7 @@ public class ProductControllerUser {
 	private ModelMapper modelMapper;
 	
 	private final ProductService productService;
+
 	
 	public ProductControllerUser(ProductService productService) {
 		super();
@@ -39,6 +41,15 @@ public class ProductControllerUser {
 	public ResponseEntity<?> listAllProducts(){
 		if(productService.listAllProducts() != null)
 			return new ResponseEntity<>(productService.listAllProducts(), HttpStatus.OK);
+		else
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+	
+	//ok
+	@RequestMapping(value = "/listAllProductIncludeImage", method = RequestMethod.GET)
+	public ResponseEntity<?> listAllProductIncludeImage(){
+		if(productService.listAllProducts() != null)
+			return new ResponseEntity<>(productService.listAllProductIncludeImage(), HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -60,5 +71,6 @@ public class ProductControllerUser {
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
+
 
 }
