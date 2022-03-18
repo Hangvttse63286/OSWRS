@@ -53,7 +53,7 @@ public class RecommendationService {
 	}
 
 	public List<ProductRecommendationResponse> getMostSoldProducts () {
-		List<Products> productList = productRepository.findTop10ByProduct_status_idBySoldDesc("instock");
+		List<Products> productList = productRepository.findAllByOrderBySoldDesc();
 		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
 		for (Products product : productList) {
 			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
@@ -67,6 +67,8 @@ public class RecommendationService {
 					productResponse.setImageUrl(image.getUrl());
 			}
 			productResponseList.add(productResponse);
+			if (productResponseList.size() == 10)
+				break;
 		}
 		return productResponseList;
 	}
@@ -92,7 +94,7 @@ public class RecommendationService {
 		if (username.isEmpty() || orderRepository.findByUser(userRepository.findByUsername(username).get()).isEmpty())
 			return null;
 		User user = userRepository.findByUsername(username).get();
-		List<Order> orderList = orderRepository.findByUserByOrderDateDesc(user);
+		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(user);
 		Map<Products, String> productMap = new HashMap<>();
 		for (Order order : orderList) {
 

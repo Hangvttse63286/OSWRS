@@ -23,5 +23,5 @@ public interface ProductRepository extends JpaRepository<Products, String>{
 	List<Products> findByCategoriesId(Long id);
 
 	List<Products> findByProductSKUsId(Long id);
-	List<Products> findTop10ByProduct_status_idBySoldDesc (String product_status_id);
+	List<Products> findAllByOrderBySoldDesc();
 }
