@@ -18,9 +18,10 @@ public interface ProductRepository extends JpaRepository<Products, String>{
 //	Boolean existsByProduct_name(String name);
 	List<Products> findAll();
 	//void deleteByProduct_id(String id);
-	
+
 	//@Query(value = "select * FROM products where categories.id = ?1" , nativeQuery = true)
 	List<Products> findByCategoriesId(Long id);
-	
+
 	List<Products> findByProductSKUsId(Long id);
+	List<Products> findTop10ByProduct_status_idBySoldDesc (String product_status_id);
 }

@@ -18,6 +18,7 @@ import com.example.demo.common.EPaymentStatus;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_SKU;
+import com.example.demo.entity.Products;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderItemDto;
 import com.example.demo.payload.OrderStatusDto;
@@ -28,6 +29,7 @@ import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VoucherRepository;
 import com.example.demo.repository.ProductSKURepository;
+import com.example.demo.repository.ProductRepository;
 
 @Service
 @Transactional
@@ -46,6 +48,9 @@ public class OrderService {
 
 	@Autowired
 	ProductSKURepository productSKURepository;
+
+	@Autowired
+	ProductRepository productRepository;
 
 	@Autowired
 	PaymentRepository paymentRepository;
@@ -204,6 +209,10 @@ public class OrderService {
 			OrderItem orderItem = new OrderItem();
 			orderItem.setOrder(orderRepository.findById(order.getId()).get());
 			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
+			if(order.getOrderStatus().equals(EOrderStatus.PROCCESSING.toString())) {
+				Products product = productSKU.getProducts();
+				product.setSold(product.getSold() + orderItemDto.getQuantity());
+			}
 			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
 			productSKURepository.save(productSKU);
 			orderItem.setProductSKU(productSKU);
@@ -240,6 +249,11 @@ public class OrderService {
 			break;
 		case "COMPLETED":
 			order.setOrderStatus(EOrderStatus.COMPLETED);
+			for (OrderItem orderItem : order.getOrderItems()) {
+				Products product = orderItem.getProductSKU().getProducts();
+				product.setSold(product.getSold() + orderItem.getQuantity());
+				productRepository.save(product);
+			}
 			break;
 		}
 		switch (orderStatusDto.getPaymentStatus()) {
