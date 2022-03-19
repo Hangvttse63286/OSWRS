@@ -61,7 +61,6 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setDescription_list(product.getDescription_list());
 			productDTO.setDescription_details(product.getDescription_details());
 			productDTO.setSearch_word(product.getSearch_word());
-			productDTO.setDiscount_id(product.getDiscount_id());
 			productDTO.setPrice(product.getPrice());
 			productDTOList.add(productDTO);
 		}
@@ -93,7 +92,6 @@ public class ProductServiceImp implements ProductService{
 		productIncludeSkuDTO.setDescription_list(products.getDescription_list());
 		productIncludeSkuDTO.setDescription_details(products.getDescription_details());
 		productIncludeSkuDTO.setSearch_word(products.getSearch_word());
-		productIncludeSkuDTO.setDiscount_id(products.getDiscount_id());
 		productIncludeSkuDTO.setPrice(products.getPrice());
 		for(Product_SKU pSKU: products.getProductSKUs()) {		
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
@@ -177,7 +175,6 @@ public class ProductServiceImp implements ProductService{
 		products.setDescription_list(productRequest.getDescription_list());
 		products.setDescription_details(productRequest.getDescription_details());
 		products.setSearch_word(productRequest.getSearch_word());
-		products.setDiscount_id(productRequest.getDiscount_id());
 		products.setPrice(productRequest.getPrice());
 //		for(ProductSkuDTO p: productRequest.getProductSKUs()) {
 //			product_SKU.setId(p.getId());
@@ -215,7 +212,6 @@ public class ProductServiceImp implements ProductService{
 					products.setDescription_list(productRequest.getDescription_list());
 					products.setDescription_details(productRequest.getDescription_details());
 					products.setSearch_word(productRequest.getSearch_word());
-					products.setDiscount_id(productRequest.getDiscount_id());
 				}
 			}
 			
@@ -257,7 +253,6 @@ public class ProductServiceImp implements ProductService{
 		ProductListDTO.setDescription_list(products.getDescription_list());
 		ProductListDTO.setDescription_details(products.getDescription_details());
 		ProductListDTO.setSearch_word(products.getSearch_word());
-		ProductListDTO.setDiscount_id(products.getDiscount_id());
 		ProductListDTO.setPrice(products.getPrice());
 		for(Product_SKU pSKU: products.getProductSKUs()) {		
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
@@ -286,7 +281,6 @@ public class ProductServiceImp implements ProductService{
 			
 		products.setDescription_details(productRequest.getDescription_details());
 		products.setDescription_list(productRequest.getDescription_list());
-		products.setDiscount_id(productRequest.getDiscount_id());
 		products.setProduct_name(productRequest.getProduct_name());
 		products.setProduct_status_id(productRequest.getProduct_status_id());
 		products.setSearch_word(productRequest.getSearch_word());
@@ -307,7 +301,6 @@ public class ProductServiceImp implements ProductService{
 		productDTO.setDescription_list(products.getDescription_list());
 		productDTO.setDescription_details(products.getDescription_details());
 		productDTO.setSearch_word(products.getSearch_word());
-		productDTO.setDiscount_id(products.getDiscount_id());	
 		
 		return productDTO;
 	}
@@ -351,7 +344,6 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setDescription_list(product.getDescription_list());
 			productDTO.setDescription_details(product.getDescription_details());
 			productDTO.setSearch_word(product.getSearch_word());
-			productDTO.setDiscount_id(product.getDiscount_id());
 			productDTO.setPrice(product.getPrice());			
 			for(Product_Image p: product.getProduct_Image()) {
 				ProductImageDTO pDto= new ProductImageDTO();

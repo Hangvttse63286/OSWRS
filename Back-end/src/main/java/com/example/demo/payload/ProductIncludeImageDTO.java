@@ -9,14 +9,13 @@ public class ProductIncludeImageDTO {
 	private String description_list;
 	private String description_details;
 	private String search_word;
-	private long discount_id;
 	private float price;
 	List<ProductImageDTO> productImage;
 	
 	public ProductIncludeImageDTO ( ) {}
 	
 	public ProductIncludeImageDTO(String product_id, String product_status_id, String product_name,
-			String description_list, String description_details, String search_word, long discount_id, float price,
+			String description_list, String description_details, String search_word, float price,
 			List<ProductImageDTO> productImage) {
 		this.product_id = product_id;
 		this.product_status_id = product_status_id;
@@ -24,7 +23,6 @@ public class ProductIncludeImageDTO {
 		this.description_list = description_list;
 		this.description_details = description_details;
 		this.search_word = search_word;
-		this.discount_id = discount_id;
 		this.price= price;
 		this.productImage = productImage;
 	}
@@ -71,13 +69,6 @@ public class ProductIncludeImageDTO {
 	public void setSearch_word(String search_word) {
 		this.search_word = search_word;
 	}
-	public long getDiscount_id() {
-		return discount_id;
-	}
-	public void setDiscount_id(long discount_id) {
-		this.discount_id = discount_id;
-	}
-
 	public List<ProductImageDTO> getProductImage() {
 		return productImage;
 	}
