@@ -116,7 +116,6 @@ public class CategoryServiceImp implements CategoryService{
 			productIncludeSkuDTO.setDescription_list(product.getDescription_list());
 			productIncludeSkuDTO.setDescription_details(product.getDescription_details());
 			productIncludeSkuDTO.setSearch_word(product.getSearch_word());
-			productIncludeSkuDTO.setDiscount_id(product.getDiscount_id());
 			productIncludeSkuDTO.setPrice(product.getPrice());
 			for(Product_SKU pSKU: product.getProductSKUs()) {
 				ProductSkuDTO productSkuDTO= new ProductSkuDTO();
