@@ -13,7 +13,7 @@ import com.example.demo.entity.User;
 
 public interface OrderRepository extends JpaRepository<Order, Long>{
 	List<Order> findByUser(User user);
-	List<Order> findByUserByOrderDateDesc(User user);
+	List<Order> findByUserOrderByOrderDateDesc(User user);
 	List<Order> findAll();
 	void deleteById(Long id);
 }

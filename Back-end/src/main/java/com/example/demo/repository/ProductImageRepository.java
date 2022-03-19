@@ -11,6 +11,6 @@ import com.example.demo.entity.Products;
 
 @Repository
 public interface ProductImageRepository extends JpaRepository<Product_Image, Long>{
-	List<Product_Image> findByProduct(Products product);
+	List<Product_Image> findByProducts(Products product);
 	Optional<Product_Image> findByUrl(String url);
 }
