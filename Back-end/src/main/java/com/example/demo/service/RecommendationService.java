@@ -37,9 +37,6 @@ public class RecommendationService {
 	@Autowired
 	UserRepository userRepository;
 
-	@Autowired
-	ReviewRepository reviewRepository;
-
 	public List<String> getAllImage() {
 		List<Product_Image> imageList = productImageRepository.findAll();
 		if (imageList.isEmpty())
