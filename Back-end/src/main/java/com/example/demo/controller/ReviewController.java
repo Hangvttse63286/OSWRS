@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ public class ReviewController {
 	ReviewService reviewService;
 
 	@PostMapping("/create")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> createReview(@RequestBody ReviewRequest reviewRequest) {
 		ReviewDto reviewDto = reviewService.createReview(reviewRequest);
 		return new ResponseEntity<>(reviewDto, HttpStatus.OK);

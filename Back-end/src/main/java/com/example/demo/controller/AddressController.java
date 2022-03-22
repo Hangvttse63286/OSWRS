@@ -27,19 +27,19 @@ import com.example.demo.service.UserDetailsImpl;
 public class AddressController {
 	@Autowired
     private AddressService addressService;
-	
+
 	@GetMapping("/")
 	@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAddressList() {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		
+
     	    return new ResponseEntity<>(addressService.getAddressList(userDetails.getUsername()), HttpStatus.OK);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
-	
+
 	@PostMapping("/create")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createAddress(@RequestBody AddressDto createAddressDto) {
@@ -50,19 +50,19 @@ public class AddressController {
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
-	
+
 	@GetMapping("/update/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getUpdateAddress(@PathVariable Long id) {
     	return new ResponseEntity<>(addressService.getAddressById(id), HttpStatus.OK);
     }
-	
+
 	@PutMapping("/update/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody AddressDto updateAddressDto) {
     	return new ResponseEntity<>(addressService.updateAddress(id, updateAddressDto), HttpStatus.OK);
     }
-	
+
 	@DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
