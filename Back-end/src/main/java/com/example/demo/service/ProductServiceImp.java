@@ -55,7 +55,7 @@ public class ProductServiceImp implements ProductService{
 
 		for(Product product: productRepository.findAll()) {
 			ProductDTO productDTO= new ProductDTO();
-			productDTO.setProduct_id(product.getProduct_id());
+			productDTO.setProduct_id(product.getId());
 			productDTO.setProduct_status_id(product.getProduct_status_id());
 			productDTO.setProduct_name(product.getProduct_name());
 			productDTO.setDescription_list(product.getDescription_list());
@@ -86,7 +86,7 @@ public class ProductServiceImp implements ProductService{
 			pList.add(pDto);
 		}
 		productIncludeSkuDTO.setProductImage(pList);
-		productIncludeSkuDTO.setProduct_id(products.getProduct_id());
+		productIncludeSkuDTO.setProduct_id(products.getId());
 		productIncludeSkuDTO.setProduct_status_id(products.getProduct_status_id());
 		productIncludeSkuDTO.setProduct_name(products.getProduct_name());
 		productIncludeSkuDTO.setDescription_list(products.getDescription_list());
@@ -165,11 +165,11 @@ public class ProductServiceImp implements ProductService{
 			Product_Image productImage= new Product_Image();
 			productImage.setName(p.getName());
 			productImage.setUrl(p.getUrl());
-			productImage.setProducts(productRepository.findById(productRequest.getProduct_id()).get());
+			productImage.setProduct(productRepository.findById(productRequest.getProduct_id()).get());
 			productImageList.add(productImage);
 		}
 		products.setProduct_Image(productImageList);
-		products.setProduct_id(productRequest.getProduct_id());
+		products.setId(productRequest.getProduct_id());
 		products.setProduct_status_id(productRequest.getProduct_status_id());
 		products.setProduct_name(productRequest.getProduct_name());
 		products.setDescription_list(productRequest.getDescription_list());
@@ -202,11 +202,11 @@ public class ProductServiceImp implements ProductService{
 			Product products= new Product();
 
 			for(Product p: productList) {
-				if(productRequest.getProduct_id() == p.getProduct_id()) {
+				if(productRequest.getProduct_id() == p.getId()) {
 					return null;
 				}
 				else {
-					products.setProduct_id(productRequest.getProduct_id());
+					products.setId(productRequest.getProduct_id());
 					products.setProduct_status_id(productRequest.getProduct_status_id());
 					products.setProduct_name(productRequest.getProduct_name());
 					products.setDescription_list(productRequest.getDescription_list());
@@ -247,7 +247,7 @@ public class ProductServiceImp implements ProductService{
 			pList.add(pDto);
 		}
 		ProductListDTO.setProductImage(pList);
-		ProductListDTO.setProduct_id(products.getProduct_id());
+		ProductListDTO.setProduct_id(products.getId());
 		ProductListDTO.setProduct_status_id(products.getProduct_status_id());
 		ProductListDTO.setProduct_name(products.getProduct_name());
 		ProductListDTO.setDescription_list(products.getDescription_list());
@@ -295,7 +295,7 @@ public class ProductServiceImp implements ProductService{
 
 		ProductDTO productDTO= new ProductDTO();
 
-		productDTO.setProduct_id(products.getProduct_id());
+		productDTO.setProduct_id(products.getId());
 		productDTO.setProduct_status_id(products.getProduct_status_id());
 		productDTO.setProduct_name(products.getProduct_name());
 		productDTO.setDescription_list(products.getDescription_list());
@@ -338,7 +338,7 @@ public class ProductServiceImp implements ProductService{
 
 			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
 			ProductIncludeImageDTO productDTO= new ProductIncludeImageDTO();
-			productDTO.setProduct_id(product.getProduct_id());
+			productDTO.setProduct_id(product.getId());
 			productDTO.setProduct_status_id(product.getProduct_status_id());
 			productDTO.setProduct_name(product.getProduct_name());
 			productDTO.setDescription_list(product.getDescription_list());

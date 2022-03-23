@@ -29,34 +29,34 @@ public class Product_Image {
     private long product_image_id;
 	private String name;
 	private String url;
-	private boolean primaries;
-	
+	private boolean primary;
+
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="product_id") 
+    @JoinColumn(name="product_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Product products;
-	
-	
-	public Product_Image(long product_image_id, String name, String url, boolean primary, Product products) {
+	private Product product;
+
+
+	public Product_Image(long product_image_id, String name, String url, boolean primary, Product product) {
 		super();
 		this.product_image_id = product_image_id;
 		this.name = name;
 		this.url = url;
-		this.primaries = primary;
-		this.products = products;
+		this.primary = primary;
+		this.product = product;
 	}
-	
+
 	public Product_Image() {
 	}
 
-	public Product getProducts() {
-		return products;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setProducts(Product products) {
-		this.products = products;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -76,12 +76,12 @@ public class Product_Image {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 	public void setPrimary(boolean primary) {
-		this.primaries = primary;
+		this.primary = primary;
 	}
-	
+
 	 public boolean isPrimary() {
-		return primaries;
+		return primary;
 	}
 }

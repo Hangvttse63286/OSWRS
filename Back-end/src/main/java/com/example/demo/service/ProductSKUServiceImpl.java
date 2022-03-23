@@ -112,7 +112,7 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 		product_SKU.setSale_limit(productRequest.getSale_limit());
 		product_SKU.setSize(productRequest.getSize());
 		product_SKU.setIs_deleted(productRequest.isIs_deleted());
-		product_SKU.setProducts(productRepository.findById(products.getProduct_id()).get());
+		product_SKU.setProduct(productRepository.findById(products.getId()).get());
 		product_SKU_List.add(product_SKU);
 		products.setProductSKUs(product_SKU_List);
 

@@ -210,7 +210,7 @@ public class OrderService {
 			orderItem.setOrder(orderRepository.findById(order.getId()).get());
 			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
 			if(order.getOrderStatus().equals(EOrderStatus.PROCCESSING.toString())) {
-				Product product = productSKU.getProducts();
+				Product product = productSKU.getProduct();
 				product.setSold(product.getSold() + orderItemDto.getQuantity());
 			}
 			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
@@ -250,7 +250,7 @@ public class OrderService {
 		case "COMPLETED":
 			order.setOrderStatus(EOrderStatus.COMPLETED);
 			for (OrderItem orderItem : order.getOrderItems()) {
-				Product product = orderItem.getProductSKU().getProducts();
+				Product product = orderItem.getProductSKU().getProduct();
 				product.setSold(product.getSold() + orderItem.getQuantity());
 				productRepository.save(product);
 			}

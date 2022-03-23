@@ -53,7 +53,7 @@ public class ReviewService {
 
 	public List<ReviewDto> getReviewListByProductId(Long id) {
 		Product product = productRepository.getById(id);
-		List<Review> reviewList = reviewRepository.findByProducts(product);
+		List<Review> reviewList = reviewRepository.findByProduct(product);
 		if (reviewList.isEmpty())
 			return null;
 		List<ReviewDto> reviewDtoList = new ArrayList<>();
@@ -71,7 +71,7 @@ public class ReviewService {
 
 	public Double getAvgRatingByProduct(Long id) {
 		Product product = productRepository.getById(id);
-		List<Review> reviewList = reviewRepository.findByProducts(product);
+		List<Review> reviewList = reviewRepository.findByProduct(product);
 		if (reviewList.isEmpty())
 			return (double) 0;
 		Double avg = reviewList.stream().mapToDouble(o -> o.getNumberRating()).average().getAsDouble();
@@ -81,12 +81,12 @@ public class ReviewService {
 	public ReviewDto createReview (ReviewRequest reviewRequest) {
 		Order order = orderRepository.findById(reviewRequest.getOrderId()).get();
 		User user = order.getUser();
-		Product product = productSKURepository.findById(reviewRequest.getProductSKUId()).get().getProducts();
+		Product product = productSKURepository.findById(reviewRequest.getProductSKUId()).get().getProduct();
 
 		Review review = new Review();
 		review.setOrder(order);
 		review.setUser(user);
-		review.setProducts(product);
+		review.setProduct(product);
 		review.setNumberRating(reviewRequest.getNumberRating());
 		review.setDescription(reviewRequest.getDescription());
 		reviewRepository.saveAndFlush(review);

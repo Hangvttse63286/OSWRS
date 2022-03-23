@@ -10,5 +10,5 @@ import com.example.demo.entity.Product;
 import com.example.demo.entity.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>{
-	List<Review> findByProducts(Product product);
+	List<Review> findByProduct(Product product);
 }

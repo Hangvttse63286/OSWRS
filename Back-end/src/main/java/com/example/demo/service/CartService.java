@@ -47,11 +47,11 @@ public class CartService {
 		cartItemResponse.setId(id);
 		cartItemResponse.setCartId(cartItem.getCart().getId());
 		cartItemResponse.setProductSKUId(cartItem.getProductSKU().getId());
-		cartItemResponse.setProductSKUName(cartItem.getProductSKU().getProducts().getProduct_name() + ", Size: " + cartItem.getProductSKU().getSize());
+		cartItemResponse.setProductSKUName(cartItem.getProductSKU().getProduct().getProduct_name() + ", Size: " + cartItem.getProductSKU().getSize());
 		cartItemResponse.setQuantity(cartItem.getQuantity());
 		cartItemResponse.setPrice(cartItem.getPrice());
 		cartItemResponse.setStock(cartItem.getQuantity() >= cartItem.getProductSKU().getStock() ? true : false);
-		cartItemResponse.setImageUrl(getPrimaryImageUrl(cartItem.getProductSKU().getProducts()));
+		cartItemResponse.setImageUrl(getPrimaryImageUrl(cartItem.getProductSKU().getProduct()));
 
 		return cartItemResponse;
 	}
@@ -69,11 +69,11 @@ public class CartService {
 			cartItemResponse.setId(cartItem.getId());
 			cartItemResponse.setCartId(cartItem.getCart().getId());
 			cartItemResponse.setProductSKUId(cartItem.getProductSKU().getId());
-			cartItemResponse.setProductSKUName(cartItem.getProductSKU().getProducts().getProduct_name() + ", Size: " + cartItem.getProductSKU().getSize());
+			cartItemResponse.setProductSKUName(cartItem.getProductSKU().getProduct().getProduct_name() + ", Size: " + cartItem.getProductSKU().getSize());
 			cartItemResponse.setQuantity(cartItem.getQuantity());
 			cartItemResponse.setPrice(cartItem.getPrice());
 			cartItemResponse.setStock(cartItem.getQuantity() > cartItem.getProductSKU().getStock() ? true : false);
-			cartItemResponse.setImageUrl(getPrimaryImageUrl(cartItem.getProductSKU().getProducts()));
+			cartItemResponse.setImageUrl(getPrimaryImageUrl(cartItem.getProductSKU().getProduct()));
 			cartItemList.add(cartItemResponse);
 		}
 		return cartItemList;

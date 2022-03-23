@@ -23,11 +23,11 @@ import com.example.demo.repository.ProductSKURepository;
 
 @Service
 public class CategoryServiceImp implements CategoryService{
-	
+
 	private final ProductSKURepository productSKURepository;
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;
-	
+
 	public CategoryServiceImp(ProductRepository productRepository, CategoryRepository categoryRepository, ProductSKURepository productSKURepository) {
 		super();
 		this.productRepository= productRepository;
@@ -39,13 +39,13 @@ public class CategoryServiceImp implements CategoryService{
 	@Override
 	public CategoryDTO updateCategoryById(Long id, CategoryDTO categoryRequest) {
 		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		
+
 		category.setCategory_name(categoryRequest.getCategory_name());
 		category.setIs_deleted(categoryRequest.isIs_deleted());
 		categoryRepository.save(category);
 		return getCategoryById(id);
 	}
-	
+
 	@Override
 	public CategoryDTO getCategoryById(Long id) {
 		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
@@ -61,42 +61,42 @@ public class CategoryServiceImp implements CategoryService{
 		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		categoryRepository.delete(category);
 	}
-	
+
 	@Override
 	public List<CategoryDTO> listAllCategories() {
-		List<Category> resultOptional= categoryRepository.findAll(); 
+		List<Category> resultOptional= categoryRepository.findAll();
 		if(resultOptional.isEmpty()) {
 			throw new NullPointerException("Error: No object found.");
 		}
 		List<CategoryDTO> categoryDTOs= new ArrayList<CategoryDTO>();
 
-		
+
 		for(Category c: resultOptional) {
 			CategoryDTO categoryDTO= new CategoryDTO();
 			categoryDTO.setId(c.getId());
 			categoryDTO.setCategory_name(c.getCategory_name());
 			categoryDTO.setIs_deleted(c.isIs_deleted());
-			
+
 			categoryDTOs.add(categoryDTO);
 		}
 		return categoryDTOs;
 	}
-	
+
 
 	@Override
 	public List<ProductIncludeSkuDTO> listProductByCategoryId(Long id) {
 
-		List<Product> resultOptional= productRepository.findByCategoriesId(id); 
+		List<Product> resultOptional= productRepository.findByCategoriesId(id);
 		if(resultOptional.isEmpty()) {
 			throw new NullPointerException("Error: No object found.");
 		}
-		
-		
+
+
 		List<ProductIncludeSkuDTO> productDTOList= new ArrayList<ProductIncludeSkuDTO>();
-		
-		
+
+
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
-		
+
 		for(Product product: resultOptional) {
 			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
 			ProductIncludeSkuDTO productIncludeSkuDTO= new ProductIncludeSkuDTO();
@@ -110,7 +110,7 @@ public class CategoryServiceImp implements CategoryService{
 				}
 			}
 			productIncludeSkuDTO.setProductImage(pList);
-			productIncludeSkuDTO.setProduct_id(product.getProduct_id());
+			productIncludeSkuDTO.setProduct_id(product.getId());
 			productIncludeSkuDTO.setProduct_status_id(product.getProduct_status_id());
 			productIncludeSkuDTO.setProduct_name(product.getProduct_name());
 			productIncludeSkuDTO.setDescription_list(product.getDescription_list());
@@ -124,21 +124,21 @@ public class CategoryServiceImp implements CategoryService{
 				productSkuDTO.setSale_limit(pSKU.getSale_limit());
 				productSkuDTO.setSize(pSKU.getSize());
 				productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
-				
+
 				productSkuDTOList.add(productSkuDTO);
 			}
 			productIncludeSkuDTO.setProductSKUs(productSkuDTOList);
 			productDTOList.add(productIncludeSkuDTO);
 		}
 		return productDTOList;
-		
+
 	}
 
 	@Override
 	public Category createCategory(CategoryDTO categoryRequest) {
 		Category category= new Category();
 		Category category2= categoryRepository.findByName(categoryRequest.getCategory_name());
-		
+
 		if(category2 == null) {
 			category.setCategory_name(categoryRequest.getCategory_name());
 			category.setIs_deleted(categoryRequest.isIs_deleted());

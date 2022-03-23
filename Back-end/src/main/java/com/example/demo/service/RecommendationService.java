@@ -54,7 +54,7 @@ public class RecommendationService {
 		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
 		for (Product product : productList) {
 			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
-			productResponse.setProduct_id(product.getProduct_id());
+			productResponse.setProduct_id(product.getId());
 			productResponse.setProduct_name(product.getProduct_name());
 			productResponse.setProduct_status_id(product.getProduct_status_id());
 			productResponse.setPrice(product.getPrice());
@@ -74,9 +74,9 @@ public class RecommendationService {
 		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
 		for (String imageUrl : imageUrlList) {
 			Product_Image image = productImageRepository.findByUrl(imageUrl).get();
-			Product product = image.getProducts();
+			Product product = image.getProduct();
 			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
-			productResponse.setProduct_id(product.getProduct_id());
+			productResponse.setProduct_id(product.getId());
 			productResponse.setProduct_name(product.getProduct_name());
 			productResponse.setProduct_status_id(product.getProduct_status_id());
 			productResponse.setPrice(product.getPrice());
@@ -96,7 +96,7 @@ public class RecommendationService {
 		for (Order order : orderList) {
 
 			for (OrderItem orderItem : order.getOrderItems()) {
-				Product product = orderItem.getProductSKU().getProducts();
+				Product product = orderItem.getProductSKU().getProduct();
 				if (product.getProduct_status_id().equalsIgnoreCase("instock") && !productMap.containsKey(product)) {
 					Set<Product_Image> imageList = product.getProduct_Image();
 					for (Product_Image image : imageList) {

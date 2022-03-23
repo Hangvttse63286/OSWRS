@@ -32,7 +32,7 @@ public class Review {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="product_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Product products;
+	private Product product;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_id")
@@ -53,11 +53,11 @@ public class Review {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public Product getProducts() {
-		return products;
+	public Product getProduct() {
+		return product;
 	}
-	public void setProducts(Product products) {
-		this.products = products;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 	public Order getOrder() {
 		return order;

@@ -33,12 +33,12 @@ import lombok.Setter;
 @Getter
 @Data
 @Entity
-@Table(name = "products", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
+@Table(name = "products", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"})})
 public class Product {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long product_id;
+    private Long id;
 
 	private String product_status_id;
 	private String product_name;
@@ -48,31 +48,23 @@ public class Product {
 	private float price;
 	private int sold;
 
-//	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinTable(name = "product_categories",
-//        joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
+//        joinColumns = @JoinColumn(name = "id", referencedColumnName = "id"),
 //        inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
 //	private Set<Category> categories = new HashSet<>();
 
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade =
-        {
-                CascadeType.DETACH,
-                CascadeType.MERGE,
-                CascadeType.REFRESH,
-                CascadeType.PERSIST
-        },
-        targetEntity = Category.class)
-	@JsonManagedReference
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "product_categories",
-        joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"),
+        joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
 	private Collection<Category> categories = new ArrayList();
 
-	@OneToMany(mappedBy = "products", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Product_SKU> productSKUs= new HashSet<Product_SKU>();
 
-	@OneToMany(mappedBy = "products" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "product" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Product_Image> product_Image= new HashSet<Product_Image>();
 
 
@@ -80,8 +72,8 @@ public class Product {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Product(Long product_id, String description_details, String description_list, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
-		this.product_id= product_id;
+	public Product(Long id, String description_details, String description_list, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
+		this.id= id;
 		this.description_details= description_details;
 		this.description_list= description_list;
 		this.product_name= product_name;
@@ -122,8 +114,8 @@ public class Product {
 	public void setDescription_list(String description_list) {
 		this.description_list = description_list;
 	}
-	public void setProduct_id(Long product_id) {
-		this.product_id = product_id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public void setProduct_name(String product_name) {
 		this.product_name = product_name;
@@ -142,8 +134,8 @@ public class Product {
 	public String getDescription_list() {
 		return description_list;
 	}
-	public Long getProduct_id() {
-		return product_id;
+	public Long getId() {
+		return id;
 	}
 	public String getProduct_name() {
 		return product_name;
