@@ -51,7 +51,7 @@ public class ReviewService {
 		return reviewDto;
 	}
 
-	public List<ReviewDto> getReviewListByProductId(String id) {
+	public List<ReviewDto> getReviewListByProductId(Long id) {
 		Product product = productRepository.getById(id);
 		List<Review> reviewList = reviewRepository.findByProducts(product);
 		if (reviewList.isEmpty())
@@ -69,7 +69,7 @@ public class ReviewService {
 		return reviewDtoList;
 	}
 
-	public Double getAvgRatingByProduct(String id) {
+	public Double getAvgRatingByProduct(Long id) {
 		Product product = productRepository.getById(id);
 		List<Review> reviewList = reviewRepository.findByProducts(product);
 		if (reviewList.isEmpty())

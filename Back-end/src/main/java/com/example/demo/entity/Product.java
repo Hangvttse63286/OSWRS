@@ -37,7 +37,8 @@ import lombok.Setter;
 public class Product {
 
 	@Id
-    private String product_id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long product_id;
 
 	private String product_status_id;
 	private String product_name;
@@ -79,7 +80,7 @@ public class Product {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Product(String product_id, String description_details, String description_list, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
+	public Product(Long product_id, String description_details, String description_list, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
 		this.product_id= product_id;
 		this.description_details= description_details;
 		this.description_list= description_list;
@@ -121,7 +122,7 @@ public class Product {
 	public void setDescription_list(String description_list) {
 		this.description_list = description_list;
 	}
-	public void setProduct_id(String product_id) {
+	public void setProduct_id(Long product_id) {
 		this.product_id = product_id;
 	}
 	public void setProduct_name(String product_name) {
@@ -141,7 +142,7 @@ public class Product {
 	public String getDescription_list() {
 		return description_list;
 	}
-	public String getProduct_id() {
+	public Long getProduct_id() {
 		return product_id;
 	}
 	public String getProduct_name() {

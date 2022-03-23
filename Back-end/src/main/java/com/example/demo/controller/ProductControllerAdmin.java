@@ -62,7 +62,7 @@ public class ProductControllerAdmin {
 
 	//ok
 	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
-	public ResponseEntity<ProductListDTO> getProductById(@PathVariable(name = "id") String id) {
+	public ResponseEntity<ProductListDTO> getProductById(@PathVariable(name = "id") Long id) {
 		if(productService.getProductById(id) != null)
 			return new ResponseEntity<>(productService.getProductByIdAdmin(id), HttpStatus.OK);
 		else
@@ -71,7 +71,7 @@ public class ProductControllerAdmin {
 
 	//ok
 	@RequestMapping(value = "/deleteProductById/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteProductById(@PathVariable(name = "id") String id) {
+	public ResponseEntity<?> deleteProductById(@PathVariable(name = "id") Long id) {
 		if(productService.getProductById(id) != null) {
 			productService.deleteProduct(id);
 			return new ResponseEntity<>("Delete order successfully!", HttpStatus.OK);
@@ -82,7 +82,7 @@ public class ProductControllerAdmin {
 	}
 
 	@RequestMapping(value = "/updateProductById/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<ProductDTO> updateProductById(@PathVariable(name = "id") String id, @RequestBody ProductDTO productDTO) {
+	public ResponseEntity<ProductDTO> updateProductById(@PathVariable(name = "id") Long id, @RequestBody ProductDTO productDTO) {
 		if(productService.getProductById(id) != null) {
 			return new ResponseEntity<>(productService.updateProductById(id, productDTO), HttpStatus.OK);
 		}

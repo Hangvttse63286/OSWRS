@@ -33,7 +33,7 @@ public class ReviewController {
 	}
 
 	@GetMapping("/{product_id}")
-	public ResponseEntity<?> getReviews(@PathVariable String product_id) {
+	public ResponseEntity<?> getReviews(@PathVariable Long product_id) {
 		List<ReviewDto> reviewDtoList = reviewService.getReviewListByProductId(product_id);
 		if (!reviewDtoList.isEmpty())
 			return new ResponseEntity<>(reviewDtoList, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class ReviewController {
 	}
 
 	@GetMapping("/avg_rating/{product_id}")
-	public ResponseEntity<?> getAvgRating(@PathVariable String product_id) {
+	public ResponseEntity<?> getAvgRating(@PathVariable Long product_id) {
 		Double avgRating = reviewService.getAvgRatingByProduct(product_id);
 		if (avgRating != 0)
 			return new ResponseEntity<>(avgRating, HttpStatus.OK);

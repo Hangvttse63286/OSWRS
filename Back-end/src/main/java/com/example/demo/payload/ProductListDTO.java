@@ -5,7 +5,7 @@ import java.util.List;
 public class ProductListDTO {
 	private List<CategoryDTO> category;
 	private List<ProductImageDTO> productImage;
-	private String product_id;
+	private Long product_id;
 	private String product_status_id;
 	private String product_name;
 	private String description_list;
@@ -13,12 +13,12 @@ public class ProductListDTO {
 	private String search_word;
 	private float price;
 	private List<ProductSkuDTO> productSKUs;
-	
+
 	public ProductListDTO() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public ProductListDTO(List<CategoryDTO> category, List<ProductImageDTO> productImage, String product_id, String description_details, String description_list,  String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
+
+	public ProductListDTO(List<CategoryDTO> category, List<ProductImageDTO> productImage, Long product_id, String description_details, String description_list,  String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
 		this.category= category;
 		this.productImage= productImage;
 		this.product_id= product_id;
@@ -48,11 +48,11 @@ public class ProductListDTO {
 	public List<CategoryDTO> getCategory() {
 		return category;
 	}
-	
+
 	public void setProductSKUs(List<ProductSkuDTO> productSKUs) {
 		this.productSKUs = productSKUs;
 	}
-	
+
 	public List<ProductSkuDTO> getProductSKUs() {
 		return productSKUs;
 	}
@@ -63,7 +63,7 @@ public class ProductListDTO {
 	public void setDescription_list(String description_list) {
 		this.description_list = description_list;
 	}
-	public void setProduct_id(String product_id) {
+	public void setProduct_id(Long product_id) {
 		this.product_id = product_id;
 	}
 	public void setProduct_name(String product_name) {
@@ -73,14 +73,14 @@ public class ProductListDTO {
 	}public void setSearch_word(String search_word) {
 		this.search_word = search_word;
 	}
-	
+
 	public String getDescription_details() {
 		return description_details;
 	}
 	public String getDescription_list() {
 		return description_list;
 	}
-	public String getProduct_id() {
+	public Long getProduct_id() {
 		return product_id;
 	}
 	public String getProduct_name() {

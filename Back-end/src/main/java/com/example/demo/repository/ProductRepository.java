@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.Product;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String>{
+public interface ProductRepository extends JpaRepository<Product, Long>{
 //	Optional<Product> findByProduct_name(String name);
 //	Optional<Product> findBySearch_word(String word);
 //	Boolean existsByProduct_id(String id);

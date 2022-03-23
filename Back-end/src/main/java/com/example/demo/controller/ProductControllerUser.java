@@ -45,7 +45,7 @@ public class ProductControllerUser {
 
 	//ok
 	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
-	public ResponseEntity<ProductIncludeSkuDTO> getProductById(@PathVariable(name = "id") String id) {
+	public ResponseEntity<ProductIncludeSkuDTO> getProductById(@PathVariable(name = "id") Long id) {
 		if(productService.getProductById(id) != null)
 			return new ResponseEntity<ProductIncludeSkuDTO>(productService.getProductByIdUser(id), HttpStatus.OK);
 		else
@@ -54,7 +54,7 @@ public class ProductControllerUser {
 
 	//ok
 	@RequestMapping(value = "/getProductAllById/{id}", method = RequestMethod.GET)
-	public ResponseEntity<ProductListDTO> getProductByIdAll(@PathVariable(name = "id") String id) {
+	public ResponseEntity<ProductListDTO> getProductByIdAll(@PathVariable(name = "id") Long id) {
 		if(productService.getProductById(id) != null)
 			return new ResponseEntity<>(productService.getProductByIdAdmin(id), HttpStatus.OK);
 		else

@@ -14,12 +14,12 @@ public class ProductSkuDTO {
 	private int sale_limit;
 	private String size;
 	private boolean is_deleted;
-	private String product_id;
-	
-	public ProductSkuDTO() {	
+	private Long product_id;
+
+	public ProductSkuDTO() {
 	}
-	
-	public ProductSkuDTO(long id,  int stock, int sale_limit, String size, boolean is_deleted, String product_id) {	
+
+	public ProductSkuDTO(long id,  int stock, int sale_limit, String size, boolean is_deleted, Long product_id) {
 		this.id= id;
 		this.stock= stock;
 		this.sale_limit= sale_limit;
@@ -28,17 +28,17 @@ public class ProductSkuDTO {
 		this.product_id= product_id;
 		//this.products= products;
 	}
-	
+
 //public void setProducts(Product products) {
 //	this.products = products;
 //}
 //public Product getProducts() {
 //	return products;
 //}
-	public void setProduct_id(String product_id) {
+	public void setProduct_id(Long product_id) {
 		this.product_id = product_id;
 	}
-	public String getProduct_id() {
+	public Long getProduct_id() {
 		return product_id;
 	}
 	public boolean isIs_deleted() {

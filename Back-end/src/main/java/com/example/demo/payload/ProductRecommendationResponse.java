@@ -1,15 +1,15 @@
 package com.example.demo.payload;
 
 public class ProductRecommendationResponse {
-	private String product_id;
+	private Long product_id;
 	private String product_status_id;
 	private String product_name;
 	private float price;
 	private String imageUrl;
-	public String getProduct_id() {
+	public Long getProduct_id() {
 		return product_id;
 	}
-	public void setProduct_id(String product_id) {
+	public void setProduct_id(Long product_id) {
 		this.product_id = product_id;
 	}
 	public String getProduct_status_id() {

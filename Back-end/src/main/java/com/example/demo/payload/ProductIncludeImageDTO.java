@@ -3,7 +3,7 @@ package com.example.demo.payload;
 import java.util.List;
 
 public class ProductIncludeImageDTO {
-	private String product_id;
+	private Long product_id;
 	private String product_status_id;
 	private String product_name;
 	private String description_list;
@@ -11,10 +11,10 @@ public class ProductIncludeImageDTO {
 	private String search_word;
 	private float price;
 	List<ProductImageDTO> productImage;
-	
+
 	public ProductIncludeImageDTO ( ) {}
-	
-	public ProductIncludeImageDTO(String product_id, String product_status_id, String product_name,
+
+	public ProductIncludeImageDTO(Long product_id, String product_status_id, String product_name,
 			String description_list, String description_details, String search_word, float price,
 			List<ProductImageDTO> productImage) {
 		this.product_id = product_id;
@@ -26,17 +26,17 @@ public class ProductIncludeImageDTO {
 		this.price= price;
 		this.productImage = productImage;
 	}
-	
+
 	public void setPrice(float price) {
 		this.price = price;
 	}
 	public float getPrice() {
 		return price;
 	}
-	public String getProduct_id() {
+	public Long getProduct_id() {
 		return product_id;
 	}
-	public void setProduct_id(String product_id) {
+	public void setProduct_id(Long product_id) {
 		this.product_id = product_id;
 	}
 	public String getProduct_status_id() {
@@ -75,6 +75,6 @@ public class ProductIncludeImageDTO {
 	public void setProductImage(List<ProductImageDTO> productImage) {
 		this.productImage = productImage;
 	}
-	
+
 
 }

@@ -36,7 +36,7 @@ public class ProductServiceImp implements ProductService{
 	private final ProductSKURepository productSKURepository;
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;
-	
+
 	public ProductServiceImp(ProductRepository productRepository, CategoryRepository categoryRepository, ProductSKURepository productSKURepository) {
 		super();
 		this.productRepository= productRepository;
@@ -49,10 +49,10 @@ public class ProductServiceImp implements ProductService{
 	public List<ProductDTO> listAllProducts() {
 		if(productRepository.findAll().isEmpty())
 			throw new NullPointerException("Error: No object found.");
-		
+
 		List<ProductDTO> productDTOList= new ArrayList<>();
 
-		
+
 		for(Product product: productRepository.findAll()) {
 			ProductDTO productDTO= new ProductDTO();
 			productDTO.setProduct_id(product.getProduct_id());
@@ -66,13 +66,13 @@ public class ProductServiceImp implements ProductService{
 		}
 		return productDTOList;
 	}
-	
-	
+
+
 	// get product by id [user]->ok
 	@Override
-	public ProductIncludeSkuDTO getProductByIdUser(String id) {
+	public ProductIncludeSkuDTO getProductByIdUser(Long id) {
 		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		
+
 		ProductIncludeSkuDTO productIncludeSkuDTO= new ProductIncludeSkuDTO();
 		List<ProductIncludeSkuDTO> productDTOList= new ArrayList<ProductIncludeSkuDTO>();
 
@@ -93,28 +93,28 @@ public class ProductServiceImp implements ProductService{
 		productIncludeSkuDTO.setDescription_details(products.getDescription_details());
 		productIncludeSkuDTO.setSearch_word(products.getSearch_word());
 		productIncludeSkuDTO.setPrice(products.getPrice());
-		for(Product_SKU pSKU: products.getProductSKUs()) {		
+		for(Product_SKU pSKU: products.getProductSKUs()) {
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 			productSkuDTO.setId(pSKU.getId());
 			productSkuDTO.setStock(pSKU.getStock());
 			productSkuDTO.setSale_limit(pSKU.getSale_limit());
 			productSkuDTO.setSize(pSKU.getSize());
 			productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
-			
+
 			productSkuDTOList.add(productSkuDTO);
 		}
 		productIncludeSkuDTO.setProductSKUs(productSkuDTOList);
 		return productIncludeSkuDTO;
 	}
-	
+
 	//Create product - Admin
 //	@Override
 //	public ProductIncludeImageDTO createProduct(ProductIncludeImageDTO productRequest) {
-//		
+//
 //		Set<Product_Image> productImageDTOList= new HashSet<>();
 //		Product_Image productImage= new Product_Image();
 //		Product products= new Product();
-//		
+//
 //		products.setProduct_id(productRequest.getProduct_id());
 //		products.setProduct_status_id(productRequest.getProduct_status_id());
 //		products.setProduct_name(productRequest.getProduct_name());
@@ -129,12 +129,12 @@ public class ProductServiceImp implements ProductService{
 //			productImageDTOList.add(productImage);
 //		}
 //		products.setProduct_Image(productImageDTOList);
-//		
-//		
+//
+//
 //		return productRepository.save(products);
-//		
+//
 //	}
-	
+
 	//Create product(category+image) - Admin
 	@Override
 	public Product createProductAll(ProductCreateDTO productRequest) {
@@ -142,12 +142,12 @@ public class ProductServiceImp implements ProductService{
 
 		Set<Category> categoryList= new HashSet<Category>();
 		Category cate= new Category();
-		
+
 		Category category= categoryRepository.findByName(productRequest.getCategory().get(0).getCategory_name());
-		
+
 		List<Product_SKU> product_SKU_List= new ArrayList<Product_SKU>();
 		Product_SKU product_SKU= new Product_SKU();
-		
+
 		Product products= new Product();
 
 		if(category == null) {
@@ -156,11 +156,11 @@ public class ProductServiceImp implements ProductService{
 				cate.setIs_deleted(c.isIs_deleted());
 				categoryList.add(cate);
 			}
-		}	
+		}
 		else {
 			categoryList.add(category);
 		}
-		products.setCategories(categoryList);				
+		products.setCategories(categoryList);
 		for(ProductImageDTO p: productRequest.getProductImage()) {
 			Product_Image productImage= new Product_Image();
 			productImage.setName(p.getName());
@@ -184,25 +184,25 @@ public class ProductServiceImp implements ProductService{
 //			product_SKU.setIs_deleted(p.isIs_deleted());
 //			product_SKU_List.add(product_SKU);
 //		}
-//		
+//
 //		Set<Product_SKU> product_SKUs = new HashSet<Product_SKU>();
-//		
+//
 //		product_SKU_List.forEach(p -> { product_SKUs.add(p); });
-//		
+//
 //		products.setProductSKUs(product_SKUs);
-		
-		return productRepository.save(products);		
+
+		return productRepository.save(products);
 	}
 
 		@Override
 		public Product createProduct(ProductDTO productRequest) {
 			List<Product> productList= productRepository.findAll();
 			Product_SKU product_SKU= new Product_SKU();
-			
-			Product products= new Product();			
+
+			Product products= new Product();
 
 			for(Product p: productList) {
-				if(productRequest.getProduct_id().equalsIgnoreCase(p.getProduct_id())) {
+				if(productRequest.getProduct_id() == p.getProduct_id()) {
 					return null;
 				}
 				else {
@@ -214,15 +214,15 @@ public class ProductServiceImp implements ProductService{
 					products.setSearch_word(productRequest.getSearch_word());
 				}
 			}
-			
-			return productRepository.save(products);		
+
+			return productRepository.save(products);
 		}
-		
+
 	// Get product by id [Admin]->ok
 	@Override
-	public ProductListDTO getProductByIdAdmin(String id) {
+	public ProductListDTO getProductByIdAdmin(Long id) {
 		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		
+
 		ProductListDTO ProductListDTO= new ProductListDTO();
 		List<ProductListDTO> productDTOList= new ArrayList<ProductListDTO>();
 
@@ -230,7 +230,7 @@ public class ProductServiceImp implements ProductService{
 		List<CategoryDTO> categoryDTOList= new ArrayList<CategoryDTO>();
 
 		List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
-		
+
 		CategoryDTO categoryDTO= new CategoryDTO();
 		for(Category c: products.getCategories()) {
 			categoryDTO.setId(c.getId());
@@ -254,7 +254,7 @@ public class ProductServiceImp implements ProductService{
 		ProductListDTO.setDescription_details(products.getDescription_details());
 		ProductListDTO.setSearch_word(products.getSearch_word());
 		ProductListDTO.setPrice(products.getPrice());
-		for(Product_SKU pSKU: products.getProductSKUs()) {		
+		for(Product_SKU pSKU: products.getProductSKUs()) {
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 			productSkuDTO.setId(pSKU.getId());
 			productSkuDTO.setStock(pSKU.getStock());
@@ -266,19 +266,19 @@ public class ProductServiceImp implements ProductService{
 		ProductListDTO.setProductSKUs(productSkuDTOList);
 		return ProductListDTO;
 	}
-		
+
 	//Delete PRoduct [Admin] - ok
 	@Override
-	public void deleteProduct(String id) {
+	public void deleteProduct(Long id) {
 		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		productRepository.delete(products);
 	}
 
 	//Update Product [Admin] - ok
 	@Override
-	public ProductDTO updateProductById(String id, ProductDTO productRequest) {
+	public ProductDTO updateProductById(Long id, ProductDTO productRequest) {
 		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-			
+
 		products.setDescription_details(productRequest.getDescription_details());
 		products.setDescription_list(productRequest.getDescription_list());
 		products.setProduct_name(productRequest.getProduct_name());
@@ -287,12 +287,12 @@ public class ProductServiceImp implements ProductService{
 		productRepository.save(products);
 		return getProductById(id);
 	}
-	
+
 	//ok
 	@Override
-	public ProductDTO getProductById(String id) {
+	public ProductDTO getProductById(Long id) {
 		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		
+
 		ProductDTO productDTO= new ProductDTO();
 
 		productDTO.setProduct_id(products.getProduct_id());
@@ -301,11 +301,11 @@ public class ProductServiceImp implements ProductService{
 		productDTO.setDescription_list(products.getDescription_list());
 		productDTO.setDescription_details(products.getDescription_details());
 		productDTO.setSearch_word(products.getSearch_word());
-		
+
 		return productDTO;
 	}
 
-	
+
 	//Delete Product-sku - Admin
 	@Override
 	public void deleteProductSku(Long id) {
@@ -316,7 +316,7 @@ public class ProductServiceImp implements ProductService{
 
 //	@Override
 //	public List<Product> listProductBySKUId(Long id) {
-//		List<Product> resultOptional= productRepository.findByProductSKUsId(id); 
+//		List<Product> resultOptional= productRepository.findByProductSKUsId(id);
 //		if(resultOptional.isEmpty()) {
 //			throw new NullPointerException("Error: No object found.");
 //		}
@@ -330,10 +330,10 @@ public class ProductServiceImp implements ProductService{
 		List<Product> products= productRepository.findAll();
 		if(products.isEmpty())
 			throw new NullPointerException("Error: No object found.");
-		
+
 		List<ProductIncludeImageDTO> productList= new ArrayList<>();
 
-				
+
 		for(Product product: productRepository.findAll()) {
 
 			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
@@ -344,7 +344,7 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setDescription_list(product.getDescription_list());
 			productDTO.setDescription_details(product.getDescription_details());
 			productDTO.setSearch_word(product.getSearch_word());
-			productDTO.setPrice(product.getPrice());			
+			productDTO.setPrice(product.getPrice());
 			for(Product_Image p: product.getProduct_Image()) {
 				ProductImageDTO pDto= new ProductImageDTO();
 				if(p.isPrimary() == true) {
@@ -374,5 +374,5 @@ public class ProductServiceImp implements ProductService{
 
 
 
-	
+
 }

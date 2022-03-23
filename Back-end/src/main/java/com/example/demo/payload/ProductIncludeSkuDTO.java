@@ -9,7 +9,7 @@ import com.example.demo.entity.Product_SKU;
 
 public class ProductIncludeSkuDTO {
 	List<ProductImageDTO> productImage;
-    private String product_id;
+    private Long product_id;
 	private String product_status_id;
 	private String product_name;
 	private String description_list;
@@ -17,12 +17,12 @@ public class ProductIncludeSkuDTO {
 	private String search_word;
 	private float price;
 	private List<ProductSkuDTO> productSKUs;
-	
+
 	public ProductIncludeSkuDTO() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public ProductIncludeSkuDTO(List<ProductImageDTO> productImage, String product_id, String description_details, String description_list, String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
+
+	public ProductIncludeSkuDTO(List<ProductImageDTO> productImage, Long product_id, String description_details, String description_list, String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
 		this.productImage= productImage;
 		this.product_id= product_id;
 		this.description_details= description_details;
@@ -33,7 +33,7 @@ public class ProductIncludeSkuDTO {
 		this.price= price;
 		this.productSKUs= product_SKUs;
 	}
-	
+
 	public void setProductImage(List<ProductImageDTO> productImage) {
 		this.productImage = productImage;
 	}
@@ -49,7 +49,7 @@ public class ProductIncludeSkuDTO {
 	public void setProductSKUs(List<ProductSkuDTO> productSKUs) {
 		this.productSKUs = productSKUs;
 	}
-	
+
 	public List<ProductSkuDTO> getProductSKUs() {
 		return productSKUs;
 	}
@@ -60,7 +60,7 @@ public class ProductIncludeSkuDTO {
 	public void setDescription_list(String description_list) {
 		this.description_list = description_list;
 	}
-	public void setProduct_id(String product_id) {
+	public void setProduct_id(Long product_id) {
 		this.product_id = product_id;
 	}
 	public void setProduct_name(String product_name) {
@@ -70,14 +70,14 @@ public class ProductIncludeSkuDTO {
 	}public void setSearch_word(String search_word) {
 		this.search_word = search_word;
 	}
-	
+
 	public String getDescription_details() {
 		return description_details;
 	}
 	public String getDescription_list() {
 		return description_list;
 	}
-	public String getProduct_id() {
+	public Long getProduct_id() {
 		return product_id;
 	}
 	public String getProduct_name() {

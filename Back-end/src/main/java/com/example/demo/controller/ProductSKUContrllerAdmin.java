@@ -63,7 +63,7 @@ public class ProductSKUContrllerAdmin {
 
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/createSKU/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> createSKU(@PathVariable(name = "id") String id, @RequestBody ProductSkuDTO PproductSkuDTO) {
+	public ResponseEntity<?> createSKU(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO PproductSkuDTO) {
 		if(productService.getProductById(id) != null) {
 			return new ResponseEntity<>(productSKUService.createProductSku(id, PproductSkuDTO), HttpStatus.OK);
 		}

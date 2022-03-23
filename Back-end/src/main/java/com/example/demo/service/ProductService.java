@@ -17,12 +17,12 @@ import com.example.demo.payload.ProductIncludeImageDTO;
 public interface ProductService {
 	//Product
 	List<ProductDTO> listAllProducts();
-	ProductDTO updateProductById(String id, ProductDTO products);
-	void deleteProduct(String id);
-	ProductIncludeSkuDTO getProductByIdUser(String id);
-	ProductListDTO getProductByIdAdmin(String id);
-	ProductDTO getProductById(String id);
-	
+	ProductDTO updateProductById(Long id, ProductDTO products);
+	void deleteProduct(Long id);
+	ProductIncludeSkuDTO getProductByIdUser(Long id);
+	ProductListDTO getProductByIdAdmin(Long id);
+	ProductDTO getProductById(Long id);
+
 	//Product_SKU
 	List<ProductIncludeImageDTO> listAllProductIncludeImage();
 	List<Product> listProductBySKUId(Long id);

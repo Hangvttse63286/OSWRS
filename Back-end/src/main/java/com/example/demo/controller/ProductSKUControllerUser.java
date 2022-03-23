@@ -46,7 +46,7 @@ public class ProductSKUControllerUser {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	@RequestMapping(value = "/getSKUByProductId/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getSKUByProductId(@PathVariable(name = "id") String id) {
+	public ResponseEntity<?> getSKUByProductId(@PathVariable(name = "id") Long id) {
 		if(productSKUService.getSKUByProductId(id) != null)
 			return new ResponseEntity<>(productSKUService.getSKUByProductId(id), HttpStatus.OK);
 		else
