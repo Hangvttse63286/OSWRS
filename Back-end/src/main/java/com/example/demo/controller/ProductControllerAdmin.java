@@ -28,7 +28,7 @@ import com.example.demo.service.ProductService;
 
 
 @RestController
-@RequestMapping("/api/product/admin/")
+@RequestMapping("/api/admin/product")
 public class ProductControllerAdmin {
 
 	@Autowired

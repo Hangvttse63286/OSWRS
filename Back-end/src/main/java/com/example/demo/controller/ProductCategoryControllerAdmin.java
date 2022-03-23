@@ -16,18 +16,18 @@ import com.example.demo.service.CategoryService;
 
 
 @RestController
-@RequestMapping("/api/category/admin/")
+@RequestMapping("/api/admin/category")
 public class ProductCategoryControllerAdmin {
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	private final CategoryService categoryService;
-	
+
 	public ProductCategoryControllerAdmin(CategoryService categoryService) {
 		super();
 		this.categoryService= categoryService;
 	}
-	
+
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
 		if(categoryService.listAllCategories() != null)
@@ -35,15 +35,15 @@ public class ProductCategoryControllerAdmin {
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@RequestMapping(value = "/getProductByCategoryId/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "id") Long id) {
-		if(categoryService.listProductByCategoryId(id) != null) 
+		if(categoryService.listProductByCategoryId(id) != null)
 			return new ResponseEntity<>(categoryService.listProductByCategoryId(id), HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/updateCategoryById/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<CategoryDTO> updateCategoryById(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
@@ -54,7 +54,7 @@ public class ProductCategoryControllerAdmin {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/createCategory", method = RequestMethod.POST)
 	public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO) {
@@ -64,7 +64,7 @@ public class ProductCategoryControllerAdmin {
 		else {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
-		
+
 	}
 
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")

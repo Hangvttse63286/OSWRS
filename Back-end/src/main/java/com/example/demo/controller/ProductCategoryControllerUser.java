@@ -18,19 +18,19 @@ import com.example.demo.service.CategoryService;
 import com.example.demo.service.ProductService;
 
 @RestController
-@RequestMapping("/api/category/user/")
+@RequestMapping("/api/category")
 public class ProductCategoryControllerUser {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	private final CategoryService categoryService;
-	
+
 	public ProductCategoryControllerUser(CategoryService categoryService) {
 		super();
 		this.categoryService= categoryService;
 	}
-	
+
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
 		if(categoryService.listAllCategories() != null)
@@ -38,10 +38,10 @@ public class ProductCategoryControllerUser {
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@RequestMapping(value = "/getProductByCategoryId/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "id") Long id) {
-		if(categoryService.listProductByCategoryId(id) != null) 
+		if(categoryService.listProductByCategoryId(id) != null)
 			return new ResponseEntity<>(categoryService.listProductByCategoryId(id), HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

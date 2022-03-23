@@ -20,15 +20,15 @@ import com.example.demo.service.ProductSKUService;
 import com.example.demo.service.ProductSKUServiceImpl;
 
 @RestController
-@RequestMapping("/api/productSKU/user/")
+@RequestMapping("/api/productSKU")
 public class ProductSKUControllerUser {
 	private final ProductSKUService productSKUService;
-	
+
 	public ProductSKUControllerUser(ProductSKUService productSKUService) {
 		super();
 		this.productSKUService= productSKUService;
 	}
-	
+
 	@RequestMapping(value = "/listProduct_SKU", method = RequestMethod.GET)
 	public ResponseEntity<?> listProductSKU() {
 		if(productSKUService.listAllProductSku() != null)
@@ -36,7 +36,7 @@ public class ProductSKUControllerUser {
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@RequestMapping(value = "/getSkuById/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getSkuById(@PathVariable(name = "id") Long id) {
 		if(productSKUService.getSkuById(id) != null) {

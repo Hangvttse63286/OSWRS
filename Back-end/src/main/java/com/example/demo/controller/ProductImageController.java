@@ -10,16 +10,16 @@ import com.example.demo.service.ProductImageService;
 import com.example.demo.service.ProductService;
 
 @RestController
-@RequestMapping("/api/product/")
+@RequestMapping("/api/product/img")
 public class ProductImageController {
-	
+
 	private final ProductImageService productImageService;
-	
+
 	public ProductImageController(ProductImageService productImageService) {
 		super();
 		this.productImageService= productImageService;
 	}
-	
+
 	@RequestMapping(value = "/listImage", method = RequestMethod.GET)
 	public ResponseEntity<?> listImage(){
 		if(productImageService.listImage() != null)

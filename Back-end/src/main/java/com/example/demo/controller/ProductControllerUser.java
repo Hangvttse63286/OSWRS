@@ -22,20 +22,17 @@ import com.example.demo.service.ProductImageService;
 import com.example.demo.service.ProductService;
 
 @RestController
-@RequestMapping("/api/product/user/")
+@RequestMapping("/api/product")
 public class ProductControllerUser {
 
-	@Autowired
-	private ModelMapper modelMapper;
-	
 	private final ProductService productService;
 
-	
+
 	public ProductControllerUser(ProductService productService) {
 		super();
 		this.productService= productService;
 	}
-	
+
 	//ok
 	@RequestMapping(value = "/listProduct", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProducts(){
@@ -44,7 +41,7 @@ public class ProductControllerUser {
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	//ok
 	@RequestMapping(value = "/listAllProductIncludeImage", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProductIncludeImage(){
@@ -53,20 +50,20 @@ public class ProductControllerUser {
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	//ok
 	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
 	public ResponseEntity<ProductIncludeSkuDTO> getProductById(@PathVariable(name = "id") String id) {
-		if(productService.getProductById(id) != null) 
+		if(productService.getProductById(id) != null)
 			return new ResponseEntity<ProductIncludeSkuDTO>(productService.getProductByIdUser(id), HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	//ok
 	@RequestMapping(value = "/getProductAllById/{id}", method = RequestMethod.GET)
 	public ResponseEntity<ProductListDTO> getProductByIdAll(@PathVariable(name = "id") String id) {
-		if(productService.getProductById(id) != null) 
+		if(productService.getProductById(id) != null)
 			return new ResponseEntity<>(productService.getProductByIdAdmin(id), HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
