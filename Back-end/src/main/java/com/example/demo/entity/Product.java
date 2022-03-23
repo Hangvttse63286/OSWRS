@@ -31,7 +31,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Data
 @Entity
 @Table(name = "products", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
 public class Product {
