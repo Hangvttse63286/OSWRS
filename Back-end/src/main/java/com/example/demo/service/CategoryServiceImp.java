@@ -12,7 +12,7 @@ import com.example.demo.common.ECategory;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.payload.CategoryDTO;
 import com.example.demo.payload.ProductImageDTO;
 import com.example.demo.payload.ProductIncludeSkuDTO;
@@ -86,7 +86,7 @@ public class CategoryServiceImp implements CategoryService{
 	@Override
 	public List<ProductIncludeSkuDTO> listProductByCategoryId(Long id) {
 
-		List<Products> resultOptional= productRepository.findByCategoriesId(id); 
+		List<Product> resultOptional= productRepository.findByCategoriesId(id); 
 		if(resultOptional.isEmpty()) {
 			throw new NullPointerException("Error: No object found.");
 		}
@@ -97,7 +97,7 @@ public class CategoryServiceImp implements CategoryService{
 		
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
 		
-		for(Products product: resultOptional) {
+		for(Product product: resultOptional) {
 			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
 			ProductIncludeSkuDTO productIncludeSkuDTO= new ProductIncludeSkuDTO();
 			for(Product_Image p: product.getProduct_Image()) {

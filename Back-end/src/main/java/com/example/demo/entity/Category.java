@@ -37,9 +37,9 @@ public class Category {
     private boolean is_deleted;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
-        targetEntity = Products.class)
+        targetEntity = Product.class)
     @JsonBackReference
-    private Collection<Products> products;
+    private Collection<Product> products;
     
     public Category() {
 

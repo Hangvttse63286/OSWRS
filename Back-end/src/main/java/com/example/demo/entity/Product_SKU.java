@@ -29,14 +29,14 @@ public class Product_SKU {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id")
-    private Products products;
+    private Product products;
 
 
 	//, referencedColumnName="product_id"
 	public Product_SKU() {
 	}
 
-	public Product_SKU(long id, int stock, int sale_limit, String size, boolean is_deleted, Products products) {
+	public Product_SKU(long id, int stock, int sale_limit, String size, boolean is_deleted, Product products) {
 		this.id= id;
 		this.stock= stock;
 		this.sale_limit= sale_limit;
@@ -85,11 +85,11 @@ public class Product_SKU {
 		this.is_deleted = is_deleted;
 	}
 
-	public Products getProducts() {
+	public Product getProducts() {
 		return products;
 	}
 
-	public void setProducts(Products products) {
+	public void setProducts(Product products) {
 		this.products = products;
 	}
 

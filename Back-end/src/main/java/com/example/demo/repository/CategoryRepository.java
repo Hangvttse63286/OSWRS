@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Category;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductDTO;
 
 @Repository

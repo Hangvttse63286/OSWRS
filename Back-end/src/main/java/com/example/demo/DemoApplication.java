@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.example.demo.common.ECategory;
 import com.example.demo.entity.Category;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.repository.ProductRepository;
 import org.springframework.context.ApplicationContext;
 
@@ -28,8 +28,8 @@ public class DemoApplication {
 //		productRepository.save(ob1());
 	}
 
-//	private static Products ob1() {
-//		Products products= new Products();
+//	private static Product ob1() {
+//		Product products= new Product();
 //		products.setDescription_details("Jeans for men");
 //		products.setDescription_list("Jeans for men");
 //		products.setDiscount_id(20);

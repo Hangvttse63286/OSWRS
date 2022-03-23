@@ -8,7 +8,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Product_SKU;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductSkuDTO;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
@@ -86,7 +86,7 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 
 	@Override
 	public List<ProductSkuDTO> getSKUByProductId(String id) {
-		Products products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		
 		List<ProductSkuDTO> pList= new ArrayList<ProductSkuDTO>();
 		for(Product_SKU p: products.getProductSKUs()) {
@@ -103,7 +103,7 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 
 	@Override
 	public Product_SKU createProductSku(String id, ProductSkuDTO productRequest) {
-		Products products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		Set<Product_SKU> product_SKU_List= new HashSet<Product_SKU>();
 
 		Product_SKU product_SKU= new Product_SKU();

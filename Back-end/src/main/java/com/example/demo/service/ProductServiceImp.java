@@ -14,7 +14,7 @@ import com.example.demo.common.ECategory;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.payload.CategoryDTO;
@@ -53,7 +53,7 @@ public class ProductServiceImp implements ProductService{
 		List<ProductDTO> productDTOList= new ArrayList<>();
 
 		
-		for(Products product: productRepository.findAll()) {
+		for(Product product: productRepository.findAll()) {
 			ProductDTO productDTO= new ProductDTO();
 			productDTO.setProduct_id(product.getProduct_id());
 			productDTO.setProduct_status_id(product.getProduct_status_id());
@@ -71,7 +71,7 @@ public class ProductServiceImp implements ProductService{
 	// get product by id [user]->ok
 	@Override
 	public ProductIncludeSkuDTO getProductByIdUser(String id) {
-		Products products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		
 		ProductIncludeSkuDTO productIncludeSkuDTO= new ProductIncludeSkuDTO();
 		List<ProductIncludeSkuDTO> productDTOList= new ArrayList<ProductIncludeSkuDTO>();
@@ -113,7 +113,7 @@ public class ProductServiceImp implements ProductService{
 //		
 //		Set<Product_Image> productImageDTOList= new HashSet<>();
 //		Product_Image productImage= new Product_Image();
-//		Products products= new Products();
+//		Product products= new Product();
 //		
 //		products.setProduct_id(productRequest.getProduct_id());
 //		products.setProduct_status_id(productRequest.getProduct_status_id());
@@ -137,7 +137,7 @@ public class ProductServiceImp implements ProductService{
 	
 	//Create product(category+image) - Admin
 	@Override
-	public Products createProductAll(ProductCreateDTO productRequest) {
+	public Product createProductAll(ProductCreateDTO productRequest) {
 		Set<Product_Image> productImageList= new HashSet<>();
 
 		Set<Category> categoryList= new HashSet<Category>();
@@ -148,7 +148,7 @@ public class ProductServiceImp implements ProductService{
 		List<Product_SKU> product_SKU_List= new ArrayList<Product_SKU>();
 		Product_SKU product_SKU= new Product_SKU();
 		
-		Products products= new Products();
+		Product products= new Product();
 
 		if(category == null) {
 			for(CategoryDTO c: productRequest.getCategory()) {
@@ -195,13 +195,13 @@ public class ProductServiceImp implements ProductService{
 	}
 
 		@Override
-		public Products createProduct(ProductDTO productRequest) {
-			List<Products> productList= productRepository.findAll();
+		public Product createProduct(ProductDTO productRequest) {
+			List<Product> productList= productRepository.findAll();
 			Product_SKU product_SKU= new Product_SKU();
 			
-			Products products= new Products();			
+			Product products= new Product();			
 
-			for(Products p: productList) {
+			for(Product p: productList) {
 				if(productRequest.getProduct_id().equalsIgnoreCase(p.getProduct_id())) {
 					return null;
 				}
@@ -221,7 +221,7 @@ public class ProductServiceImp implements ProductService{
 	// Get product by id [Admin]->ok
 	@Override
 	public ProductListDTO getProductByIdAdmin(String id) {
-		Products products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		
 		ProductListDTO ProductListDTO= new ProductListDTO();
 		List<ProductListDTO> productDTOList= new ArrayList<ProductListDTO>();
@@ -270,14 +270,14 @@ public class ProductServiceImp implements ProductService{
 	//Delete PRoduct [Admin] - ok
 	@Override
 	public void deleteProduct(String id) {
-		Products products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		productRepository.delete(products);
 	}
 
 	//Update Product [Admin] - ok
 	@Override
 	public ProductDTO updateProductById(String id, ProductDTO productRequest) {
-		Products products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 			
 		products.setDescription_details(productRequest.getDescription_details());
 		products.setDescription_list(productRequest.getDescription_list());
@@ -291,7 +291,7 @@ public class ProductServiceImp implements ProductService{
 	//ok
 	@Override
 	public ProductDTO getProductById(String id) {
-		Products products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		
 		ProductDTO productDTO= new ProductDTO();
 
@@ -315,8 +315,8 @@ public class ProductServiceImp implements ProductService{
 
 
 //	@Override
-//	public List<Products> listProductBySKUId(Long id) {
-//		List<Products> resultOptional= productRepository.findByProductSKUsId(id); 
+//	public List<Product> listProductBySKUId(Long id) {
+//		List<Product> resultOptional= productRepository.findByProductSKUsId(id); 
 //		if(resultOptional.isEmpty()) {
 //			throw new NullPointerException("Error: No object found.");
 //		}
@@ -327,14 +327,14 @@ public class ProductServiceImp implements ProductService{
 
 	@Override
 	public List<ProductIncludeImageDTO> listAllProductIncludeImage() {
-		List<Products> products= productRepository.findAll();
+		List<Product> products= productRepository.findAll();
 		if(products.isEmpty())
 			throw new NullPointerException("Error: No object found.");
 		
 		List<ProductIncludeImageDTO> productList= new ArrayList<>();
 
 				
-		for(Products product: productRepository.findAll()) {
+		for(Product product: productRepository.findAll()) {
 
 			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
 			ProductIncludeImageDTO productDTO= new ProductIncludeImageDTO();
@@ -361,7 +361,7 @@ public class ProductServiceImp implements ProductService{
 	}
 
 	@Override
-	public List<Products> listProductBySKUId(Long id) {
+	public List<Product> listProductBySKUId(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

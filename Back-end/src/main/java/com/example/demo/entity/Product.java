@@ -34,7 +34,7 @@ import lombok.Setter;
 @Data
 @Entity
 @Table(name = "products", uniqueConstraints = {@UniqueConstraint(columnNames = {"product_id"})})
-public class Products {
+public class Product {
 
 	@Id
     private String product_id;
@@ -75,11 +75,11 @@ public class Products {
 	private Set<Product_Image> product_Image= new HashSet<Product_Image>();
 
 
-	public Products() {
+	public Product() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Products(String product_id, String description_details, String description_list, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
+	public Product(String product_id, String description_details, String description_list, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
 		this.product_id= product_id;
 		this.description_details= description_details;
 		this.description_list= description_list;

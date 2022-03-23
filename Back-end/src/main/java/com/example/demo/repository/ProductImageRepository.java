@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Product_Image;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 
 @Repository
 public interface ProductImageRepository extends JpaRepository<Product_Image, Long>{
-	List<Product_Image> findByProducts(Products product);
+	List<Product_Image> findByProducts(Product product);
 	Optional<Product_Image> findByUrl(String url);
 }

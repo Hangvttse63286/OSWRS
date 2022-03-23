@@ -11,7 +11,7 @@ import com.example.demo.entity.Cart;
 import com.example.demo.entity.CartItem;
 import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.User;
 import com.example.demo.repository.CartItemRepository;
 import com.example.demo.repository.CartRepository;
@@ -124,7 +124,7 @@ public class CartService {
 		return cartItemRepository.existsById(id);
 	}
 
-	private String getPrimaryImageUrl (Products product) {
+	private String getPrimaryImageUrl (Product product) {
 		Set<Product_Image> productImageList = product.getProduct_Image();
 		for(Product_Image image : productImageList)
 			if (image.isPrimary())

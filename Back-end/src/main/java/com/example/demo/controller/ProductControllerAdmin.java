@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.common.Helper;
 import com.example.demo.entity.ImgurResponse;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductCreateDTO;
 import com.example.demo.payload.ProductDTO;
 import com.example.demo.payload.ProductImageDTO;
@@ -125,7 +125,7 @@ public class ProductControllerAdmin {
 
 		productRequest.setProductImage(listImageDTOs);
 
-		Products savedProductIncludeImageDTO = productService.createProductAll(productRequest);
+		Product savedProductIncludeImageDTO = productService.createProductAll(productRequest);
 
 		return new ResponseEntity<ProductListDTO>(HttpStatus.OK);
 	}

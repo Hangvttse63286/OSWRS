@@ -3,13 +3,13 @@ package com.example.demo.payload;
 import java.util.Collection;
 
 import com.example.demo.common.ECategory;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 
 public class CategoryDTO {
 	private long id;
     private String category_name ;
     private boolean is_deleted;
-    //private Collection<Products> products;
+    //private Collection<Product> products;
     
     public CategoryDTO(long id, String category_name, boolean is_deleted) {
     	this.category_name= category_name;

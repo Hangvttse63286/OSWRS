@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Order;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.Review;
 import com.example.demo.entity.User;
 import com.example.demo.payload.ReviewDto;
@@ -52,7 +52,7 @@ public class ReviewService {
 	}
 
 	public List<ReviewDto> getReviewListByProductId(String id) {
-		Products product = productRepository.getById(id);
+		Product product = productRepository.getById(id);
 		List<Review> reviewList = reviewRepository.findByProducts(product);
 		if (reviewList.isEmpty())
 			return null;
@@ -70,7 +70,7 @@ public class ReviewService {
 	}
 
 	public Double getAvgRatingByProduct(String id) {
-		Products product = productRepository.getById(id);
+		Product product = productRepository.getById(id);
 		List<Review> reviewList = reviewRepository.findByProducts(product);
 		if (reviewList.isEmpty())
 			return (double) 0;
@@ -81,7 +81,7 @@ public class ReviewService {
 	public ReviewDto createReview (ReviewRequest reviewRequest) {
 		Order order = orderRepository.findById(reviewRequest.getOrderId()).get();
 		User user = order.getUser();
-		Products product = productSKURepository.findById(reviewRequest.getProductSKUId()).get().getProducts();
+		Product product = productSKURepository.findById(reviewRequest.getProductSKUId()).get().getProducts();
 
 		Review review = new Review();
 		review.setOrder(order);

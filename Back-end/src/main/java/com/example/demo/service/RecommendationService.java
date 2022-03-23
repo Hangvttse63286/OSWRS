@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_Image;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.User;
 import com.example.demo.payload.ProductRecommendationResponse;
 import com.example.demo.repository.OrderRepository;
@@ -50,9 +50,9 @@ public class RecommendationService {
 	}
 
 	public List<ProductRecommendationResponse> getMostSoldProducts () {
-		List<Products> productList = productRepository.findAllByOrderBySoldDesc();
+		List<Product> productList = productRepository.findAllByOrderBySoldDesc();
 		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
-		for (Products product : productList) {
+		for (Product product : productList) {
 			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
 			productResponse.setProduct_id(product.getProduct_id());
 			productResponse.setProduct_name(product.getProduct_name());
@@ -74,7 +74,7 @@ public class RecommendationService {
 		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
 		for (String imageUrl : imageUrlList) {
 			Product_Image image = productImageRepository.findByUrl(imageUrl).get();
-			Products product = image.getProducts();
+			Product product = image.getProducts();
 			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
 			productResponse.setProduct_id(product.getProduct_id());
 			productResponse.setProduct_name(product.getProduct_name());
@@ -92,11 +92,11 @@ public class RecommendationService {
 			return null;
 		User user = userRepository.findByUsername(username).get();
 		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(user);
-		Map<Products, String> productMap = new HashMap<>();
+		Map<Product, String> productMap = new HashMap<>();
 		for (Order order : orderList) {
 
 			for (OrderItem orderItem : order.getOrderItems()) {
-				Products product = orderItem.getProductSKU().getProducts();
+				Product product = orderItem.getProductSKU().getProducts();
 				if (product.getProduct_status_id().equalsIgnoreCase("instock") && !productMap.containsKey(product)) {
 					Set<Product_Image> imageList = product.getProduct_Image();
 					for (Product_Image image : imageList) {
