@@ -96,7 +96,7 @@ public class OrderService {
 			orderDto.setOrderDate(order.getOrderDate());
 			if (order.getPaymentDate() != null)
 				orderDto.setPaymentDate(order.getPaymentDate());
-			orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
+			orderDto.setAddressId(order.getAddress().getId());
 
 			orderListDto.add(orderDto);
 		}
@@ -137,7 +137,7 @@ public class OrderService {
 			orderDto.setOrderDate(order.getOrderDate());
 			if (order.getPaymentDate() != null)
 				orderDto.setPaymentDate(order.getPaymentDate());
-			orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
+			orderDto.setAddressId(order.getAddress().getId());
 
 			orderListDto.add(orderDto);
 		}
@@ -175,7 +175,7 @@ public class OrderService {
 		orderDto.setOrderDate(order.getOrderDate());
 		if (order.getPaymentDate() != null)
 			orderDto.setPaymentDate(order.getPaymentDate());
-		orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
+		orderDto.setAddressId(order.getAddress().getId());
 
 		return orderDto;
 	}
@@ -202,7 +202,7 @@ public class OrderService {
 		order.setPaymentTotal(orderDto.getPaymentTotal());
 		order.setOrderDate(Calendar.getInstance().getTime());
 		order.setPaymentDate(null);
-		order.setAddress(addressRepository.findById(orderDto.getAddressDto().getId()).get());
+		order.setAddress(addressRepository.findById(orderDto.getAddressId()).get());
 
 		orderRepository.saveAndFlush(order);
 		for (OrderItemDto orderItemDto : orderDto.getOrderItemDtos()) {

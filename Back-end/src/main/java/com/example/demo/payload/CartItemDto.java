@@ -5,7 +5,6 @@ public class CartItemDto {
 	private Long productSKUId;
 	private int quantity;
 	private Double price;
-	private String imageUrl;
 	public Long getId() {
 		return id;
 	}
@@ -29,12 +28,6 @@ public class CartItemDto {
 	}
 	public void setPrice(Double price) {
 		this.price = price;
-	}
-	public String getImageUrl() {
-		return imageUrl;
-	}
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
 	}
 
 

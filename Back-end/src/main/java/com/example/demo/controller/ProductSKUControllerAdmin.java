@@ -15,10 +15,10 @@ import com.example.demo.service.ProductSKUService;
 import com.example.demo.service.ProductService;
 @RestController
 @RequestMapping("/api/admin/productSKU")
-public class ProductSKUContrllerAdmin {
+public class ProductSKUControllerAdmin {
 	private final ProductSKUService productSKUService;
 	private final ProductService productService;
-	public ProductSKUContrllerAdmin(ProductSKUService productSKUService, ProductService productService) {
+	public ProductSKUControllerAdmin(ProductSKUService productSKUService, ProductService productService) {
 		super();
 		this.productSKUService= productSKUService;
 		this.productService= productService;
