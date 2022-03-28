@@ -310,7 +310,7 @@ public class VNPayService {
         return vnpResponse;
 	}
 
-	public String checkResult (String vnpSecureHash, String vnpResponseCode, String vnpOrderInfo, String vnpTransactionNo, HttpServletRequest request) {
+	public String checkResult (HttpServletRequest request) {
 		Map fields = new HashMap();
         for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
             String fieldName = (String) params.nextElement();
@@ -320,7 +320,7 @@ public class VNPayService {
             }
         }
 
-        String vnp_SecureHash = vnpSecureHash;
+        String vnp_SecureHash = request.getParameter("vnp_SecureHash");
         if (fields.containsKey("vnp_SecureHashType")) {
             fields.remove("vnp_SecureHashType");
         }
@@ -329,8 +329,8 @@ public class VNPayService {
         }
         String signValue = vnPayUtils.hashAllFields(fields);
         if (signValue.equals(vnp_SecureHash)) {
-            if ("00".equals(vnpResponseCode)) {
-                Order order = orderRepository.findById(Long.valueOf(vnpOrderInfo)).get();
+            if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
+                Order order = orderRepository.findById(Long.valueOf(request.getParameter("vnp_OrderInfo"))).get();
                 order.setPaymentStatus(EPaymentStatus.COMPLETED);
                 order.setOrderStatus(EOrderStatus.PROCCESSING);
                 order.setPaymentDate(Calendar.getInstance().getTime());
@@ -345,9 +345,9 @@ public class VNPayService {
     				productRepository.save(product);
                 }
 
-                return "Thanh toan thanh cong don hang " + vnpOrderInfo + ". Ma giao dich: " + vnpTransactionNo;
+                return "Thanh toan thanh cong don hang " + request.getParameter("vnp_OrderInfo") + ". Ma don hang: " + request.getParameter("vnp_TxnRef") + ". So tien: " + request.getParameter("vnp_Amount");
             } else {
-            	Order order = orderRepository.findById(Long.valueOf(vnpOrderInfo)).get();
+            	Order order = orderRepository.findById(Long.valueOf(request.getParameter("vnp_OrderInfo"))).get();
                 order.setPaymentStatus(EPaymentStatus.FAILED);
                 order.setOrderStatus(EOrderStatus.CANCELLED);
                 orderRepository.saveAndFlush(order);
@@ -356,7 +356,7 @@ public class VNPayService {
                 	Product_SKU productSKU = orderItem.getProductSKU();
                 	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
                 }
-                return "Error: Thanh toan khong thanh cong don hang " + vnpOrderInfo;
+                return "Error: Thanh toan khong thanh cong don hang " + request.getParameter("vnp_OrderInfo");
             }
 
         } else {

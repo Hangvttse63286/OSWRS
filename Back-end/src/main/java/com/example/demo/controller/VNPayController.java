@@ -41,8 +41,8 @@ public class VNPayController {
 
 	@GetMapping("/return")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> getVnpPaymentResult(@Param("vnp_SecureHash") String vnp_SecureHash, @Param("vnp_ResponseCode") String vnp_ResponseCode, @Param("vnp_OrderInfo") String vnp_OrderInfo, @Param("vnp_TransactionNo") String vnp_TransactionNo, HttpServletRequest req) throws IOException {
-		String vnpResponse = vnpService.checkResult(vnp_SecureHash, vnp_ResponseCode, vnp_OrderInfo, vnp_TransactionNo, req);
+	public ResponseEntity<?> getVnpPaymentResult(HttpServletRequest req) throws IOException {
+		String vnpResponse = vnpService.checkResult(req);
     	if(vnpResponse.startsWith("Error:"))
     		return new ResponseEntity<>(vnpResponse, HttpStatus.BAD_REQUEST);
     	return new ResponseEntity<>(vnpResponse, HttpStatus.OK);
