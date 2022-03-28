@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,34 +26,36 @@ import com.example.demo.service.VoucherService;
 public class VoucherController {
 	@Autowired
 	VoucherService voucherService;
-	
+
 	@GetMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllVoucher() {
-        if (!voucherService.getVoucherList().isEmpty())
-        	return new ResponseEntity<>(voucherService.getVoucherList(), HttpStatus.OK);
+		List<VoucherDto> voucherList = voucherService.getVoucherList();
+        if (!voucherList.isEmpty())
+        	return new ResponseEntity<>(voucherList, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getVoucher(@PathVariable Long id) {
-        if (voucherService.getVoucherById(id) != null)
-        	return new ResponseEntity<>(voucherService.getVoucherById(id), HttpStatus.OK);
+        VoucherDto voucher = voucherService.getVoucherById(id);
+    	if (voucher != null)
+        	return new ResponseEntity<>(voucher, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createVoucher(@RequestBody VoucherDto voucherDto) {
-    	if (voucherService.getVoucherByCode(voucherDto.getCode()) != null)
+    	VoucherDto voucher = voucherService.createVoucher(voucherDto);
+    	if (voucher == null)
     		return new ResponseEntity<>("Error: Code has already existed.", HttpStatus.BAD_REQUEST);
-    	VoucherDto updateResult = voucherService.createVoucher(voucherDto);
-    	return new ResponseEntity<>(updateResult, HttpStatus.OK);
+    	return new ResponseEntity<>(voucher, HttpStatus.OK);
     }
-    
+
     @GetMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUpdateVoucher(@PathVariable Long id) {
@@ -60,7 +64,7 @@ public class VoucherController {
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateVoucher(@PathVariable Long id, @RequestBody VoucherDto voucherDto) {
@@ -72,7 +76,7 @@ public class VoucherController {
     	else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PutMapping("/activation/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeActivation(@PathVariable Long id) {
@@ -82,7 +86,7 @@ public class VoucherController {
     	else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteVoucher(@PathVariable Long id) {
@@ -92,7 +96,7 @@ public class VoucherController {
         } else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    
+
     @PostMapping("/validate")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> validateVoucher(@RequestBody ValidateVoucherRequest validateVoucherRequest) {
@@ -105,7 +109,7 @@ public class VoucherController {
     	case 2:
     		return new ResponseEntity<>("Error: Cart total does not meet voucher requirement.", HttpStatus.BAD_REQUEST);
     	default:
-    		return new ResponseEntity<>(voucherService.calculateDiscount(validateVoucherRequest.getVoucherCode(), validateVoucherRequest.getCartTotal()), HttpStatus.OK);	
+    		return new ResponseEntity<>(voucherService.calculateDiscount(validateVoucherRequest.getVoucherCode(), validateVoucherRequest.getCartTotal()), HttpStatus.OK);
     	}
 
     }

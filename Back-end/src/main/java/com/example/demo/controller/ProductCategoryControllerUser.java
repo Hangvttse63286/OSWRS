@@ -33,16 +33,18 @@ public class ProductCategoryControllerUser {
 
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
-		if(categoryService.listAllCategories() != null)
-			return new ResponseEntity<>(categoryService.listAllCategories(), HttpStatus.OK);
+		List<CategoryDTO> categoryList = categoryService.listAllCategories();
+		if(categoryList != null)
+			return new ResponseEntity<>(categoryList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/getProductByCategoryId/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "id") Long id) {
-		if(categoryService.listProductByCategoryId(id) != null)
-			return new ResponseEntity<>(categoryService.listProductByCategoryId(id), HttpStatus.OK);
+	@RequestMapping(value = "/getProductByCategoryName/{name}", method = RequestMethod.GET)
+	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "name") String name) {
+		List<ProductIncludeSkuDTO> productList = categoryService.listProductByCategory(name);
+		if(productList != null)
+			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}

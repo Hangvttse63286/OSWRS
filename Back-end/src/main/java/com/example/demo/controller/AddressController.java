@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +36,10 @@ public class AddressController {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-    	    return new ResponseEntity<>(addressService.getAddressList(userDetails.getUsername()), HttpStatus.OK);
+    		List<AddressDto> addressList = addressService.getAddressList(userDetails.getUsername());
+    		if (!addressList.isEmpty())
+    			return new ResponseEntity<>(addressList, HttpStatus.OK);
+    		return new ResponseEntity<>("No address found", HttpStatus.NOT_FOUND);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
@@ -51,22 +55,23 @@ public class AddressController {
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
 
-	@GetMapping("/update/{id}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getUpdateAddress(@PathVariable Long id) {
-    	return new ResponseEntity<>(addressService.getAddressById(id), HttpStatus.OK);
-    }
-
 	@PutMapping("/update/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody AddressDto updateAddressDto) {
-    	return new ResponseEntity<>(addressService.updateAddress(id, updateAddressDto), HttpStatus.OK);
+    	AddressDto address = addressService.updateAddress(id, updateAddressDto);
+    	if (address != null)
+    		return new ResponseEntity<>(addressService.updateAddress(id, updateAddressDto), HttpStatus.OK);
+
+    	return new ResponseEntity<>("No address found", HttpStatus.NOT_FOUND);
     }
 
 	@DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
-		addressService.deleteAddressById(id);
-		return new ResponseEntity<>("Delete address successfully!", HttpStatus.OK);
+		if (addressService.getAddressById(id) != null) {
+			addressService.deleteAddressById(id);
+			return new ResponseEntity<>("Delete address successfully!", HttpStatus.OK);
+		} else
+            return new ResponseEntity<>("No address found", HttpStatus.NOT_FOUND);
     }
 }

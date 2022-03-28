@@ -56,6 +56,20 @@ public class CartService {
 		return cartItemResponse;
 	}
 
+	public CartItemResponse getCartItemDto(CartItem cartItem) {
+		CartItemResponse cartItemResponse = new CartItemResponse();
+		cartItemResponse.setId(cartItem.getId());
+		cartItemResponse.setCartId(cartItem.getCart().getId());
+		cartItemResponse.setProductSKUId(cartItem.getProductSKU().getId());
+		cartItemResponse.setProductSKUName(cartItem.getProductSKU().getProducts().getProduct_name() + ", Size: " + cartItem.getProductSKU().getSize());
+		cartItemResponse.setQuantity(cartItem.getQuantity());
+		cartItemResponse.setPrice(cartItem.getPrice());
+		cartItemResponse.setStock(cartItem.getQuantity() >= cartItem.getProductSKU().getStock() ? true : false);
+		cartItemResponse.setImageUrl(getPrimaryImageUrl(cartItem.getProductSKU().getProducts()));
+
+		return cartItemResponse;
+	}
+
 	public List<CartItemResponse> getCartItemList(String username) {
 		User user = userRepository.findByUsername(username).get();
 		Cart cart = cartRepository.findByUser(user).get();
@@ -96,7 +110,7 @@ public class CartService {
 			cartItem.setPrice(cartItemDto.getPrice());
 		}
 		cartItemRepository.saveAndFlush(cartItem);
-		return getCartItem(cartItem.getId());
+		return getCartItemDto(cartItem);
 	}
 
 	public boolean checkStock (Long productSKUId, int quantity) {
@@ -109,7 +123,7 @@ public class CartService {
 		cartItem.setQuantity(cartItemDto.getQuantity());
 		cartItem.setPrice(cartItemDto.getPrice());
 		cartItemRepository.saveAndFlush(cartItem);
-		return getCartItem(cartItem.getId());
+		return getCartItemDto(cartItem);
 	}
 
 	public void deleteCartItem(Long id) {

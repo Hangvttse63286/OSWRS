@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,35 +40,46 @@ public class Category {
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
         targetEntity = Product.class)
     @JsonBackReference
-    private Collection<Product> products;
-    
+    private Set<Product> products = new HashSet<>();
+
     public Category() {
 
     }
-    
+
     public Category(long id, String category_name, boolean is_deleted) {
     	this.name= category_name;
     	this.id= id;
     	this.is_deleted= is_deleted;
     }
-    
+
     public void setId(long id) {
 		this.id = id;
 	}
     public long getId() {
 		return id;
 	}
-    public void setCategory_name(String category_name) {
-		this.name = category_name;
-	}
-    public String getCategory_name() {
-		return name;
-	}
-    
+
     public void setIs_deleted(boolean is_deleted) {
 		this.is_deleted = is_deleted;
 	}
     public boolean isIs_deleted() {
 		return is_deleted;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Set<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(Set<Product> products) {
+		this.products = products;
+	}
+
 }

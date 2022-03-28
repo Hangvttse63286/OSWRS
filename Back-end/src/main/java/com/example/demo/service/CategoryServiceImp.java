@@ -23,11 +23,11 @@ import com.example.demo.repository.ProductSKURepository;
 
 @Service
 public class CategoryServiceImp implements CategoryService{
-	
+
 	private final ProductSKURepository productSKURepository;
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;
-	
+
 	public CategoryServiceImp(ProductRepository productRepository, CategoryRepository categoryRepository, ProductSKURepository productSKURepository) {
 		super();
 		this.productRepository= productRepository;
@@ -39,64 +39,73 @@ public class CategoryServiceImp implements CategoryService{
 	@Override
 	public CategoryDTO updateCategoryById(Long id, CategoryDTO categoryRequest) {
 		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		
-		category.setCategory_name(categoryRequest.getCategory_name());
+
+		category.setName(categoryRequest.getCategory_name());
 		category.setIs_deleted(categoryRequest.isIs_deleted());
 		categoryRepository.save(category);
-		return getCategoryById(id);
+		return getCategoryDto(category);
 	}
-	
+
 	@Override
 	public CategoryDTO getCategoryById(Long id) {
 		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		CategoryDTO categoryDTO= new CategoryDTO();
 
-		categoryDTO.setCategory_name(category.getCategory_name());
+		categoryDTO.setCategory_name(category.getName());
 		categoryDTO.setIs_deleted(category.isIs_deleted());
 		return categoryDTO;
 	}
+
+	public CategoryDTO getCategoryDto(Category category) {
+		CategoryDTO categoryDTO= new CategoryDTO();
+
+		categoryDTO.setCategory_name(category.getName());
+		categoryDTO.setIs_deleted(category.isIs_deleted());
+		return categoryDTO;
+	}
+
 	//Delete Category - Admin
 	@Override
 	public void deleteCategory(Long id) {
 		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		categoryRepository.delete(category);
 	}
-	
+
 	@Override
 	public List<CategoryDTO> listAllCategories() {
-		List<Category> resultOptional= categoryRepository.findAll(); 
+		List<Category> resultOptional= categoryRepository.findAll();
 		if(resultOptional.isEmpty()) {
 			throw new NullPointerException("Error: No object found.");
 		}
 		List<CategoryDTO> categoryDTOs= new ArrayList<CategoryDTO>();
 
-		
+
 		for(Category c: resultOptional) {
 			CategoryDTO categoryDTO= new CategoryDTO();
 			categoryDTO.setId(c.getId());
-			categoryDTO.setCategory_name(c.getCategory_name());
+			categoryDTO.setCategory_name(c.getName());
 			categoryDTO.setIs_deleted(c.isIs_deleted());
-			
+
 			categoryDTOs.add(categoryDTO);
 		}
 		return categoryDTOs;
 	}
-	
+
 
 	@Override
-	public List<ProductIncludeSkuDTO> listProductByCategoryId(Long id) {
+	public List<ProductIncludeSkuDTO> listProductByCategory(String name) {
 
-		List<Product> resultOptional= productRepository.findByCategoriesId(id); 
+		Set<Product> resultOptional= categoryRepository.findByName(name).getProducts();
 		if(resultOptional.isEmpty()) {
 			throw new NullPointerException("Error: No object found.");
 		}
-		
-		
+
+
 		List<ProductIncludeSkuDTO> productDTOList= new ArrayList<ProductIncludeSkuDTO>();
-		
-		
+
+
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
-		
+
 		for(Product product: resultOptional) {
 			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
 			ProductIncludeSkuDTO productIncludeSkuDTO= new ProductIncludeSkuDTO();
@@ -124,25 +133,27 @@ public class CategoryServiceImp implements CategoryService{
 				productSkuDTO.setSale_limit(pSKU.getSale_limit());
 				productSkuDTO.setSize(pSKU.getSize());
 				productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
-				
+
 				productSkuDTOList.add(productSkuDTO);
 			}
 			productIncludeSkuDTO.setProductSKUs(productSkuDTOList);
 			productDTOList.add(productIncludeSkuDTO);
 		}
 		return productDTOList;
-		
+
 	}
 
 	@Override
-	public Category createCategory(CategoryDTO categoryRequest) {
-		Category category= new Category();
-		Category category2= categoryRepository.findByName(categoryRequest.getCategory_name());
-		
-		if(category2 == null) {
-			category.setCategory_name(categoryRequest.getCategory_name());
+	public CategoryDTO createCategory(CategoryDTO categoryRequest) {
+
+		Category category= categoryRepository.findByName(categoryRequest.getCategory_name());
+
+		if(category == null) {
+			category= new Category();
+			category.setName(categoryRequest.getCategory_name());
 			category.setIs_deleted(categoryRequest.isIs_deleted());
-			return categoryRepository.save(category);
+			categoryRepository.saveAndFlush(category);
+			return getCategoryDto(category);
 		}
 		else
 			return null;

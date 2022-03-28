@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,24 +28,27 @@ public class ProductSKUControllerAdmin {
 
 	@RequestMapping(value = "/listProduct_SKU", method = RequestMethod.GET)
 	public ResponseEntity<?> listProductSKU() {
-		if(productSKUService.listAllProductSku() != null)
-			return new ResponseEntity<>(productSKUService.listAllProductSku(), HttpStatus.OK);
+		List<ProductSkuDTO> productSKUList = productSKUService.listAllProductSku();
+		if(!productSKUList.isEmpty())
+			return new ResponseEntity<>(productSKUList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/getProductBySKUId/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProductBySKUId(@PathVariable(name = "id") Long id) {
-		if(productSKUService.getSkuById(id) != null)
-			return new ResponseEntity<>(productSKUService.getSkuById(id), HttpStatus.OK);
+		ProductSkuDTO productSKU = productSKUService.getSkuById(id);
+		if(productSKU != null)
+			return new ResponseEntity<>(productSKU, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
 	@RequestMapping(value = "/updateProductBySKUId/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<ProductSkuDTO> UpdateProductBySKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
-		if(productSKUService.getSkuById(id) != null) {
-			return new ResponseEntity<>(productSKUService.updateProductSkuById(id, productSkuDTO), HttpStatus.OK);
+		ProductSkuDTO productSKU = productSKUService.updateProductSkuById(id, productSkuDTO);
+		if(productSKU != null) {
+			return new ResponseEntity<>(productSKU, HttpStatus.OK);
 		}
 		else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,10 +67,11 @@ public class ProductSKUControllerAdmin {
 	}
 
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
-	@RequestMapping(value = "/createSKU/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> createSKU(@PathVariable(name = "id") String id, @RequestBody ProductSkuDTO PproductSkuDTO) {
-		if(productService.getProductById(id) != null) {
-			return new ResponseEntity<>(productSKUService.createProductSku(id, PproductSkuDTO), HttpStatus.OK);
+	@RequestMapping(value = "/createSKU/{product_id}", method = RequestMethod.POST)
+	public ResponseEntity<?> createSKU(@PathVariable(name = "product_id") String id, @RequestBody ProductSkuDTO productSkuDTO) {
+		ProductSkuDTO productSKU = productSKUService.createProductSku(id, productSkuDTO);
+		if(productSKU != null) {
+			return new ResponseEntity<>(productSKU, HttpStatus.OK);
 		}
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

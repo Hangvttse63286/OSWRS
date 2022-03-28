@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.payload.ProductDTO;
+import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.service.ProductService;
@@ -28,38 +32,31 @@ public class ProductControllerUser {
 	//ok
 	@RequestMapping(value = "/listProduct", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProducts(){
-		if(!productService.listAllProducts().isEmpty())
-			return new ResponseEntity<>(productService.listAllProducts(), HttpStatus.OK);
+		List<ProductDTO> productList = productService.listAllProducts();
+		if(!productList.isEmpty())
+			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	//ok
-	@RequestMapping(value = "/listAllProductIncludeImage", method = RequestMethod.GET)
+	@RequestMapping(value = "/listProductIncludeImage", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProductIncludeImage(){
-		if(!productService.listAllProducts().isEmpty())
-			return new ResponseEntity<>(productService.listAllProductIncludeImage(), HttpStatus.OK);
+		List<ProductIncludeImageDTO> productList = productService.listAllProductIncludeImage();
+		if(!productList.isEmpty())
+			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	//ok
 	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
-	public ResponseEntity<ProductIncludeSkuDTO> getProductById(@PathVariable(name = "id") String id) {
-		if(productService.getProductById(id) != null)
-			return new ResponseEntity<ProductIncludeSkuDTO>(productService.getProductByIdUser(id), HttpStatus.OK);
+	public ResponseEntity<ProductListDTO> getProductById(@PathVariable(name = "id") String id) {
+		ProductListDTO product = productService.getProductByIdAdmin(id);
+		if(product != null)
+			return new ResponseEntity<>(product, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-
-	//ok
-	@RequestMapping(value = "/getProductAllById/{id}", method = RequestMethod.GET)
-	public ResponseEntity<ProductListDTO> getProductByIdAll(@PathVariable(name = "id") String id) {
-		if(productService.getProductById(id) != null)
-			return new ResponseEntity<>(productService.getProductByIdAdmin(id), HttpStatus.OK);
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
-
 
 }

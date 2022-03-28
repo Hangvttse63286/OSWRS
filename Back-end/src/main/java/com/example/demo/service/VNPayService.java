@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,9 @@ import com.example.demo.common.EOrderStatus;
 import com.example.demo.common.EPaymentStatus;
 import com.example.demo.common.VNPayUtils;
 import com.example.demo.entity.Order;
+import com.example.demo.entity.OrderItem;
+import com.example.demo.entity.Product;
+import com.example.demo.entity.Product_SKU;
 import com.example.demo.payload.VNPayPaymentRequest;
 import com.example.demo.payload.VNPayPaymentResponse;
 import com.example.demo.payload.VNPayRefundRequest;
@@ -38,6 +42,8 @@ import com.example.demo.payload.VNPayRefundResponse;
 import com.example.demo.payload.VnPayQueryRequest;
 import com.example.demo.payload.VnPayQueryResponse;
 import com.example.demo.repository.OrderRepository;
+import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.ProductSKURepository;
 
 @Service
 @Transactional
@@ -47,6 +53,12 @@ public class VNPayService {
 
 	@Autowired
 	private OrderRepository orderRepository;
+
+	@Autowired
+	private ProductSKURepository productSKURepository;
+
+	@Autowired
+	private ProductRepository productRepository;
 
 	public VnPayQueryResponse vnpQuery (VnPayQueryRequest vnpRequest, HttpServletRequest req) throws IOException {
 		String vnp_TxnRef = vnpRequest.getVnpOrderId();
@@ -318,13 +330,25 @@ public class VNPayService {
                 order.setOrderStatus(EOrderStatus.PROCCESSING);
                 order.setPaymentDate(Calendar.getInstance().getTime());
                 orderRepository.saveAndFlush(order);
+                Set<OrderItem> orderItems = order.getOrderItems();
+                for (OrderItem orderItem : orderItems) {
+                	Product product = orderItem.getProductSKU().getProducts();
+    				product.setSold(product.getSold() + orderItem.getQuantity());
+    				productRepository.save(product);
+                }
+
                 return "Thanh toan thanh cong don hang " + vnpOrderInfo + ". Ma giao dich: " + vnpTransactionNo;
             } else {
             	Order order = orderRepository.findById(Long.valueOf(vnpOrderInfo)).get();
                 order.setPaymentStatus(EPaymentStatus.FAILED);
                 order.setOrderStatus(EOrderStatus.CANCELLED);
                 orderRepository.saveAndFlush(order);
-                return "Error: Thanh toan thanh cong don hang " + vnpOrderInfo;
+                Set<OrderItem> orderItems = order.getOrderItems();
+                for (OrderItem orderItem : orderItems) {
+                	Product_SKU productSKU = orderItem.getProductSKU();
+                	productSKU.setStock(productSKU.getStock()+orderItem.getQuantity());
+                }
+                return "Error: Thanh toan khong thanh cong don hang " + vnpOrderInfo;
             }
 
         } else {

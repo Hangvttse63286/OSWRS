@@ -180,6 +180,40 @@ public class OrderService {
 		return orderDto;
 	}
 
+	public OrderDto getOrderDto (Order order) {
+
+		List<OrderItemDto> orderItemList = new ArrayList<>();
+		OrderDto orderDto = new OrderDto();
+
+
+		orderDto.setId(order.getId());
+		orderDto.setOrderStatus(order.getOrderStatus().toString());
+		orderDto.setUsername(order.getUser().getUsername());
+		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
+		orderDto.setPayment(order.getPayment().getName().toString());
+		Set<OrderItem> orderItems = order.getOrderItems();
+		for (OrderItem orderItem : orderItems) {
+			OrderItemDto orderItemDto = new OrderItemDto();
+			orderItemDto.setOrderId(order.getId());
+			orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
+			orderItemDto.setQuantity(orderItem.getQuantity());
+			orderItemDto.setPrice(orderItem.getPrice());
+			orderItemList.add(orderItemDto);
+		}
+		orderDto.setOrderItemDtos(orderItemList);
+		orderDto.setSubTotal(order.getSubTotal());
+		if (order.getVoucher() != null)
+			orderDto.setVoucherCode(order.getVoucher().getCode());
+		orderDto.setDeliveryFeeTotal(order.getDeliveryFeeTotal());
+		orderDto.setPaymentTotal(order.getPaymentTotal());
+		orderDto.setOrderDate(order.getOrderDate());
+		if (order.getPaymentDate() != null)
+			orderDto.setPaymentDate(order.getPaymentDate());
+		orderDto.setAddressId(order.getAddress().getId());
+
+		return orderDto;
+	}
+
 	public OrderDto createOrder(OrderDto orderDto) {
 		Set<OrderItem> orderItemList = new HashSet<>();
 
@@ -205,14 +239,11 @@ public class OrderService {
 		order.setAddress(addressRepository.findById(orderDto.getAddressId()).get());
 
 		orderRepository.saveAndFlush(order);
+
 		for (OrderItemDto orderItemDto : orderDto.getOrderItemDtos()) {
 			OrderItem orderItem = new OrderItem();
 			orderItem.setOrder(orderRepository.findById(order.getId()).get());
 			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
-			if(order.getOrderStatus().equals(EOrderStatus.PROCCESSING.toString())) {
-				Product product = productSKU.getProducts();
-				product.setSold(product.getSold() + orderItemDto.getQuantity());
-			}
 			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
 			productSKURepository.save(productSKU);
 			orderItem.setProductSKU(productSKU);
@@ -224,7 +255,7 @@ public class OrderService {
 		order.setOrderItems(orderItemList);
 		orderRepository.saveAndFlush(order);
 
-		return getOrderById(order.getId());
+		return getOrderDto(order);
 	}
 
 	public OrderDto changeOrderStatus (Long id, OrderStatusDto orderStatusDto) {
@@ -278,7 +309,7 @@ public class OrderService {
 			break;
 		}
 		orderRepository.save(order);
-		return getOrderById(id);
+		return getOrderDto(order);
 	}
 
 	public OrderDto UpdateOrder(Long id, OrderDto orderDto) {
@@ -347,7 +378,7 @@ public class OrderService {
 
 		orderRepository.save(order);
 
-		return getOrderById(id);
+		return getOrderDto(order);
 	}
 
 	public void deleteOrder (Long id) {

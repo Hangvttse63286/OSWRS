@@ -51,6 +51,15 @@ public class ReviewService {
 		return reviewDto;
 	}
 
+	public ReviewDto getReviewDto(Review review) {
+		ReviewDto reviewDto = new ReviewDto();
+		reviewDto.setId(review.getId());
+		reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
+		reviewDto.setNumberRating(review.getNumberRating());
+		reviewDto.setDescription(review.getDescription());
+		return reviewDto;
+	}
+
 	public List<ReviewDto> getReviewListByProductId(String id) {
 		Product product = productRepository.getById(id);
 		List<Review> reviewList = reviewRepository.findByProducts(product);
@@ -90,6 +99,6 @@ public class ReviewService {
 		review.setNumberRating(reviewRequest.getNumberRating());
 		review.setDescription(reviewRequest.getDescription());
 		reviewRepository.saveAndFlush(review);
-		return getReviewById(review.getId());
+		return getReviewDto(review);
 	}
 }

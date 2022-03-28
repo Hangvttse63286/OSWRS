@@ -22,6 +22,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductCreateDTO;
 import com.example.demo.payload.ProductDTO;
 import com.example.demo.payload.ProductImageDTO;
+import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.service.ProductService;
 
@@ -45,8 +46,9 @@ public class ProductControllerAdmin {
 	//ok
 	@RequestMapping(value = "/listProduct", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProducts(){
-		if(productService.listAllProducts() != null)
-			return new ResponseEntity<>(productService.listAllProducts(), HttpStatus.OK);
+		List<ProductDTO> productList = productService.listAllProducts();
+		if(!productList.isEmpty())
+			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -54,8 +56,9 @@ public class ProductControllerAdmin {
 	//ok
 	@RequestMapping(value = "/listProductIncludeImage", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProductIncludeImage(){
-		if(productService.listAllProducts() != null)
-			return new ResponseEntity<>(productService.listAllProductIncludeImage(), HttpStatus.OK);
+		List<ProductIncludeImageDTO> productList = productService.listAllProductIncludeImage();
+		if(!productList.isEmpty())
+			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -63,8 +66,9 @@ public class ProductControllerAdmin {
 	//ok
 	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
 	public ResponseEntity<ProductListDTO> getProductById(@PathVariable(name = "id") String id) {
-		if(productService.getProductById(id) != null)
-			return new ResponseEntity<>(productService.getProductByIdAdmin(id), HttpStatus.OK);
+		ProductListDTO product = productService.getProductByIdAdmin(id);
+		if(product != null)
+			return new ResponseEntity<>(product, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -83,8 +87,9 @@ public class ProductControllerAdmin {
 
 	@RequestMapping(value = "/updateProductById/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<ProductDTO> updateProductById(@PathVariable(name = "id") String id, @RequestBody ProductDTO productDTO) {
-		if(productService.getProductById(id) != null) {
-			return new ResponseEntity<>(productService.updateProductById(id, productDTO), HttpStatus.OK);
+		ProductDTO product = productService.updateProductById(id, productDTO);
+		if(product != null) {
+			return new ResponseEntity<>(product, HttpStatus.OK);
 		}
 		else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

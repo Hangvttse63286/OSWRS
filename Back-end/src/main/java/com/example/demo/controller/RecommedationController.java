@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.payload.ProductRecommendationResponse;
+import com.example.demo.payload.RecommendationSaveRequest;
 import com.example.demo.service.RecommendationService;
 import com.example.demo.service.UserDetailsImpl;
 
@@ -41,17 +42,18 @@ public class RecommedationController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		List<String> imageUrlList = recommendationService.getLatestBoughtImagesByUser(userDetails.getUsername());
-    		if (!imageUrlList.isEmpty())
-    			return new ResponseEntity<>(imageUrlList, HttpStatus.FOUND);
+    		List<ProductRecommendationResponse> productList = recommendationService.getRecommendedProductsByUser(userDetails.getUsername());
+    		return new ResponseEntity<>(productList, HttpStatus.OK);
     	}
-		List<ProductRecommendationResponse> productList = recommendationService.getMostSoldProducts();
+		List<ProductRecommendationResponse> productList = recommendationService.getRecommendedProductsByUser(null);
 		return new ResponseEntity<>(productList, HttpStatus.OK);
 	}
 
-	@PostMapping("/get_list")
-	public ResponseEntity<?> getRecommendedProducts(@RequestBody List<String> imageUrl) {
-		List<ProductRecommendationResponse> productList = recommendationService.getRecommendedProducts(imageUrl);
-		return new ResponseEntity<>(productList, HttpStatus.OK);
+	@PostMapping("/save")
+	public ResponseEntity<?> getRecommendedProducts(@RequestBody RecommendationSaveRequest recommendationSaveRequest) {
+		int result = recommendationService.saveRecommendedProducts(recommendationSaveRequest.getImageUrlList(), recommendationSaveRequest.getUsername());
+		if (result == 0)
+			return new ResponseEntity<>("Error: User not found!", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("Save successfully!", HttpStatus.OK);
 	}
 }

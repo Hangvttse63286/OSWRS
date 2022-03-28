@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,49 +16,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.payload.RoleChangeDto;
+import com.example.demo.payload.UserDto;
 import com.example.demo.service.AccountService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/admin/account")
 public class AccountController {
-    
+
     @Autowired
     private AccountService accountService;
-    
+
     @GetMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUser() {
-        if (accountService.findAll() != null)
-        	return new ResponseEntity<>(accountService.findAll(), HttpStatus.OK);
+        List<UserDto> userList = accountService.findAll();
+    	if (!userList.isEmpty())
+        	return new ResponseEntity<>(userList, HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }
-    
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUser(@PathVariable Long id) {
-        if (accountService.findById(id) != null)
-        	return new ResponseEntity<>(accountService.findById(id), HttpStatus.OK);
+        UserDto user = accountService.findById(id);
+    	if (accountService.findById(id) != null)
+        	return new ResponseEntity<>(user, HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }
-    
+
     @PutMapping("/change_role/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeRoles(@PathVariable Long id, @RequestBody RoleChangeDto roleChangeDto) {
-    	if (accountService.findById(id) != null)
-    		return new ResponseEntity<>(accountService.changeRole(id, roleChangeDto), HttpStatus.OK);
+    	String result = accountService.changeRole(id, roleChangeDto);
+    	if (result != null)
+    		return new ResponseEntity<>(result, HttpStatus.OK);
     	else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }
-    
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
     	if (accountService.findById(id) != null)
     		return new ResponseEntity<>(accountService.deleteAcc(id), HttpStatus.OK);
     	else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }
 }
