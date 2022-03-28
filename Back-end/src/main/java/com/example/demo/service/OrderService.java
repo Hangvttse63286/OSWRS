@@ -15,14 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.common.EOrderStatus;
 import com.example.demo.common.EPayment;
 import com.example.demo.common.EPaymentStatus;
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_SKU;
+import com.example.demo.entity.User;
 import com.example.demo.entity.Product;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderItemDto;
 import com.example.demo.payload.OrderStatusDto;
 import com.example.demo.repository.AddressRepository;
+import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PaymentRepository;
@@ -57,6 +60,9 @@ public class OrderService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	CartRepository cartRepository;
 
 	@Autowired
 	AddressService addressService;
@@ -214,14 +220,17 @@ public class OrderService {
 		return orderDto;
 	}
 
-	public OrderDto createOrder(OrderDto orderDto) {
+	public OrderDto createOrder(OrderDto orderDto, String username) {
 		Set<OrderItem> orderItemList = new HashSet<>();
 
 		Order order = new Order();
-
+		User user = userRepository.findByUsername(orderDto.getUsername()).get();
 		if (orderDto.getPayment().equalsIgnoreCase(EPayment.COD.toString())) {
 			order.setOrderStatus(EOrderStatus.PROCCESSING);
 			order.setPayment(paymentRepository.findByName(EPayment.COD).get());
+			Cart cart = cartRepository.findByUser(user).get();
+			cart.setCartItems(null);
+			cartRepository.saveAndFlush(cart);
 		} else if (orderDto.getPayment().equalsIgnoreCase(EPayment.VNPAY.toString())) {
 			order.setOrderStatus(EOrderStatus.PENDING);
 			order.setPayment(paymentRepository.findByName(EPayment.VNPAY).get());
@@ -268,6 +277,11 @@ public class OrderService {
 			break;
 		case "CANCELLED":
 			order.setOrderStatus(EOrderStatus.CANCELLED);
+			Set<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem : orderItems) {
+            	Product_SKU productSKU = orderItem.getProductSKU();
+            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
+            }
 			break;
 		case "DECLINED":
 			order.setOrderStatus(EOrderStatus.DECLINED);

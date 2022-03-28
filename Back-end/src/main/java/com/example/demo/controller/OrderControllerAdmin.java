@@ -51,7 +51,7 @@ public class OrderControllerAdmin {
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-    	return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.OK);
+    	return new ResponseEntity<>(orderService.createOrder(orderDto, orderDto.getUsername()), HttpStatus.OK);
     }
 
     @PutMapping("/change_status/{id}")

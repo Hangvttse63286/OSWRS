@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.common.EOrderStatus;
 import com.example.demo.common.EPaymentStatus;
 import com.example.demo.common.VNPayUtils;
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product;
@@ -41,6 +42,7 @@ import com.example.demo.payload.VNPayRefundRequest;
 import com.example.demo.payload.VNPayRefundResponse;
 import com.example.demo.payload.VnPayQueryRequest;
 import com.example.demo.payload.VnPayQueryResponse;
+import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ProductSKURepository;
@@ -59,6 +61,9 @@ public class VNPayService {
 
 	@Autowired
 	private ProductRepository productRepository;
+
+	@Autowired
+	CartRepository cartRepository;
 
 	public VnPayQueryResponse vnpQuery (VnPayQueryRequest vnpRequest, HttpServletRequest req) throws IOException {
 		String vnp_TxnRef = vnpRequest.getVnpOrderId();
@@ -330,6 +335,9 @@ public class VNPayService {
                 order.setOrderStatus(EOrderStatus.PROCCESSING);
                 order.setPaymentDate(Calendar.getInstance().getTime());
                 orderRepository.saveAndFlush(order);
+                Cart cart = cartRepository.findByUser(order.getUser()).get();
+    			cart.setCartItems(null);
+    			cartRepository.saveAndFlush(cart);
                 Set<OrderItem> orderItems = order.getOrderItems();
                 for (OrderItem orderItem : orderItems) {
                 	Product product = orderItem.getProductSKU().getProducts();
@@ -346,7 +354,7 @@ public class VNPayService {
                 Set<OrderItem> orderItems = order.getOrderItems();
                 for (OrderItem orderItem : orderItems) {
                 	Product_SKU productSKU = orderItem.getProductSKU();
-                	productSKU.setStock(productSKU.getStock()+orderItem.getQuantity());
+                	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
                 }
                 return "Error: Thanh toan khong thanh cong don hang " + vnpOrderInfo;
             }

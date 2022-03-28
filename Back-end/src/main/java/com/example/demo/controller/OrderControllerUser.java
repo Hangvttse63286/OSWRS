@@ -59,7 +59,13 @@ public class OrderControllerUser {
     @PostMapping("/create")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-    	return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.OK);
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    		return new ResponseEntity<>(orderService.createOrder(orderDto, userDetails.getUsername()), HttpStatus.OK);
+    	}
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+
     }
 
     @DeleteMapping("/delete/{id}")
