@@ -42,7 +42,7 @@ public class ProductSKUControllerAdmin {
 			return new ResponseEntity<>(productSKU, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+	}
 
 	@RequestMapping(value = "/updateProductBySKUId/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<ProductSkuDTO> UpdateProductBySKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
