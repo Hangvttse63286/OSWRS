@@ -59,8 +59,8 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setProduct_id(product.getProduct_id());
 			productDTO.setProduct_status_id(product.getProduct_status_id());
 			productDTO.setProduct_name(product.getProduct_name());
-			productDTO.setDescription_list(product.getDescription_list());
-			productDTO.setDescription_details(product.getDescription_details());
+//			productDTO.setDescription_list(product.getDescription_list());
+//			productDTO.setDescription_details(product.getDescription_details());
 			productDTO.setSearch_word(product.getSearch_word());
 			productDTO.setPrice(product.getPrice());
 			productDTOList.add(productDTO);
