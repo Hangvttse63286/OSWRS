@@ -29,7 +29,6 @@ public class RecommedationController {
 	private RecommendationService recommendationService;
 
 	@GetMapping("/send_all")
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	public ResponseEntity<?> sendImageUrl() {
 		List<String> imageUrlList = recommendationService.getAllImage();
 		if (!imageUrlList.isEmpty())
@@ -37,7 +36,7 @@ public class RecommedationController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@GetMapping("/")
+	@GetMapping("/list")
 	public ResponseEntity<?> getByUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
