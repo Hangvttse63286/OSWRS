@@ -55,9 +55,9 @@ public class RecommendationService {
 		return imageUrlList;
 	}
 
-	public List<ProductRecommendationResponse> getRecommendedProductsByUser (String username) {
+	public List<ProductRecommendationResponse> getRecommendedProductsByUser (String username, boolean flag) {
 		List<Product> productList;
-		if (!username.isEmpty()) {
+		if (flag) {
 			User user = userRepository.findByUsername(username).get();
 			List<Recommendation> recommendationList = recommendationRepository.findByUser(user);
 			if(!recommendationList.isEmpty()) {

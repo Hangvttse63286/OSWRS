@@ -41,10 +41,10 @@ public class RecommedationController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		List<ProductRecommendationResponse> productList = recommendationService.getRecommendedProductsByUser(userDetails.getUsername());
+    		List<ProductRecommendationResponse> productList = recommendationService.getRecommendedProductsByUser(userDetails.getUsername(), true);
     		return new ResponseEntity<>(productList, HttpStatus.OK);
     	}
-		List<ProductRecommendationResponse> productList = recommendationService.getRecommendedProductsByUser(null);
+		List<ProductRecommendationResponse> productList = recommendationService.getRecommendedProductsByUser(null, false);
 		return new ResponseEntity<>(productList, HttpStatus.OK);
 	}
 
