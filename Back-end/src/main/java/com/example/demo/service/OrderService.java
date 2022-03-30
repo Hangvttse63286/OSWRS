@@ -235,7 +235,7 @@ public class OrderService {
 			order.setOrderStatus(EOrderStatus.PENDING);
 			order.setPayment(paymentRepository.findByName(EPayment.VNPAY).get());
 		}
-		order.setUser(userRepository.findByUsername(orderDto.getUsername()).get());
+		order.setUser(user);
 		order.setPaymentStatus(EPaymentStatus.PENDING);
 
 		order.setSubTotal(orderDto.getSubTotal());

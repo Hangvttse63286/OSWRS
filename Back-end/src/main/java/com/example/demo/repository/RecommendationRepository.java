@@ -9,6 +9,6 @@ import com.example.demo.entity.Recommendation;
 import com.example.demo.entity.User;
 
 public interface RecommendationRepository extends JpaRepository<Recommendation, Long>{
-	@EntityGraph(attributePaths = { "user", "order", "product" })
+	@EntityGraph(attributePaths = { "user", "product" })
 	List<Recommendation> findByUser(User user);
 }
