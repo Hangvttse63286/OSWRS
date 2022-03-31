@@ -19,14 +19,14 @@ import com.example.demo.service.ProductService;
 
 @RestController
 @RequestMapping("/api/category")
-public class ProductCategoryControllerUser {
+public class CategoryControllerUser {
 
 	@Autowired
 	private ModelMapper modelMapper;
 
 	private final CategoryService categoryService;
 
-	public ProductCategoryControllerUser(CategoryService categoryService) {
+	public CategoryControllerUser(CategoryService categoryService) {
 		super();
 		this.categoryService= categoryService;
 	}
