@@ -34,10 +34,10 @@ public class Product_Image {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id") 
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Products products;
+	private Product products;
 	
 	
-	public Product_Image(long product_image_id, String name, String url, boolean primary, Products products) {
+	public Product_Image(long product_image_id, String name, String url, boolean primary, Product products) {
 		super();
 		this.product_image_id = product_image_id;
 		this.name = name;
@@ -49,11 +49,11 @@ public class Product_Image {
 	public Product_Image() {
 	}
 
-	public Products getProducts() {
+	public Product getProducts() {
 		return products;
 	}
 
-	public void setProducts(Products products) {
+	public void setProducts(Product products) {
 		this.products = products;
 	}
 	

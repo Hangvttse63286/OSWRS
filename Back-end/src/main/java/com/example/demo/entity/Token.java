@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "tokens", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"token"})
@@ -21,11 +24,12 @@ public class Token {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
-	
+
 	private String token;
 	private Date expired_at;
 	public long getId() {
@@ -52,6 +56,6 @@ public class Token {
 	public void setExpired_at(Date expired_at) {
 		this.expired_at = expired_at;
 	}
-	
-	
+
+
 }

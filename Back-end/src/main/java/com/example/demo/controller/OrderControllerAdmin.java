@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +31,9 @@ public class OrderControllerAdmin {
 	@GetMapping("/")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getAllOrder() {
-        if (!orderService.getOrderList().isEmpty())
-        	return new ResponseEntity<>(orderService.getOrderList(), HttpStatus.OK);
+		List<OrderDto> orderList = orderService.getOrderList();
+		if (!orderList.isEmpty())
+        	return new ResponseEntity<>(orderList, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -38,8 +41,9 @@ public class OrderControllerAdmin {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getOrder(@PathVariable Long id) {
-        if (orderService.getOrderById(id) != null)
-        	return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
+        OrderDto order = orderService.getOrderById(id);
+    	if (order != null)
+        	return new ResponseEntity<>(order, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -47,25 +51,7 @@ public class OrderControllerAdmin {
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-    	return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.OK);
-    }
-
-    @GetMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
-    public ResponseEntity<?> getUpdateOrder(@PathVariable Long id) {
-    	if (orderService.getOrderById(id) != null)
-        	return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping("/change_status/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
-    public ResponseEntity<?> getOrderForStatusChange(@PathVariable Long id) {
-    	if (orderService.getOrderById(id) != null)
-        	return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	return new ResponseEntity<>(orderService.createOrder(orderDto, orderDto.getUsername()), HttpStatus.OK);
     }
 
     @PutMapping("/change_status/{id}")

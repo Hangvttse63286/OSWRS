@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.common.ERole;
 import com.example.demo.common.JwtUtils;
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.Token;
@@ -37,6 +38,7 @@ import com.example.demo.payload.SignUpDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VerificationRepository;
 import com.example.demo.repository.PasswordResetTokenRepository;
+import com.example.demo.repository.CartRepository;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -63,6 +65,9 @@ public class AuthService {
 
 	@Autowired
     private TokenRepository tokenRepository;
+
+	@Autowired
+    private CartRepository cartRepository;
 
 	@Autowired
     private PasswordEncoder passwordEncoder;
@@ -239,6 +244,9 @@ public class AuthService {
 		else {
 			verification.setEnabled(true);
 			verificationRepository.save(verification);
+			Cart cart = new Cart();
+			cart.setUser(verification.getUser());
+			cartRepository.saveAndFlush(cart);
 			return true;
 		}
 	}

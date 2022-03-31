@@ -23,13 +23,13 @@ import com.example.demo.repository.RoleRepository;
 
 @Service
 public class AccountService {
-	
+
 	@Autowired
     private UserRepository userRepository;
-	
+
 	@Autowired
     private RoleRepository roleRepository;
-	
+
 	public List<UserDto> findAll () {
 		List<User> userList = userRepository.findAll();
 		List<UserDto> userDtoList = new ArrayList<>();
@@ -50,7 +50,7 @@ public class AccountService {
 		}
 		return userDtoList;
 	}
-	
+
 	public UserDto findById (Long id) {
 		UserDto userDto = new UserDto();
 		User user = userRepository.findById(id)
@@ -66,16 +66,18 @@ public class AccountService {
         		.map(item -> item.getName().toString())
         		.collect(Collectors.toList());
 		userDto.setRoles(roles);
-		
+
 		return userDto;
 	}
 
 	public String changeRole (Long id, RoleChangeDto roleChangeDto) {
 		User user = userRepository.findById(id).get();
-		
+		if (user == null)
+			return null;
+
 		Set<String> strRoles = roleChangeDto.getRoles();
         Set<Role> roles = new HashSet<>();
-        
+
 		strRoles.forEach(role -> {
 			switch (role) {
 			case "admin":
@@ -95,16 +97,16 @@ public class AccountService {
 				break;
 			}
 		});
-		
+
 		user.setRoles(roles);
 		userRepository.save(user);
 		return "Change roles successfully!";
 	}
-	
-	
+
+
 	public String deleteAcc (Long id) {
 		userRepository.deleteById(id);
 		return "Delete successfully!";
 	}
-	
+
 }

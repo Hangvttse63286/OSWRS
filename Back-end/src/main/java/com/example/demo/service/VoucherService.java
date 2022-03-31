@@ -16,14 +16,17 @@ import com.example.demo.common.EVoucherType;
 @Service
 @Transactional
 public class VoucherService {
-	
+
 	@Autowired
 	VoucherRepository voucherRepository;
-	
+
 	public List<VoucherDto> getVoucherList() {
-		List<VoucherDto> voucherList = new ArrayList<>();
+		List<Voucher> voucherList = voucherRepository.findAll();
+		if(voucherList.isEmpty())
+			return null;
+		List<VoucherDto> voucherDtoList = new ArrayList<>();
 		VoucherDto voucherDto = new VoucherDto();
-		for (Voucher voucher : voucherRepository.findAll()) {
+		for (Voucher voucher : voucherList) {
 			voucherDto.setId(voucher.getId());
 			voucherDto.setCode(voucher.getCode());
 			voucherDto.setName(voucher.getName());
@@ -33,16 +36,34 @@ public class VoucherService {
 			voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 			voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 			voucherDto.setActive(voucher.isActive());
-			
-			voucherList.add(voucherDto);
+
+			voucherDtoList.add(voucherDto);
 		}
-		return voucherList;
+		return voucherDtoList;
 	}
-	
+
+	public VoucherDto getVoucherDto(Voucher voucher) {
+		VoucherDto voucherDto = new VoucherDto();
+
+		voucherDto.setId(voucher.getId());
+		voucherDto.setCode(voucher.getCode());
+		voucherDto.setName(voucher.getName());
+		voucherDto.setDescription(voucher.getDescription());
+		voucherDto.setType(voucher.getType().toString());
+		voucherDto.setMinSpend(voucher.getMinSpend());
+		voucherDto.setMaxDiscount(voucher.getMaxDiscount());
+		voucherDto.setDiscountAmount(voucher.getDiscountAmount());
+		voucherDto.setActive(voucher.isActive());
+
+		return voucherDto;
+	}
+
 	public VoucherDto getVoucherByCode(String code) {
 		Voucher voucher = voucherRepository.findByCode(code).get();
+		if (voucher == null)
+			return null;
 		VoucherDto voucherDto = new VoucherDto();
-		
+
 		voucherDto.setId(voucher.getId());
 		voucherDto.setCode(voucher.getCode());
 		voucherDto.setName(voucher.getName());
@@ -52,14 +73,16 @@ public class VoucherService {
 		voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 		voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 		voucherDto.setActive(voucher.isActive());
-		
+
 		return voucherDto;
 	}
-	
+
 	public VoucherDto getVoucherById(Long id) {
 		Voucher voucher = voucherRepository.findById(id).get();
+		if (voucher == null)
+			return null;
 		VoucherDto voucherDto = new VoucherDto();
-		
+
 		voucherDto.setId(voucher.getId());
 		voucherDto.setCode(voucher.getCode());
 		voucherDto.setName(voucher.getName());
@@ -69,13 +92,15 @@ public class VoucherService {
 		voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 		voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 		voucherDto.setActive(voucher.isActive());
-		
+
 		return voucherDto;
 	}
-	
+
 	public VoucherDto createVoucher(VoucherDto voucherDto) {
+		if (getVoucherByCode(voucherDto.getCode()) != null)
+			return null;
 		Voucher voucher = new Voucher();
-		
+
 		voucher.setCode(voucherDto.getCode());
 		voucher.setName(voucherDto.getName());
 		voucher.setDescription(voucherDto.getDescription());
@@ -91,25 +116,25 @@ public class VoucherService {
 		voucher.setMaxDiscount(voucherDto.getMaxDiscount());
 		voucher.setDiscountAmount(voucherDto.getDiscountAmount());
 		voucher.setActive(voucherDto.isActive());
-		voucherRepository.save(voucher);
-		
-		return getVoucherByCode(voucher.getCode());
-		
+		voucherRepository.saveAndFlush(voucher);
+
+		return getVoucherDto(voucher);
+
 	}
-	
+
 	public VoucherDto changeVoucherActivation (Long id) {
 		Voucher voucher = voucherRepository.findById(id).get();
 		if (voucher == null)
 			return null;
-		
+
 		if (voucher.isActive())
 			voucher.setActive(false);
 		else
 			voucher.setActive(true);
 		voucherRepository.save(voucher);
-		
+
 		VoucherDto voucherDto = new VoucherDto();
-		
+
 		voucherDto.setId(voucher.getId());
 		voucherDto.setCode(voucher.getCode());
 		voucherDto.setName(voucher.getName());
@@ -119,15 +144,15 @@ public class VoucherService {
 		voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 		voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 		voucherDto.setActive(voucher.isActive());
-		
+
 		return voucherDto;
 	}
-	
+
 	public VoucherDto updateVoucher(Long id, VoucherDto voucherDto) {
 		Voucher voucher = voucherRepository.findById(id).get();
 		if (voucher == null)
 			return null;
-		
+
 		voucher.setName(voucherDto.getName());
 		voucher.setDescription(voucherDto.getDescription());
 		switch (voucherDto.getType()) {
@@ -143,14 +168,14 @@ public class VoucherService {
 		voucher.setDiscountAmount(voucherDto.getDiscountAmount());
 		voucher.setActive(voucherDto.isActive());
 		voucherRepository.save(voucher);
-		
-		return getVoucherById(voucher.getId());
+
+		return getVoucherDto(voucher);
 	}
-	
+
 	public void deleteVoucher(Long id) {
 		voucherRepository.deleteById(id);
 	}
-	
+
 	public int validateVoucher (String code, Double cartTotal) {
 		Voucher voucher = voucherRepository.findByCode(code).get();
 		if (voucher == null)
@@ -162,11 +187,12 @@ public class VoucherService {
 		else
 			return 3;
 	}
-	
+
 	public CartTotalResponse calculateDiscount(String code, Double cartTotal) {
-		CartTotalResponse newCartTotal = new CartTotalResponse();
+
 		Voucher voucher = voucherRepository.findByCode(code).get();
-		
+
+		CartTotalResponse newCartTotal = new CartTotalResponse();
 		newCartTotal.setCode(code);
 		if (voucher.getType().equals(EVoucherType.FIX_VALUE)) {
 			newCartTotal.setDiscountValue(voucher.getDiscountAmount());
@@ -177,7 +203,7 @@ public class VoucherService {
 		}
 		return newCartTotal;
 	}
-	
-	
-	
+
+
+
 }

@@ -20,35 +20,37 @@ import com.example.demo.service.ProductSKUService;
 import com.example.demo.service.ProductSKUServiceImpl;
 
 @RestController
-@RequestMapping("/api/productSKU/user/")
+@RequestMapping("/api/productSKU")
 public class ProductSKUControllerUser {
 	private final ProductSKUService productSKUService;
-	
+
 	public ProductSKUControllerUser(ProductSKUService productSKUService) {
 		super();
 		this.productSKUService= productSKUService;
 	}
-	
+
 	@RequestMapping(value = "/listProduct_SKU", method = RequestMethod.GET)
 	public ResponseEntity<?> listProductSKU() {
-		if(productSKUService.listAllProductSku() != null)
-			return new ResponseEntity<>(productSKUService.listAllProductSku(), HttpStatus.OK);
+		List<ProductSkuDTO> productSKUList = productSKUService.listAllProductSku();
+		if(!productSKUList.isEmpty())
+			return new ResponseEntity<>(productSKUList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
-	@RequestMapping(value = "/getSkuById/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getSkuById(@PathVariable(name = "id") Long id) {
-		if(productSKUService.getSkuById(id) != null) {
-			return new ResponseEntity<>(productSKUService.getSkuById(id), HttpStatus.OK);
-		}
+
+	@RequestMapping(value = "/getProductBySKUId/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getProductBySKUId(@PathVariable(name = "id") Long id) {
+		ProductSkuDTO productSKU = productSKUService.getSkuById(id);
+		if(productSKU != null)
+			return new ResponseEntity<>(productSKU, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	@RequestMapping(value = "/getSKUByProductId/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getSKUByProductId(@PathVariable(name = "id") String id) {
-		if(productSKUService.getSKUByProductId(id) != null)
-			return new ResponseEntity<>(productSKUService.getSKUByProductId(id), HttpStatus.OK);
+	@RequestMapping(value = "/getSKUByProductId/{product_id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getSKUByProductId(@PathVariable(name = "product_id") String id) {
+		List<ProductSkuDTO> productSKUList = productSKUService.getSKUByProductId(id);
+		if(!productSKUList.isEmpty())
+			return new ResponseEntity<>(productSKUList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

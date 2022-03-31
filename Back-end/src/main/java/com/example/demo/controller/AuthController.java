@@ -41,7 +41,7 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
-    
+
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -51,7 +51,7 @@ public class AuthController {
         if(jwtResponse == null) {
         	return new ResponseEntity<>("Error: Unverified account! Please check your email for verification", HttpStatus.BAD_REQUEST);
         }
-        	
+
     	return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtUtils.getJwtCookie(jwtResponse.getAccessToken()).toString())
         		.body(jwtResponse);
     }
@@ -75,14 +75,14 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully! Check email for verification."));
 
     }
-    
+
     @GetMapping("signup/verify")
     public ResponseEntity<?> verifyUser(@Param("code") String code) {
     	if(authService.verify(code))
     		return ResponseEntity.ok(new MessageResponse("User verified successfully!"));
     	return new ResponseEntity<>("Error: Email verification failed!", HttpStatus.BAD_REQUEST);
     }
-    
+
     @PostMapping("/forgot_password")
     public ResponseEntity<?> forgotPassword(@RequestParam(name = "email") String email, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
     	if(authService.getUserByEmail(email) == null)
@@ -90,14 +90,14 @@ public class AuthController {
     	authService.updateResetPasswordToken(email, req);
     	return ResponseEntity.ok(new MessageResponse("We hanve sent a reset password link to your email. Please check."));
     }
-    
+
     @GetMapping("/forgot_password/reset")
     public ResponseEntity<?> verifyPasswordResetToken(@Param("token") String token) {
     	if(authService.validatePasswordResetToken(token))
     		return new ResponseEntity<>(token, HttpStatus.OK);
     	return new ResponseEntity<>("Error: Email verification failed!", HttpStatus.BAD_REQUEST);
     }
-    
+
     @PostMapping("/forgot_password/reset")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
     	if(authService.validatePasswordResetToken(resetPasswordDto.getToken())) {
@@ -106,7 +106,7 @@ public class AuthController {
     	}
     	return new ResponseEntity<>("Invalid token!", HttpStatus.BAD_REQUEST);
     }
-    
+
 	@PostMapping("/signout")
 	public ResponseEntity<?> logoutUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -19,7 +19,7 @@ public class OrderDto {
 	private Double paymentTotal;
 	private Date orderDate;
 	private Date paymentDate;
-	private AddressDto addressDto;
+	private Long addressId;
 	public long getId() {
 		return id;
 	}
@@ -80,11 +80,11 @@ public class OrderDto {
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
-	public AddressDto getAddressDto() {
-		return addressDto;
+	public Long getAddressId() {
+		return addressId;
 	}
-	public void setAddressDto(AddressDto addressDto) {
-		this.addressDto = addressDto;
+	public void setAddressId(Long addressId) {
+		this.addressId = addressId;
 	}
 	public Date getPaymentDate() {
 		return paymentDate;

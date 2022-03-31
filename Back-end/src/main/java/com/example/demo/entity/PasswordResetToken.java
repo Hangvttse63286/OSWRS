@@ -24,7 +24,7 @@ public class PasswordResetToken {
 
     private String token;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     private User user;
 
@@ -52,5 +52,5 @@ public class PasswordResetToken {
         this.user = user;
     }
 
-    
+
 }

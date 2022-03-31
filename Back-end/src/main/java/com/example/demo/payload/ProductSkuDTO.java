@@ -4,7 +4,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 
 public class ProductSkuDTO {
 	@Id
@@ -29,10 +29,10 @@ public class ProductSkuDTO {
 		//this.products= products;
 	}
 	
-//public void setProducts(Products products) {
+//public void setProducts(Product products) {
 //	this.products = products;
 //}
-//public Products getProducts() {
+//public Product getProducts() {
 //	return products;
 //}
 	public void setProduct_id(String product_id) {

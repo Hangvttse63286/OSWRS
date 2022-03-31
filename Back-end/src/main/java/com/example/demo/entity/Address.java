@@ -9,6 +9,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Data;
 
 @Data
@@ -18,11 +21,12 @@ public class Address {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
-	
+
 	private String receiverName;
 	private String province;
 	private String city;
@@ -91,7 +95,7 @@ public class Address {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
-	
-	
+
+
+
 }

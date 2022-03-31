@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,59 +14,64 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.payload.CategoryDTO;
+import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.service.CategoryService;
 
 
 @RestController
-@RequestMapping("/api/category/admin/")
-public class ProductCategoryControllerAdmin {
+@RequestMapping("/api/admin/category")
+public class CategoryControllerAdmin {
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	private final CategoryService categoryService;
-	
-	public ProductCategoryControllerAdmin(CategoryService categoryService) {
+
+	public CategoryControllerAdmin(CategoryService categoryService) {
 		super();
 		this.categoryService= categoryService;
 	}
-	
+
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
-		if(categoryService.listAllCategories() != null)
-			return new ResponseEntity<>(categoryService.listAllCategories(), HttpStatus.OK);
+		List<CategoryDTO> categoryList = categoryService.listAllCategories();
+		if(categoryList != null)
+			return new ResponseEntity<>(categoryList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
-	@RequestMapping(value = "/getProductByCategoryId/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "id") Long id) {
-		if(categoryService.listProductByCategoryId(id) != null) 
-			return new ResponseEntity<>(categoryService.listProductByCategoryId(id), HttpStatus.OK);
+
+	@RequestMapping(value = "/getProductByCategoryName/{name}", method = RequestMethod.GET)
+	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "name") String name) {
+		List<ProductIncludeSkuDTO> productList = categoryService.listProductByCategory(name);
+		if(productList != null)
+			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/updateCategoryById/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<CategoryDTO> updateCategoryById(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
-		if(categoryService.getCategoryById(id) != null) {
-			return new ResponseEntity<>(categoryService.updateCategoryById(id, categoryDTO), HttpStatus.OK);
+		CategoryDTO category = categoryService.updateCategoryById(id, categoryDTO);
+		if(category != null) {
+			return new ResponseEntity<>(category, HttpStatus.OK);
 		}
 		else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/createCategory", method = RequestMethod.POST)
 	public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO) {
-		if(categoryService.createCategory(categoryDTO) == null) {
+		CategoryDTO result = categoryService.createCategory(categoryDTO);
+		if(result == null) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		else {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
-		
+
 	}
 
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")

@@ -26,6 +26,8 @@ public class AddressService {
 				.orElseThrow(() -> new NullPointerException("Error: No object found."));
 		List<AddressDto> addressListDto = new ArrayList<>();
 		List<Address> addressList = addressRepository.findByUser(user);
+		if (addressList.isEmpty())
+			return null;
 		for (Address address : addressList) {
 			AddressDto addressDto = new AddressDto();
 			addressDto.setId(address.getId());
@@ -44,10 +46,27 @@ public class AddressService {
 	}
 
 	public AddressDto getAddressById (Long id) {
-		Address address = addressRepository.findById(id)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
-		AddressDto addressDto = new AddressDto();
+		Address address = addressRepository.findById(id).get();
 
+		if (address == null)
+			return null;
+
+		AddressDto addressDto = new AddressDto();
+		addressDto.setId(address.getId());
+		addressDto.setReceiverName(address.getReceiverName());
+		addressDto.setProvince(address.getProvince());
+		addressDto.setCity(address.getCity());
+		addressDto.setDistrict(address.getDistrict());
+		addressDto.setSubDistrict(address.getSubDistrict());
+		addressDto.setStreet(address.getStreet());
+		addressDto.setPostalCode(address.getPostalCode());
+		addressDto.setPhoneNumber(address.getPhoneNumber());
+
+		return addressDto;
+	}
+
+	public AddressDto getAddressDto (Address address) {
+		AddressDto addressDto = new AddressDto();
 		addressDto.setId(address.getId());
 		addressDto.setReceiverName(address.getReceiverName());
 		addressDto.setProvince(address.getProvince());
@@ -62,8 +81,10 @@ public class AddressService {
 	}
 
 	public AddressDto updateAddress (Long id, AddressDto addressDto) {
-		Address address = addressRepository.findById(id)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Address address = addressRepository.findById(id).get();
+
+		if (address == null)
+			return null;
 
 		address.setReceiverName(addressDto.getReceiverName());
 		address.setProvince(addressDto.getProvince());
@@ -75,7 +96,7 @@ public class AddressService {
 		address.setPhoneNumber(addressDto.getPhoneNumber());
 		addressRepository.save(address);
 
-		return getAddressById(address.getId());
+		return getAddressDto(address);
 	}
 
 	public AddressDto createAddress (AddressDto addressDto, String username) {
@@ -94,7 +115,7 @@ public class AddressService {
 		address.setPhoneNumber(addressDto.getPhoneNumber());
 		addressRepository.saveAndFlush(address);
 
-		return getAddressById(address.getId());
+		return getAddressDto(address);
 	}
 
 	public void deleteAddressById (Long id) {

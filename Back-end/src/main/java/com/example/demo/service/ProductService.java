@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_SKU;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductIncludeSkuDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.payload.ProductCreateDTO;
@@ -25,8 +25,8 @@ public interface ProductService {
 	
 	//Product_SKU
 	List<ProductIncludeImageDTO> listAllProductIncludeImage();
-	List<Products> listProductBySKUId(Long id);
+	List<Product> listProductBySKUId(Long id);
 	void deleteProductSku(Long id);
-	Products createProductAll(ProductCreateDTO productRequest);
-	Products createProduct(ProductDTO productRequest);
+	Product createProductAll(ProductCreateDTO productRequest);
+	Product createProduct(ProductDTO productRequest);
 }

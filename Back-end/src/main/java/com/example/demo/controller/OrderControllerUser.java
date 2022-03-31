@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +36,9 @@ public class OrderControllerUser {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		if (!orderService.getOrderListByUser(userDetails.getUsername()).isEmpty())
-            	return new ResponseEntity<>(orderService.getOrderListByUser(userDetails.getUsername()), HttpStatus.OK);
+    		List<OrderDto> orderList = orderService.getOrderListByUser(userDetails.getUsername());
+    		if (!orderList.isEmpty())
+            	return new ResponseEntity<>(orderList, HttpStatus.OK);
             else
                 return new ResponseEntity<>("No order found!", HttpStatus.NOT_FOUND);
     	}
@@ -46,8 +49,9 @@ public class OrderControllerUser {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getOrder(@PathVariable Long id) {
-        if (orderService.getOrderById(id) != null)
-        	return new ResponseEntity<>(orderService.getOrderById(id), HttpStatus.OK);
+        OrderDto order = orderService.getOrderById(id);
+    	if (order != null)
+        	return new ResponseEntity<>(order, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -55,7 +59,13 @@ public class OrderControllerUser {
     @PostMapping("/create")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-    	return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.OK);
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    		return new ResponseEntity<>(orderService.createOrder(orderDto, userDetails.getUsername()), HttpStatus.OK);
+    	}
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+
     }
 
     @DeleteMapping("/delete/{id}")

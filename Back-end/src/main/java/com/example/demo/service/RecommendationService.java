@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,14 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_Image;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.Recommendation;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.User;
 import com.example.demo.payload.ProductRecommendationResponse;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductImageRepository;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.RecommendationRepository;
 import com.example.demo.repository.ReviewRepository;
 import com.example.demo.repository.UserRepository;
 
@@ -29,6 +32,9 @@ public class RecommendationService {
 	ProductImageRepository productImageRepository;
 
 	@Autowired
+	RecommendationRepository recommendationRepository;
+
+	@Autowired
 	ProductRepository productRepository;
 
 	@Autowired
@@ -36,9 +42,6 @@ public class RecommendationService {
 
 	@Autowired
 	UserRepository userRepository;
-
-	@Autowired
-	ReviewRepository reviewRepository;
 
 	public List<String> getAllImage() {
 		List<Product_Image> imageList = productImageRepository.findAll();
@@ -52,10 +55,23 @@ public class RecommendationService {
 		return imageUrlList;
 	}
 
-	public List<ProductRecommendationResponse> getMostSoldProducts () {
-		List<Products> productList = productRepository.findAllByOrderBySoldDesc();
+	public List<ProductRecommendationResponse> getRecommendedProductsByUser (String username, boolean flag) {
+		List<Product> productList;
+		if (flag) {
+			User user = userRepository.findByUsername(username).get();
+			List<Recommendation> recommendationList = recommendationRepository.findByUser(user);
+			if(!recommendationList.isEmpty()) {
+				productList = recommendationList.stream().map(Recommendation::getProduct).collect(Collectors.toList());
+			}
+			else {
+				productList = productRepository.findAllByOrderBySoldDesc();
+			}
+		}
+		else {
+			productList = productRepository.findAllByOrderBySoldDesc();
+		}
 		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
-		for (Products product : productList) {
+		for (Product product : productList) {
 			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
 			productResponse.setProduct_id(product.getProduct_id());
 			productResponse.setProduct_name(product.getProduct_name());
@@ -73,33 +89,37 @@ public class RecommendationService {
 		return productResponseList;
 	}
 
-	public List<ProductRecommendationResponse> getRecommendedProducts (List<String> imageUrlList) {
-		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
+	public int saveRecommendedProducts (List<String> imageUrlList, String username) {
+		User user = userRepository.findByUsername(username).get();
+		if (user == null)
+			return 0;
 		for (String imageUrl : imageUrlList) {
 			Product_Image image = productImageRepository.findByUrl(imageUrl).get();
-			Products product = image.getProducts();
-			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
-			productResponse.setProduct_id(product.getProduct_id());
-			productResponse.setProduct_name(product.getProduct_name());
-			productResponse.setProduct_status_id(product.getProduct_status_id());
-			productResponse.setPrice(product.getPrice());
-			productResponse.setImageUrl(image.getUrl());
-			productResponseList.add(productResponse);
+			Product product = image.getProducts();
+			Recommendation recommedation = new Recommendation();
+			recommedation.setUser(user);
+			recommedation.setProduct(product);
+			recommendationRepository.saveAndFlush(recommedation);
 		}
-		return productResponseList;
+		return 1;
 	}
 
 	public List<String> getLatestBoughtImagesByUser(String username) {
-		List<String> imageUrlList = new ArrayList<>();
-		if (username.isEmpty() || orderRepository.findByUser(userRepository.findByUsername(username).get()).isEmpty())
-			return null;
-		User user = userRepository.findByUsername(username).get();
-		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(user);
-		Map<Products, String> productMap = new HashMap<>();
-		for (Order order : orderList) {
 
-			for (OrderItem orderItem : order.getOrderItems()) {
-				Products product = orderItem.getProductSKU().getProducts();
+		if (username.isEmpty())
+			return null;
+
+		User user = userRepository.findByUsername(username).get();
+		if (orderRepository.findByUser(user).isEmpty())
+			return null;
+
+		List<String> imageUrlList = new ArrayList<>();
+		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(user);
+		Map<Product, String> productMap = new HashMap<>();
+		for (Order order : orderList) {
+			Set<OrderItem> orderItems = order.getOrderItems();
+			for (OrderItem orderItem : orderItems) {
+				Product product = orderItem.getProductSKU().getProducts();
 				if (product.getProduct_status_id().equalsIgnoreCase("instock") && !productMap.containsKey(product)) {
 					Set<Product_Image> imageList = product.getProduct_Image();
 					for (Product_Image image : imageList) {

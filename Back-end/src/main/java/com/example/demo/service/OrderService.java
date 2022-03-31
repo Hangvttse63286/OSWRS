@@ -15,14 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.common.EOrderStatus;
 import com.example.demo.common.EPayment;
 import com.example.demo.common.EPaymentStatus;
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_SKU;
-import com.example.demo.entity.Products;
+import com.example.demo.entity.User;
+import com.example.demo.entity.Product;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderItemDto;
 import com.example.demo.payload.OrderStatusDto;
 import com.example.demo.repository.AddressRepository;
+import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PaymentRepository;
@@ -57,6 +60,9 @@ public class OrderService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	CartRepository cartRepository;
 
 	@Autowired
 	AddressService addressService;
@@ -96,7 +102,7 @@ public class OrderService {
 			orderDto.setOrderDate(order.getOrderDate());
 			if (order.getPaymentDate() != null)
 				orderDto.setPaymentDate(order.getPaymentDate());
-			orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
+			orderDto.setAddressId(order.getAddress().getId());
 
 			orderListDto.add(orderDto);
 		}
@@ -137,7 +143,7 @@ public class OrderService {
 			orderDto.setOrderDate(order.getOrderDate());
 			if (order.getPaymentDate() != null)
 				orderDto.setPaymentDate(order.getPaymentDate());
-			orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
+			orderDto.setAddressId(order.getAddress().getId());
 
 			orderListDto.add(orderDto);
 		}
@@ -175,24 +181,61 @@ public class OrderService {
 		orderDto.setOrderDate(order.getOrderDate());
 		if (order.getPaymentDate() != null)
 			orderDto.setPaymentDate(order.getPaymentDate());
-		orderDto.setAddressDto(addressService.getAddressById(order.getAddress().getId()));
+		orderDto.setAddressId(order.getAddress().getId());
 
 		return orderDto;
 	}
 
-	public OrderDto createOrder(OrderDto orderDto) {
+	public OrderDto getOrderDto (Order order) {
+
+		List<OrderItemDto> orderItemList = new ArrayList<>();
+		OrderDto orderDto = new OrderDto();
+
+
+		orderDto.setId(order.getId());
+		orderDto.setOrderStatus(order.getOrderStatus().toString());
+		orderDto.setUsername(order.getUser().getUsername());
+		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
+		orderDto.setPayment(order.getPayment().getName().toString());
+		Set<OrderItem> orderItems = order.getOrderItems();
+		for (OrderItem orderItem : orderItems) {
+			OrderItemDto orderItemDto = new OrderItemDto();
+			orderItemDto.setOrderId(order.getId());
+			orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
+			orderItemDto.setQuantity(orderItem.getQuantity());
+			orderItemDto.setPrice(orderItem.getPrice());
+			orderItemList.add(orderItemDto);
+		}
+		orderDto.setOrderItemDtos(orderItemList);
+		orderDto.setSubTotal(order.getSubTotal());
+		if (order.getVoucher() != null)
+			orderDto.setVoucherCode(order.getVoucher().getCode());
+		orderDto.setDeliveryFeeTotal(order.getDeliveryFeeTotal());
+		orderDto.setPaymentTotal(order.getPaymentTotal());
+		orderDto.setOrderDate(order.getOrderDate());
+		if (order.getPaymentDate() != null)
+			orderDto.setPaymentDate(order.getPaymentDate());
+		orderDto.setAddressId(order.getAddress().getId());
+
+		return orderDto;
+	}
+
+	public OrderDto createOrder(OrderDto orderDto, String username) {
 		Set<OrderItem> orderItemList = new HashSet<>();
 
 		Order order = new Order();
-
+		User user = userRepository.findByUsername(orderDto.getUsername()).get();
 		if (orderDto.getPayment().equalsIgnoreCase(EPayment.COD.toString())) {
 			order.setOrderStatus(EOrderStatus.PROCCESSING);
 			order.setPayment(paymentRepository.findByName(EPayment.COD).get());
+			Cart cart = cartRepository.findByUser(user).get();
+			cart.setCartItems(null);
+			cartRepository.saveAndFlush(cart);
 		} else if (orderDto.getPayment().equalsIgnoreCase(EPayment.VNPAY.toString())) {
 			order.setOrderStatus(EOrderStatus.PENDING);
 			order.setPayment(paymentRepository.findByName(EPayment.VNPAY).get());
 		}
-		order.setUser(userRepository.findByUsername(orderDto.getUsername()).get());
+		order.setUser(user);
 		order.setPaymentStatus(EPaymentStatus.PENDING);
 
 		order.setSubTotal(orderDto.getSubTotal());
@@ -202,17 +245,14 @@ public class OrderService {
 		order.setPaymentTotal(orderDto.getPaymentTotal());
 		order.setOrderDate(Calendar.getInstance().getTime());
 		order.setPaymentDate(null);
-		order.setAddress(addressRepository.findById(orderDto.getAddressDto().getId()).get());
+		order.setAddress(addressRepository.findById(orderDto.getAddressId()).get());
 
 		orderRepository.saveAndFlush(order);
+
 		for (OrderItemDto orderItemDto : orderDto.getOrderItemDtos()) {
 			OrderItem orderItem = new OrderItem();
 			orderItem.setOrder(orderRepository.findById(order.getId()).get());
 			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
-			if(order.getOrderStatus().equals(EOrderStatus.PROCCESSING.toString())) {
-				Products product = productSKU.getProducts();
-				product.setSold(product.getSold() + orderItemDto.getQuantity());
-			}
 			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
 			productSKURepository.save(productSKU);
 			orderItem.setProductSKU(productSKU);
@@ -224,7 +264,7 @@ public class OrderService {
 		order.setOrderItems(orderItemList);
 		orderRepository.saveAndFlush(order);
 
-		return getOrderById(order.getId());
+		return getOrderDto(order);
 	}
 
 	public OrderDto changeOrderStatus (Long id, OrderStatusDto orderStatusDto) {
@@ -237,6 +277,11 @@ public class OrderService {
 			break;
 		case "CANCELLED":
 			order.setOrderStatus(EOrderStatus.CANCELLED);
+			Set<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem : orderItems) {
+            	Product_SKU productSKU = orderItem.getProductSKU();
+            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
+            }
 			break;
 		case "DECLINED":
 			order.setOrderStatus(EOrderStatus.DECLINED);
@@ -250,7 +295,7 @@ public class OrderService {
 		case "COMPLETED":
 			order.setOrderStatus(EOrderStatus.COMPLETED);
 			for (OrderItem orderItem : order.getOrderItems()) {
-				Products product = orderItem.getProductSKU().getProducts();
+				Product product = orderItem.getProductSKU().getProducts();
 				product.setSold(product.getSold() + orderItem.getQuantity());
 				productRepository.save(product);
 			}
@@ -278,7 +323,7 @@ public class OrderService {
 			break;
 		}
 		orderRepository.save(order);
-		return getOrderById(id);
+		return getOrderDto(order);
 	}
 
 	public OrderDto UpdateOrder(Long id, OrderDto orderDto) {
@@ -347,7 +392,7 @@ public class OrderService {
 
 		orderRepository.save(order);
 
-		return getOrderById(id);
+		return getOrderDto(order);
 	}
 
 	public void deleteOrder (Long id) {
