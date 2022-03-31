@@ -24,7 +24,7 @@ public class PasswordResetToken {
 
     private String token;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     private User user;
 

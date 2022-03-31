@@ -9,6 +9,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "cart_items")
 public class CartItem {
@@ -22,6 +25,7 @@ public class CartItem {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_sku_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Product_SKU productSKU;
 
 	private int quantity;

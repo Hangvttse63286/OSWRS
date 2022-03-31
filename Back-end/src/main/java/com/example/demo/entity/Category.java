@@ -37,7 +37,15 @@ public class Category {
     private String name ;
     private boolean is_deleted;
 
-    @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+    @ManyToMany(mappedBy = "categories",
+    		fetch = FetchType.LAZY,
+    		cascade =
+        {
+                CascadeType.DETACH,
+                CascadeType.MERGE,
+                CascadeType.REFRESH,
+                CascadeType.PERSIST
+        },
         targetEntity = Product.class)
     @JsonBackReference
     private Set<Product> products = new HashSet<>();

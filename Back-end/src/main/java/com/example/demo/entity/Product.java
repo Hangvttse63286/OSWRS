@@ -67,10 +67,10 @@ public class Product {
         inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
 	private Collection<Category> categories = new ArrayList();
 
-	@OneToMany(mappedBy = "products", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "products", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Product_SKU> productSKUs= new HashSet<Product_SKU>();
 
-	@OneToMany(mappedBy = "products" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "products" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Product_Image> product_Image= new HashSet<Product_Image>();
 
 
