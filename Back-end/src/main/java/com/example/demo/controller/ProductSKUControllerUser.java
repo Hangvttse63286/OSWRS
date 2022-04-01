@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.payload.CategoryDTO;
-import com.example.demo.payload.ProductIncludeSkuDTO;
+import com.example.demo.payload.ProductDetailDTO;
 import com.example.demo.payload.ProductSkuDTO;
 import com.example.demo.repository.ProductSKURepository;
 import com.example.demo.service.CategoryService;
@@ -29,28 +29,29 @@ public class ProductSKUControllerUser {
 		this.productSKUService= productSKUService;
 	}
 
-	@RequestMapping(value = "/listProduct_SKU", method = RequestMethod.GET)
-	public ResponseEntity<?> listProductSKU() {
-		List<ProductSkuDTO> productSKUList = productSKUService.listAllProductSku();
-		if(!productSKUList.isEmpty())
-			return new ResponseEntity<>(productSKUList, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
+//	@RequestMapping(value = "/listProduct_SKU", method = RequestMethod.GET)
+//	public ResponseEntity<?> listProductSKU() {
+//		List<ProductSkuDTO> productSKUList = productSKUService.listAllProductSku();
+//		if(!productSKUList.isEmpty())
+//			return new ResponseEntity<>(productSKUList, HttpStatus.OK);
+//		else
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//	}
 
-	@RequestMapping(value = "/getProductBySKUId/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getProductBySKUId(@PathVariable(name = "id") Long id) {
-		ProductSkuDTO productSKU = productSKUService.getSkuById(id);
-		if(productSKU != null)
-			return new ResponseEntity<>(productSKU, HttpStatus.OK);
+	@RequestMapping(value = "/getSkuById/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getSkuById(@PathVariable(name = "id") Long id) {
+		ProductSkuDTO productSkuDTO= productSKUService.getSkuById(id);
+		if(productSKUService.getSkuById(id) != null) {
+			return new ResponseEntity<>(productSkuDTO, HttpStatus.OK);
+		}
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	@RequestMapping(value = "/getSKUByProductId/{product_id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getSKUByProductId(@PathVariable(name = "product_id") String id) {
-		List<ProductSkuDTO> productSKUList = productSKUService.getSKUByProductId(id);
-		if(!productSKUList.isEmpty())
-			return new ResponseEntity<>(productSKUList, HttpStatus.OK);
+	@RequestMapping(value = "/getSKUByProductId/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getSKUByProductId(@PathVariable(name = "id") String id) {
+		List<ProductSkuDTO> pList= productSKUService.getSKUByProductId(id);
+		if(productSKUService.getSKUByProductId(id) != null)
+			return new ResponseEntity<>(pList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

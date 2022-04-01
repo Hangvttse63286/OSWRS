@@ -7,38 +7,29 @@ import java.util.Set;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_SKU;
 
-public class ProductIncludeSkuDTO {
-	List<ProductImageDTO> productImage;
+public class ProductDetailDTO {
+	List<String> urlImage;
     private String product_id;
 	private String product_status_id;
 	private String product_name;
 	private String description_list;
 	private String description_details;
-	private String search_word;
 	private float price;
 	private List<ProductSkuDTO> productSKUs;
 	
-	public ProductIncludeSkuDTO() {
+	public ProductDetailDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ProductIncludeSkuDTO(List<ProductImageDTO> productImage, String product_id, String description_details, String description_list, String product_name, String product_status_id, String search_word, float price, List<ProductSkuDTO> product_SKUs ) {
-		this.productImage= productImage;
+	public ProductDetailDTO(List<String> urlImage, String product_id, String description_details, String description_list, String product_name, String product_status_id, float price, List<ProductSkuDTO> product_SKUs ) {
+		this.urlImage= urlImage;
 		this.product_id= product_id;
 		this.description_details= description_details;
 		this.description_list= description_list;
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
-		this.search_word= search_word;
 		this.price= price;
 		this.productSKUs= product_SKUs;
-	}
-	
-	public void setProductImage(List<ProductImageDTO> productImage) {
-		this.productImage = productImage;
-	}
-	public List<ProductImageDTO> getProductImage() {
-		return productImage;
 	}
 	public void setPrice(float price) {
 		this.price = price;
@@ -54,6 +45,12 @@ public class ProductIncludeSkuDTO {
 		return productSKUs;
 	}
 
+	public void setUrlImage(List<String> urlImage) {
+		this.urlImage = urlImage;
+	}
+	public List<String> getUrlImage() {
+		return urlImage;
+	}
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
 	}
@@ -67,10 +64,7 @@ public class ProductIncludeSkuDTO {
 		this.product_name = product_name;
 	}public void setProduct_status_id(String product_status_id) {
 		this.product_status_id = product_status_id;
-	}public void setSearch_word(String search_word) {
-		this.search_word = search_word;
 	}
-	
 	public String getDescription_details() {
 		return description_details;
 	}
@@ -85,8 +79,5 @@ public class ProductIncludeSkuDTO {
 	}
 	public String getProduct_status_id() {
 		return product_status_id;
-	}
-	public String getSearch_word() {
-		return search_word;
 	}
 }
