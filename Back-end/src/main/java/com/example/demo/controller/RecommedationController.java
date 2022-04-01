@@ -47,17 +47,7 @@ public class RecommedationController {
 	public ResponseEntity<?> sendImageUrl() {
 		List<String> imageUrlList = recommendationService.getAllImage();
 		if (!imageUrlList.isEmpty()) {
-			String URL = "";
-    		HttpHeaders headers = new HttpHeaders();
-    	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    	    headers.setContentType(MediaType.APPLICATION_JSON);
-    	    HttpEntity<Object> entity = new HttpEntity<Object>(imageUrlList, headers);
-    		restTemplate.exchange(
-    			    URL,
-    			    HttpMethod.GET,
-    			    entity,
-    			    Void.class);
-    		return new ResponseEntity<>("Send successfully!", HttpStatus.OK);
+    		return new ResponseEntity<>(imageUrlList, HttpStatus.OK);
 		}
 		return new ResponseEntity<>("No image found", HttpStatus.NOT_FOUND);
 	}
