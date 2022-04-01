@@ -23,12 +23,12 @@ public class ProductImageController {
 		this.productImageService= productImageService;
 	}
 
-	@RequestMapping(value = "/listImage", method = RequestMethod.GET)
-	public ResponseEntity<?> listImage(){
-		List<ProductImageDTO> imageList = productImageService.listImage();
-		if(!imageList.isEmpty())
-			return new ResponseEntity<>(imageList, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
+//	@RequestMapping(value = "/listImage", method = RequestMethod.GET)
+//	public ResponseEntity<?> listImage(){
+//		List<ProductImageDTO> imageList = productImageService.listImage();
+//		if(!imageList.isEmpty())
+//			return new ResponseEntity<>(imageList, HttpStatus.OK);
+//		else
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//	}
 }
