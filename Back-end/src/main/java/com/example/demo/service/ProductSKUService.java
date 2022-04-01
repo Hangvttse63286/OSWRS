@@ -7,12 +7,13 @@ import com.example.demo.payload.ProductImageDTO;
 import com.example.demo.payload.ProductSkuDTO;
 
 public interface ProductSKUService {
-	List<ProductSkuDTO> listAllProductSku();
+//	List<ProductSkuDTO> listAllProductSku();
 	ProductSkuDTO getSkuById(Long id);
-
+	
 	void deleteProductSkuById(Long id);
-	ProductSkuDTO createProductSku(String id, ProductSkuDTO productSkuDTO);
+	Product_SKU createProductSku(String id, ProductSkuDTO productSkuDTO);
 	ProductSkuDTO updateProductSkuById(Long id, ProductSkuDTO productSkuDTO);
 	List<ProductSkuDTO> getSKUByProductId(String id);
+
 
 }

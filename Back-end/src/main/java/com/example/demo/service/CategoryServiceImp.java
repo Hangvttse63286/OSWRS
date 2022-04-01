@@ -15,7 +15,8 @@ import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.Product;
 import com.example.demo.payload.CategoryDTO;
 import com.example.demo.payload.ProductImageDTO;
-import com.example.demo.payload.ProductIncludeSkuDTO;
+import com.example.demo.payload.ProductIncludeImageDTO;
+import com.example.demo.payload.ProductDetailDTO;
 import com.example.demo.payload.ProductSkuDTO;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
@@ -36,129 +37,112 @@ public class CategoryServiceImp implements CategoryService{
 	}
 
 	//Update Category [Admin] - ok
-	@Override
-	public CategoryDTO updateCategoryById(Long id, CategoryDTO categoryRequest) {
-		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		@Override
+		public CategoryDTO updateCategoryById(Long id, CategoryDTO categoryRequest) {
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 
-		category.setName(categoryRequest.getCategory_name());
-		category.setIs_deleted(categoryRequest.isIs_deleted());
-		categoryRepository.save(category);
-		return getCategoryDto(category);
-	}
-
-	@Override
-	public CategoryDTO getCategoryById(Long id) {
-		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		CategoryDTO categoryDTO= new CategoryDTO();
-
-		categoryDTO.setCategory_name(category.getName());
-		categoryDTO.setIs_deleted(category.isIs_deleted());
-		return categoryDTO;
-	}
-
-	public CategoryDTO getCategoryDto(Category category) {
-		CategoryDTO categoryDTO= new CategoryDTO();
-
-		categoryDTO.setCategory_name(category.getName());
-		categoryDTO.setIs_deleted(category.isIs_deleted());
-		return categoryDTO;
-	}
-
-	//Delete Category - Admin
-	@Override
-	public void deleteCategory(Long id) {
-		Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		categoryRepository.delete(category);
-	}
-
-	@Override
-	public List<CategoryDTO> listAllCategories() {
-		List<Category> resultOptional= categoryRepository.findAll();
-		if(resultOptional.isEmpty()) {
-			throw new NullPointerException("Error: No object found.");
-		}
-		List<CategoryDTO> categoryDTOs= new ArrayList<CategoryDTO>();
-
-
-		for(Category c: resultOptional) {
-			CategoryDTO categoryDTO= new CategoryDTO();
-			categoryDTO.setId(c.getId());
-			categoryDTO.setCategory_name(c.getName());
-			categoryDTO.setIs_deleted(c.isIs_deleted());
-
-			categoryDTOs.add(categoryDTO);
-		}
-		return categoryDTOs;
-	}
-
-
-	@Override
-	public List<ProductIncludeSkuDTO> listProductByCategory(String name) {
-
-		Set<Product> resultOptional= categoryRepository.findByName(name).getProducts();
-		if(resultOptional.isEmpty()) {
-			throw new NullPointerException("Error: No object found.");
-		}
-
-
-		List<ProductIncludeSkuDTO> productDTOList= new ArrayList<ProductIncludeSkuDTO>();
-
-
-		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
-
-		for(Product product: resultOptional) {
-			List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
-			ProductIncludeSkuDTO productIncludeSkuDTO= new ProductIncludeSkuDTO();
-			for(Product_Image p: product.getProduct_Image()) {
-				ProductImageDTO pDto= new ProductImageDTO();
-				if(p.isPrimary() == true) {
-					pDto.setName(p.getName());
-					pDto.setProduct_image_id(p.getProduct_image_id());
-					pDto.setUrl(p.getUrl());
-					pList.add(pDto);
-				}
-			}
-			productIncludeSkuDTO.setProductImage(pList);
-			productIncludeSkuDTO.setProduct_id(product.getProduct_id());
-			productIncludeSkuDTO.setProduct_status_id(product.getProduct_status_id());
-			productIncludeSkuDTO.setProduct_name(product.getProduct_name());
-			productIncludeSkuDTO.setDescription_list(product.getDescription_list());
-			productIncludeSkuDTO.setDescription_details(product.getDescription_details());
-			productIncludeSkuDTO.setSearch_word(product.getSearch_word());
-			productIncludeSkuDTO.setPrice(product.getPrice());
-			for(Product_SKU pSKU: product.getProductSKUs()) {
-				ProductSkuDTO productSkuDTO= new ProductSkuDTO();
-				productSkuDTO.setId(pSKU.getId());
-				productSkuDTO.setStock(pSKU.getStock());
-				productSkuDTO.setSale_limit(pSKU.getSale_limit());
-				productSkuDTO.setSize(pSKU.getSize());
-				productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
-
-				productSkuDTOList.add(productSkuDTO);
-			}
-			productIncludeSkuDTO.setProductSKUs(productSkuDTOList);
-			productDTOList.add(productIncludeSkuDTO);
-		}
-		return productDTOList;
-
-	}
-
-	@Override
-	public CategoryDTO createCategory(CategoryDTO categoryRequest) {
-
-		Category category= categoryRepository.findByName(categoryRequest.getCategory_name());
-
-		if(category == null) {
-			category= new Category();
 			category.setName(categoryRequest.getCategory_name());
 			category.setIs_deleted(categoryRequest.isIs_deleted());
-			categoryRepository.saveAndFlush(category);
-			return getCategoryDto(category);
+			categoryRepository.save(category);
+			return getCategoryById(id);
 		}
-		else
-			return null;
-	}
+		
+		@Override
+		public CategoryDTO getCategoryById(Long id) {
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+			CategoryDTO categoryDTO= new CategoryDTO();
 
+			categoryDTO.setCategory_name(category.getName());
+			categoryDTO.setIs_deleted(category.isIs_deleted());
+			return categoryDTO;
+		}
+		
+		
+		//Delete Category - Admin
+		@Override
+		public void deleteCategory(Long id) {
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+			categoryRepository.delete(category);
+		}
+		
+		@Override
+		public List<CategoryDTO> listAllCategories() {
+			List<Category> resultOptional= categoryRepository.findAll(); 
+			if(resultOptional.isEmpty()) {
+				throw new NullPointerException("Error: No object found.");
+			}
+			List<CategoryDTO> categoryDTOs= new ArrayList<CategoryDTO>();
 
+			
+			for(Category c: resultOptional) {
+				CategoryDTO categoryDTO= new CategoryDTO();
+				categoryDTO.setId(c.getId());
+				categoryDTO.setCategory_name(c.getName());
+				categoryDTO.setIs_deleted(c.isIs_deleted());
+				
+				categoryDTOs.add(categoryDTO);
+			}
+			return categoryDTOs;
+		}
+		
 
+		@Override
+		public Category createCategory(CategoryDTO categoryRequest) {
+			Category category= new Category();
+			Category category2= categoryRepository.findByName(categoryRequest.getCategory_name());
+			
+			if(category2 == null) {
+				category.setName(categoryRequest.getCategory_name());
+				category.setIs_deleted(categoryRequest.isIs_deleted());
+				return categoryRepository.save(category);
+			}
+			else
+				return null;
+		}
+
+		@Override
+		public List<ProductIncludeImageDTO> listProductByCategoryId(Long id) {
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+
+			List<ProductIncludeImageDTO> productList= new ArrayList<>();
+
+			for(Product product: category.getProducts()) {
+
+				ProductIncludeImageDTO productDTO= new ProductIncludeImageDTO();
+				productDTO.setProduct_id(product.getProduct_id());
+				productDTO.setProduct_status_id(product.getProduct_status_id());
+				productDTO.setProduct_name(product.getProduct_name());
+				productDTO.setSearch_word(product.getSearch_word());
+				productDTO.setPrice(product.getPrice());		
+				for(Product_Image p: product.getProduct_Image()) {
+					if(p.isPrimary() == true) {
+						productDTO.setImageUrl(p.getUrl());
+					}
+				}
+				productList.add(productDTO);
+			}
+			return productList;
+		}
+
+		@Override
+		public List<ProductIncludeImageDTO> listProductByCategoryName(String name) {
+			Category category= categoryRepository.findByName(name);
+			List<ProductIncludeImageDTO> productList= new ArrayList<>();
+
+			for(Product product: category.getProducts()) {
+				ProductIncludeImageDTO productDTO= new ProductIncludeImageDTO();
+				productDTO.setProduct_id(product.getProduct_id());
+				productDTO.setProduct_status_id(product.getProduct_status_id());
+				productDTO.setProduct_name(product.getProduct_name());
+				productDTO.setSearch_word(product.getSearch_word());
+				productDTO.setPrice(product.getPrice());		
+				for(Product_Image p: product.getProduct_Image()) {
+					if(p.isPrimary() == true) {
+						productDTO.setImageUrl(p.getUrl());
+					}
+				}
+				productList.add(productDTO);
+			}
+			return productList;
+		}
 }
