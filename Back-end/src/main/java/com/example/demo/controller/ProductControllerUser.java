@@ -57,7 +57,7 @@ public class ProductControllerUser {
 			if (toIndex < productList.size())
 				return new ResponseEntity<>(productList.subList(fromIndex, toIndex), HttpStatus.OK);
 			else
-				return new ResponseEntity<>(productList.subList(fromIndex, productList.size() - 1), HttpStatus.OK);
+				return new ResponseEntity<>(productList.subList(fromIndex, productList.size()), HttpStatus.OK);
 		} else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}

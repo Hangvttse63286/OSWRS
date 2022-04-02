@@ -4,6 +4,6 @@ public enum ECategory {
 	T_SHIRT,
 	SHIRT,
 	JEANS,
-	DRESS, 
+	DRESS,
 	SKIRT
 }
