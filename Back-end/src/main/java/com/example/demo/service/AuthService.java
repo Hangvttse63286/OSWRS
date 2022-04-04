@@ -28,7 +28,6 @@ import com.example.demo.common.JwtUtils;
 import com.example.demo.entity.Cart;
 import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.entity.Role;
-import com.example.demo.entity.Token;
 import com.example.demo.entity.User;
 import com.example.demo.entity.Verification;
 import com.example.demo.payload.JwtResponse;
@@ -43,7 +42,6 @@ import com.example.demo.repository.CartRepository;
 import net.bytebuddy.utility.RandomString;
 
 import com.example.demo.repository.RoleRepository;
-import com.example.demo.repository.TokenRepository;
 
 @Service
 @Transactional
@@ -62,9 +60,6 @@ public class AuthService {
 
 	@Autowired
     private RoleRepository roleRepository;
-
-	@Autowired
-    private TokenRepository tokenRepository;
 
 	@Autowired
     private CartRepository cartRepository;
@@ -113,13 +108,6 @@ public class AuthService {
         if(!userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get().getVerification().isEnabled())
         	return null;
         ResponseCookie  jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
-        Token newToken = new Token();
-        newToken.setToken(jwtCookie.getValue().toString());
-        newToken.setUser(userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get());
-        newToken.setExpired_at(jwtUtils.getExpiredDateFromToken(jwtCookie.getValue().toString()));
-
-        tokenRepository.save(newToken);
 
         User user = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get();
         user.setIs_active(true);

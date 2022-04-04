@@ -69,7 +69,7 @@ public class RecommedationController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		String URL = "https://my-recommendation-api.herokuapp.com/recommend";
+    		String URL = "https://recommendation-system-o7alw.ondigitalocean.app/recommend";
     		HttpHeaders headers = new HttpHeaders();
     	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     	    headers.setContentType(MediaType.APPLICATION_JSON);
