@@ -51,9 +51,9 @@ public class AccountService {
 		return userDtoList;
 	}
 
-	public UserDto findById (Long id) {
+	public UserDto findByUsername (String username) {
 		UserDto userDto = new UserDto();
-		User user = userRepository.findById(id)
+		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new NullPointerException("Error: No object found."));
 		userDto.setFirst_name(user.getFirst_name());
 		userDto.setLast_name(user.getLast_name());
@@ -70,8 +70,8 @@ public class AccountService {
 		return userDto;
 	}
 
-	public String changeRole (Long id, RoleChangeDto roleChangeDto) {
-		User user = userRepository.findById(id).get();
+	public String changeRole (String username, RoleChangeDto roleChangeDto) {
+		User user = userRepository.findByUsername(username).get();
 		if (user == null)
 			return null;
 
@@ -104,8 +104,8 @@ public class AccountService {
 	}
 
 
-	public String deleteAcc (Long id) {
-		userRepository.deleteById(id);
+	public String deleteAcc (String username) {
+		userRepository.deleteByUsername(username);
 		return "Delete successfully!";
 	}
 

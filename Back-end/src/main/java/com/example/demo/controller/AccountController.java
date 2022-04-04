@@ -37,31 +37,31 @@ public class AccountController {
             return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
-        UserDto user = accountService.findById(id);
-    	if (accountService.findById(id) != null)
+    public ResponseEntity<?> getUser(@PathVariable String username) {
+        UserDto user = accountService.findByUsername(username);
+    	if (user != null)
         	return new ResponseEntity<>(user, HttpStatus.OK);
         else
             return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/change_role/{id}")
+    @PutMapping("/change_role/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> changeRoles(@PathVariable Long id, @RequestBody RoleChangeDto roleChangeDto) {
-    	String result = accountService.changeRole(id, roleChangeDto);
+    public ResponseEntity<?> changeRoles(@PathVariable String username, @RequestBody RoleChangeDto roleChangeDto) {
+    	String result = accountService.changeRole(username, roleChangeDto);
     	if (result != null)
     		return new ResponseEntity<>(result, HttpStatus.OK);
     	else
             return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
-    	if (accountService.findById(id) != null)
-    		return new ResponseEntity<>(accountService.deleteAcc(id), HttpStatus.OK);
+    public ResponseEntity<?> deleteAccount(@PathVariable String username) {
+    	if (accountService.findByUsername(username) != null)
+    		return new ResponseEntity<>(accountService.deleteAcc(username), HttpStatus.OK);
     	else
             return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
     }

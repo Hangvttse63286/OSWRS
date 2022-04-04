@@ -64,7 +64,7 @@ public class Order {
 	@Temporal(TemporalType.DATE)
 	private Date paymentDate;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "address_id")
 	private Address address;
 

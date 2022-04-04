@@ -26,5 +26,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = { "roles", "passwordResetToken", "verification" })
     List<User> findAll();
 
-    void deleteById(Long id);
+    void deleteByUsername(String username);
 }
