@@ -23,7 +23,7 @@ import com.example.demo.service.OrderService;
 import com.example.demo.service.UserDetailsImpl;
 import com.example.demo.service.UserService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user/order")
 public class OrderControllerUser {

@@ -22,7 +22,7 @@ import com.example.demo.payload.VnPayQueryRequest;
 import com.example.demo.payload.VnPayQueryResponse;
 import com.example.demo.service.VNPayService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/payment/vnpay")
 public class VNPayController {

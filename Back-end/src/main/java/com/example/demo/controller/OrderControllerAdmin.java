@@ -21,7 +21,7 @@ import com.example.demo.payload.OrderStatusDto;
 import com.example.demo.payload.VoucherDto;
 import com.example.demo.service.OrderService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/admin/order")
 public class OrderControllerAdmin {

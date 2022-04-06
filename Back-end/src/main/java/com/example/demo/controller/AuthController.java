@@ -31,7 +31,7 @@ import com.example.demo.payload.SignUpDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.AuthService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

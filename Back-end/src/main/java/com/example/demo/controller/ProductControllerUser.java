@@ -17,7 +17,7 @@ import com.example.demo.payload.ProductDetailDTO;
 import com.example.demo.payload.ProductListDTO;
 import com.example.demo.service.ProductService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/product/")
 public class ProductControllerUser {

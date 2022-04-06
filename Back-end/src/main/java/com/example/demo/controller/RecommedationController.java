@@ -33,7 +33,7 @@ import com.example.demo.payload.RecommendationSaveRequest;
 import com.example.demo.service.RecommendationService;
 import com.example.demo.service.UserDetailsImpl;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/recommendation")
 public class RecommedationController {

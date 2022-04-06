@@ -26,7 +26,7 @@ import com.example.demo.service.UserService;
 import com.example.demo.payload.CartItemDto;
 import com.example.demo.payload.CartItemResponse;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {

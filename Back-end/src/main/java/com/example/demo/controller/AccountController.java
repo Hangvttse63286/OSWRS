@@ -19,7 +19,7 @@ import com.example.demo.payload.RoleChangeDto;
 import com.example.demo.payload.UserDto;
 import com.example.demo.service.AccountService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/admin/account")
 public class AccountController {

@@ -20,38 +20,38 @@ import com.example.demo.payload.ChangePassDto;
 import com.example.demo.payload.UpdateUserDto;
 import com.example.demo.service.UserDetailsImpl;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-	
+
 	@Autowired
     private UserService userService;
-	
+
 	@GetMapping("/profile")
 	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> getInfo() {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		
+
     	    return new ResponseEntity<>(userService.findByUsername(userDetails.getUsername()), HttpStatus.OK);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
-	
+
 	@GetMapping("/profile/updateInfo")
 	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> getUpdateInfo() {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		
+
     	    return new ResponseEntity<>(userService.findByUsername(userDetails.getUsername()), HttpStatus.OK);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
-	
+
     @PostMapping("/profile/updateInfo")
     @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> updateInfo(@RequestBody UpdateUserDto updateUserDto) {
@@ -63,9 +63,9 @@ public class UserController {
     		userService.updateInfo(updateUserDto);
     		return new ResponseEntity<>("Update Info successfully!", HttpStatus.OK);
     	}
-    	
+
     }
-    
+
     @PostMapping("/changePassword")
     @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> changePassword(@RequestBody ChangePassDto changePassDto) {
@@ -80,7 +80,7 @@ public class UserController {
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
-    
+
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteUSer() {

@@ -20,7 +20,7 @@ import com.example.demo.payload.ValidateVoucherRequest;
 import com.example.demo.payload.VoucherDto;
 import com.example.demo.service.VoucherService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/voucher")
 public class VoucherController {

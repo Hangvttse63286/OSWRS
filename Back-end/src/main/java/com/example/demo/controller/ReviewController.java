@@ -18,7 +18,7 @@ import com.example.demo.payload.ReviewDto;
 import com.example.demo.payload.ReviewRequest;
 import com.example.demo.service.ReviewService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/review")
 public class ReviewController {

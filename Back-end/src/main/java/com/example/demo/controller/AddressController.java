@@ -23,7 +23,7 @@ import com.example.demo.payload.AddressDto;
 import com.example.demo.service.AddressService;
 import com.example.demo.service.UserDetailsImpl;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/address")
 public class AddressController {
