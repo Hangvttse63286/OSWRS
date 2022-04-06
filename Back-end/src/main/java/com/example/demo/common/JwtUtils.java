@@ -28,16 +28,16 @@ import io.jsonwebtoken.UnsupportedJwtException;
 public class JwtUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-	
+
 	@Value("${bezkoder.app.jwtSecret}")
 	private String jwtSecret;
-	
+
 	@Value("${bezkoder.app.jwtExpirationMs}")
 	private int jwtExpirationMs;
-	
+
 	@Value("${bezkoder.app.jwtCookieName}")
 	private String jwtCookie;
-	
+
 	public String getJwtFromCookies(HttpServletRequest request) {
 		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
 		if (cookie != null) {
@@ -53,7 +53,7 @@ public class JwtUtils {
 				.build();
 		return cookie;
 	}
-	
+
 	public ResponseCookie getJwtCookie(String jwt) {
 		ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
 		return cookie;
@@ -69,11 +69,11 @@ public class JwtUtils {
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
 	}
-	
+
 	public String getUserNameFromJwtToken(String token) {
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
 	}
-	
+
 	public boolean validateJwtToken(String authToken) {
 		try {
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
@@ -89,10 +89,10 @@ public class JwtUtils {
 		} catch (IllegalArgumentException e) {
 			logger.error("JWT claims string is empty: {}", e.getMessage());
 		}
-		
+
 		return false;
 	}
-	
+
 	public Date getExpiredDateFromToken(String token) {
 		  Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 		  return claims.getExpiration();
