@@ -175,6 +175,12 @@ public class AuthService {
 
         user.setVerification(verification);
         verificationRepository.save(verification);
+
+        PasswordResetToken passwordResetToken = new PasswordResetToken();
+		passwordResetToken.setUser(user);
+		user.setPasswordResetToken(passwordResetToken);
+		passwordResetTokenRepository.saveAndFlush(passwordResetToken);
+
         userRepository.save(user);
 
         sendVerificationEmail(user,req, 0);
@@ -244,19 +250,10 @@ public class AuthService {
 		PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser(user);
 		String token = RandomString.make(45);
 
-		if(passwordResetToken != null) {
-			passwordResetToken.setToken(token);
-			passwordResetTokenRepository.save(passwordResetToken);
-		} else {
-			passwordResetToken = new PasswordResetToken();
-			passwordResetToken.setToken(token);
-			passwordResetToken.setUser(user);
-			user.setPasswordResetToken(passwordResetToken);
-			userRepository.save(user);
-			passwordResetTokenRepository.save(passwordResetToken);
-		}
+	    passwordResetToken.setToken(token);
+		passwordResetTokenRepository.saveAndFlush(passwordResetToken);
 
-		sendVerificationEmail(user,req, 1);
+		sendVerificationEmail(passwordResetToken.getUser(),req, 1);
 	}
 
 	public Boolean validatePasswordResetToken(String token) {
