@@ -52,7 +52,7 @@ public class AuthController {
         	return new ResponseEntity<>("Error: Unverified account! Please check your email for verification", HttpStatus.BAD_REQUEST);
         }
 
-    	return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtUtils.getJwtCookie(jwtResponse.getAccessToken()).toString(), "SameSite=None; Secure")
+    	return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtUtils.getJwtCookie(jwtResponse.getAccessToken()).toString())
         		.body(jwtResponse);
     }
 
