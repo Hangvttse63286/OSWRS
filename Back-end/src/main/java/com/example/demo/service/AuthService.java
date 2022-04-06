@@ -176,10 +176,12 @@ public class AuthService {
         user.setVerification(verification);
         verificationRepository.save(verification);
 
+        userRepository.save(user);
+
         PasswordResetToken passwordResetToken = new PasswordResetToken();
 		passwordResetToken.setUser(user);
 		user.setPasswordResetToken(passwordResetToken);
-		passwordResetTokenRepository.saveAndFlush(passwordResetToken);
+		passwordResetTokenRepository.save(passwordResetToken);
 
         userRepository.save(user);
 
