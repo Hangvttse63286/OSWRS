@@ -23,7 +23,7 @@ public class VoucherService {
 	public List<VoucherDto> getVoucherList() {
 		List<Voucher> voucherList = voucherRepository.findAll();
 		if(voucherList.isEmpty())
-			return null;
+			return new ArrayList<>();
 		List<VoucherDto> voucherDtoList = new ArrayList<>();
 		VoucherDto voucherDto = new VoucherDto();
 		for (Voucher voucher : voucherList) {

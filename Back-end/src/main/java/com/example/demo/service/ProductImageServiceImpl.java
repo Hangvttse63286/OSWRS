@@ -27,9 +27,12 @@ public class ProductImageServiceImpl implements ProductImageService{
 	@Override
 	public List<ProductImageDTO> listImage() {
 		List<Product_Image> imageList = productImageReository.findAll();
+		if (imageList.isEmpty())
+			return new ArrayList<ProductImageDTO>();
+
 		List<ProductImageDTO> productImageDTOList= new ArrayList<ProductImageDTO>();
 
-		for(Product_Image p: productImageReository.findAll()) {
+		for(Product_Image p: imageList) {
 			ProductImageDTO productImageDTO= new ProductImageDTO();
 			if(p.isPrimary() == true) {
 				productImageDTO.setName(p.getName());

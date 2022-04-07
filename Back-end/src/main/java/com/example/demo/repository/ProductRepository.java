@@ -30,4 +30,9 @@ public interface ProductRepository extends JpaRepository<Product, String>{
 
 	@EntityGraph(attributePaths = { "categories", "productSKUs", "product_Image" })
 	List<Product> findAllByOrderBySoldDesc();
+
+	@EntityGraph(attributePaths = { "categories", "productSKUs", "product_Image" })
+	@Query("SELECT p FROM Product p WHERE CONCAT(p.product_name, ' ', p.description_list, ' ', p.description_details, ' ', p.search_word) LIKE %?1%")
+    public List<Product> search(String keyword);
+
 }

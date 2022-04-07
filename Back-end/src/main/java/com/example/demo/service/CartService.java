@@ -18,6 +18,7 @@ import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.ProductImageRepository;
 import com.example.demo.repository.ProductSKURepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.payload.AddressDto;
 import com.example.demo.payload.CartItemDto;
 import com.example.demo.payload.CartItemResponse;
 
@@ -75,7 +76,7 @@ public class CartService {
 		Cart cart = cartRepository.findByUser(user).get();
 		Set<CartItem> cartItems = cart.getCartItems();
 		if (cartItems.isEmpty())
-			return null;
+			return new ArrayList<CartItemResponse>();
 		List<CartItemResponse> cartItemList = new ArrayList<>();
 
 		for (CartItem cartItem : cartItems) {

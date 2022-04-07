@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -47,6 +48,15 @@ public class ProductControllerUser {
 			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public ResponseEntity<?> searchProducts(@Param("keyword") String keyword) {
+		List<ProductIncludeImageDTO> productList = productService.search(keyword);
+		if (!productList.isEmpty())
+			return new ResponseEntity<>(productList, HttpStatus.OK);
+		else
+			return new ResponseEntity<>("No product found!", HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/web/listAllProductIncludeImage", method = RequestMethod.GET)

@@ -24,6 +24,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderItemDto;
 import com.example.demo.payload.OrderStatusDto;
+import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.repository.AddressRepository;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderItemRepository;
@@ -112,7 +113,7 @@ public class OrderService {
 	public List<OrderDto> getOrderListByUser(String username) {
 		List<Order> orderList = orderRepository.findByUser(userRepository.findByUsername(username).get());
 		if (orderList.isEmpty()) {
-			return null;
+			return new ArrayList<OrderDto>();
 		}
 
 		List<OrderDto> orderListDto = new ArrayList<>();

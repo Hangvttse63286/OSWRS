@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.Address;
 import com.example.demo.entity.User;
 import com.example.demo.payload.AddressDto;
+import com.example.demo.payload.UserDto;
 import com.example.demo.repository.AddressRepository;
 import com.example.demo.repository.UserRepository;
 
@@ -27,7 +28,7 @@ public class AddressService {
 		List<AddressDto> addressListDto = new ArrayList<>();
 		List<Address> addressList = addressRepository.findByUser(user);
 		if (addressList.isEmpty())
-			return null;
+			return new ArrayList<AddressDto>();
 		for (Address address : addressList) {
 			AddressDto addressDto = new AddressDto();
 			addressDto.setId(address.getId());

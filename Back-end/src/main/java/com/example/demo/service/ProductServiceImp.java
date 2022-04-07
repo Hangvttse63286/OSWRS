@@ -319,12 +319,34 @@ public class ProductServiceImp implements ProductService{
 	public List<ProductIncludeImageDTO> listAllProductIncludeImage() {
 		List<Product> products= productRepository.findAll();
 		if(products.isEmpty())
-			throw new NullPointerException("Error: No object found.");
+			return new ArrayList<ProductIncludeImageDTO>();
 
 		List<ProductIncludeImageDTO> productList= new ArrayList<>();
 
 
-		for(Product product: productRepository.findAll()) {
+		for(Product product: products) {
+
+			ProductIncludeImageDTO productDTO= new ProductIncludeImageDTO();
+			productDTO.setProduct_id(product.getProduct_id());
+			productDTO.setProduct_status_id(product.getProduct_status_id());
+			productDTO.setProduct_name(product.getProduct_name());
+			productDTO.setSearch_word(product.getSearch_word());
+			productDTO.setPrice(product.getPrice());
+			for(Product_Image p: product.getProduct_Image()) {
+				if(p.isPrimary() == true) {
+					productDTO.setImageUrl(p.getUrl());
+				}
+			}
+			productList.add(productDTO);
+		}
+		return productList;
+	}
+
+	public List<ProductIncludeImageDTO> listAllProductIncludeImage(List<Product> products) {
+
+		List<ProductIncludeImageDTO> productList= new ArrayList<>();
+
+		for(Product product: products) {
 
 			ProductIncludeImageDTO productDTO= new ProductIncludeImageDTO();
 			productDTO.setProduct_id(product.getProduct_id());
@@ -346,6 +368,17 @@ public class ProductServiceImp implements ProductService{
 	public List<Product> listProductBySKUId(Long id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<ProductIncludeImageDTO> search(String keyword) {
+		if (keyword != null && !keyword.trim().isEmpty()) {
+			List<Product> products = productRepository.search(keyword);
+			if (!products.isEmpty())
+				return listAllProductIncludeImage(products);
+			return new ArrayList<ProductIncludeImageDTO>();
+        }
+        return listAllProductIncludeImage();
 	}
 
 

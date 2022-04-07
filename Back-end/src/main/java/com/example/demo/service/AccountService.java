@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.common.ERole;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
+import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.payload.RoleChangeDto;
 import com.example.demo.payload.UpdateUserDto;
 import com.example.demo.payload.UserDto;
@@ -32,6 +33,8 @@ public class AccountService {
 
 	public List<UserDto> findAll () {
 		List<User> userList = userRepository.findAll();
+		if (userList.isEmpty())
+			return new ArrayList<UserDto>();
 		List<UserDto> userDtoList = new ArrayList<>();
 		for (User user : userList) {
 			UserDto userDto = new UserDto();

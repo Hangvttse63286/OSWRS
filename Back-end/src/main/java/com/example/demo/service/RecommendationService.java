@@ -46,7 +46,7 @@ public class RecommendationService {
 	public List<String> getAllImage() {
 		List<Product_Image> imageList = productImageRepository.findAll();
 		if (imageList.isEmpty())
-			return null;
+			return new ArrayList<String>();
 		List<String> imageUrlList = new ArrayList<>();
 		for (Product_Image productImage : imageList) {
 			if(productImage.isPrimary())
@@ -107,11 +107,11 @@ public class RecommendationService {
 	public List<String> getLatestBoughtImagesByUser(String username) {
 
 		if (username.isEmpty())
-			return null;
+			return new ArrayList<String>();
 
 		User user = userRepository.findByUsername(username).get();
 		if (orderRepository.findByUser(user).isEmpty())
-			return null;
+			return new ArrayList<String>();
 
 		List<String> imageUrlList = new ArrayList<>();
 		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(user);

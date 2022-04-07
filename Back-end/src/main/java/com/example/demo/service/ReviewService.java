@@ -64,7 +64,7 @@ public class ReviewService {
 		Product product = productRepository.getById(id);
 		List<Review> reviewList = reviewRepository.findByProducts(product);
 		if (reviewList.isEmpty())
-			return null;
+			return new ArrayList<>();
 		List<ReviewDto> reviewDtoList = new ArrayList<>();
 		for (Review review : reviewList) {
 			ReviewDto reviewDto = new ReviewDto();

@@ -13,6 +13,7 @@ import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.Product;
+import com.example.demo.payload.AddressDto;
 import com.example.demo.payload.CategoryDTO;
 import com.example.demo.payload.ProductImageDTO;
 import com.example.demo.payload.ProductIncludeImageDTO;
@@ -46,7 +47,7 @@ public class CategoryServiceImp implements CategoryService{
 			categoryRepository.save(category);
 			return getCategoryById(id);
 		}
-		
+
 		@Override
 		public CategoryDTO getCategoryById(Long id) {
 			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
@@ -56,41 +57,41 @@ public class CategoryServiceImp implements CategoryService{
 			categoryDTO.setIs_deleted(category.isIs_deleted());
 			return categoryDTO;
 		}
-		
-		
+
+
 		//Delete Category - Admin
 		@Override
 		public void deleteCategory(Long id) {
 			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 			categoryRepository.delete(category);
 		}
-		
+
 		@Override
 		public List<CategoryDTO> listAllCategories() {
-			List<Category> resultOptional= categoryRepository.findAll(); 
+			List<Category> resultOptional= categoryRepository.findAll();
 			if(resultOptional.isEmpty()) {
 				throw new NullPointerException("Error: No object found.");
 			}
 			List<CategoryDTO> categoryDTOs= new ArrayList<CategoryDTO>();
 
-			
+
 			for(Category c: resultOptional) {
 				CategoryDTO categoryDTO= new CategoryDTO();
 				categoryDTO.setId(c.getId());
 				categoryDTO.setCategory_name(c.getName());
 				categoryDTO.setIs_deleted(c.isIs_deleted());
-				
+
 				categoryDTOs.add(categoryDTO);
 			}
 			return categoryDTOs;
 		}
-		
+
 
 		@Override
 		public Category createCategory(CategoryDTO categoryRequest) {
 			Category category= new Category();
 			Category category2= categoryRepository.findByName(categoryRequest.getCategory_name());
-			
+
 			if(category2 == null) {
 				category.setName(categoryRequest.getCategory_name());
 				category.setIs_deleted(categoryRequest.isIs_deleted());
@@ -113,7 +114,7 @@ public class CategoryServiceImp implements CategoryService{
 				productDTO.setProduct_status_id(product.getProduct_status_id());
 				productDTO.setProduct_name(product.getProduct_name());
 				productDTO.setSearch_word(product.getSearch_word());
-				productDTO.setPrice(product.getPrice());		
+				productDTO.setPrice(product.getPrice());
 				for(Product_Image p: product.getProduct_Image()) {
 					if(p.isPrimary() == true) {
 						productDTO.setImageUrl(p.getUrl());
@@ -127,6 +128,9 @@ public class CategoryServiceImp implements CategoryService{
 		@Override
 		public List<ProductIncludeImageDTO> listProductByCategoryName(String name) {
 			Category category= categoryRepository.findByName(name);
+			Set<Product> products = category.getProducts();
+			if (products.isEmpty())
+				return new ArrayList<ProductIncludeImageDTO>();
 			List<ProductIncludeImageDTO> productList= new ArrayList<>();
 
 			for(Product product: category.getProducts()) {
@@ -135,7 +139,7 @@ public class CategoryServiceImp implements CategoryService{
 				productDTO.setProduct_status_id(product.getProduct_status_id());
 				productDTO.setProduct_name(product.getProduct_name());
 				productDTO.setSearch_word(product.getSearch_word());
-				productDTO.setPrice(product.getPrice());		
+				productDTO.setPrice(product.getPrice());
 				for(Product_Image p: product.getProduct_Image()) {
 					if(p.isPrimary() == true) {
 						productDTO.setImageUrl(p.getUrl());
