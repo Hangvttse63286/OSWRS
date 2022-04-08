@@ -53,8 +53,8 @@ public class ProductControllerAdmin {
 //	}
 
 	//ok
-	@RequestMapping(value = "/listProductIncludeImage", method = RequestMethod.GET)
-	public ResponseEntity<?> listAllProductIncludeImage(@RequestBody int fromIndex){
+	@RequestMapping(value = "/listProductIncludeImage/{fromIndex}", method = RequestMethod.GET)
+	public ResponseEntity<?> listAllProductIncludeImage(@PathVariable int fromIndex){
 		List<ProductIncludeImageDTO> productList= productService.listAllProductIncludeImage();
 		if(!productList.isEmpty())
 			return new ResponseEntity<>(productList, HttpStatus.OK);

@@ -59,8 +59,8 @@ public class ProductControllerUser {
 			return new ResponseEntity<>("No product found!", HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/web/listAllProductIncludeImage", method = RequestMethod.GET)
-	public ResponseEntity<?> listAllProductWeb(@RequestBody int fromIndex) {
+	@RequestMapping(value = "/web/listAllProductIncludeImage/{fromIndex}", method = RequestMethod.GET)
+	public ResponseEntity<?> listAllProductWeb(@PathVariable int fromIndex) {
 		List<ProductIncludeImageDTO> productList = productService.listAllProductIncludeImage();
 		int toIndex = fromIndex + 20;
 		if (!productList.isEmpty()) {
@@ -72,8 +72,8 @@ public class ProductControllerUser {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/m/listAllProductIncludeImage", method = RequestMethod.GET)
-	public ResponseEntity<?> listAllProductMobile(@RequestBody int fromIndex) {
+	@RequestMapping(value = "/m/listAllProductIncludeImage/{fromIndex}", method = RequestMethod.GET)
+	public ResponseEntity<?> listAllProductMobile(@PathVariable int fromIndex) {
 		List<ProductIncludeImageDTO> productList = productService.listAllProductIncludeImage();
 		int toIndex = fromIndex + 10;
 		if (!productList.isEmpty()) {
