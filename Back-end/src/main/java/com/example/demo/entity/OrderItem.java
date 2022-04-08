@@ -10,6 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.Data;
 
 @Entity
@@ -26,6 +29,7 @@ public class OrderItem {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_sku_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Product_SKU productSKU;
 
 	private int quantity;

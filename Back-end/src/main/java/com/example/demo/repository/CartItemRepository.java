@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -13,4 +14,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long>{
 	boolean existsByCartAndProductSKU(Cart cart, Product_SKU productSKU);
 	@EntityGraph(attributePaths = {"cart", "productSKU" })
 	Optional<CartItem> findByCartAndProductSKU(Cart cart, Product_SKU productSKU);
+
+	@EntityGraph(attributePaths = {"cart", "productSKU" })
+	List<CartItem> findByProductSKU(Product_SKU productSKU);
 }

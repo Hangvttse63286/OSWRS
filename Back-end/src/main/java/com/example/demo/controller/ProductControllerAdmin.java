@@ -42,7 +42,7 @@ public class ProductControllerAdmin {
 		super();
 		this.productService= productService;
 	}
-	
+
 //	//ok
 //	@RequestMapping(value = "/listProduct", method = RequestMethod.GET)
 //	public ResponseEntity<?> listAllProducts(){
@@ -56,7 +56,7 @@ public class ProductControllerAdmin {
 	@RequestMapping(value = "/listProductIncludeImage", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProductIncludeImage(@RequestBody int fromIndex){
 		List<ProductIncludeImageDTO> productList= productService.listAllProductIncludeImage();
-		if(!productList.isEmpty()) 
+		if(!productList.isEmpty())
 			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -66,7 +66,7 @@ public class ProductControllerAdmin {
 	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
 	public ResponseEntity<ProductListDTO> getProductById(@PathVariable(name = "id") String id) {
 		ProductListDTO productListDTO= productService.getProductByIdAdmin(id);
-		if(productService.getProductById(id) != null) 
+		if(productService.getProductById(id) != null)
 			return new ResponseEntity<>(productListDTO, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -77,7 +77,7 @@ public class ProductControllerAdmin {
 	public ResponseEntity<?> deleteProductById(@PathVariable(name = "id") String id) {
 		if(productService.getProductById(id) != null) {
 			productService.deleteProduct(id);
-			return new ResponseEntity<>("Delete order successfully!", HttpStatus.OK);
+			return new ResponseEntity<>("Delete product successfully!", HttpStatus.OK);
 		}
 		else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -105,14 +105,14 @@ public class ProductControllerAdmin {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 	}
-	
-	@RequestMapping(value = "/createProductAll", method = RequestMethod.POST, 
+
+	@RequestMapping(value = "/createProductAll", method = RequestMethod.POST,
 			consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	public ResponseEntity<ProductListDTO> createProductncludeImage(
 			@RequestPart("fileImage") MultipartFile[] multipartFile, ProductCreateDTO productRequest) throws Exception {
-		
+
 		List<ProductImageDTO> listImageDTOs= new ArrayList<ProductImageDTO>();
-		
+
 		Helper helper = new Helper();
 
 //		for(int i= 0; i < multipartFile.length; i++) {
@@ -130,27 +130,27 @@ public class ProductControllerAdmin {
 //			System.out.print(i);
 //			productImageDTO.setUrl(res.getData().getLink());
 //			productImageDTO.setName(multipartFile[i].getOriginalFilename());
-//			
+//
 //			listImageDTOs.add(productImageDTO);
 //		}
-		
+
 		for(MultipartFile multi: multipartFile) {
-			
+
 			ImgurResponse res = helper.getDataImgurResponse(multi);
-			
+
 			ProductImageDTO productImageDTO= new ProductImageDTO();
-			
+
 			productImageDTO.setUrl(res.getData().getLink());
-			
+
 			productImageDTO.setName(multi.getOriginalFilename());
-			
+
 			listImageDTOs.add(productImageDTO);
 		}
-		
+
 		productRequest.setProductImage(listImageDTOs);
-	
-		Product savedProductIncludeImageDTO = productService.createProductAll(productRequest);	
-		
+
+		Product savedProductIncludeImageDTO = productService.createProductAll(productRequest);
+
 		return new ResponseEntity<ProductListDTO>(HttpStatus.OK);
 	}
 

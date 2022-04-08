@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.demo.common.ECategory;
+import com.example.demo.entity.CartItem;
 import com.example.demo.entity.Category;
+import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.Product;
@@ -23,7 +26,9 @@ import com.example.demo.payload.ProductDTO;
 import com.example.demo.payload.ProductImageDTO;
 import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.payload.ProductSkuDTO;
+import com.example.demo.repository.CartItemRepository;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductImageRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ProductSKURepository;
@@ -35,12 +40,16 @@ public class ProductServiceImp implements ProductService{
 	private final ProductSKURepository productSKURepository;
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;
+	private final OrderItemRepository orderItemRepository;
+	private final CartItemRepository cartItemRepository;
 
-	public ProductServiceImp(ProductRepository productRepository, CategoryRepository categoryRepository, ProductSKURepository productSKURepository) {
+	public ProductServiceImp(ProductRepository productRepository, CategoryRepository categoryRepository, ProductSKURepository productSKURepository, OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository) {
 		super();
 		this.productRepository= productRepository;
 		this.categoryRepository= categoryRepository;
 		this.productSKURepository= productSKURepository;
+		this.orderItemRepository= orderItemRepository;
+		this.cartItemRepository= cartItemRepository;
 	}
 
 //	//List Product [User] ->ok
@@ -267,6 +276,20 @@ public class ProductServiceImp implements ProductService{
 	@Override
 	public void deleteProduct(String id) {
 		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Collection<Category> categories = products.getCategories();
+		Set<Product_SKU> productSKUs = products.getProductSKUs();
+		for (Category category : categories) {
+			category.getProducts().remove(products);
+		}
+		for (Product_SKU productSKU : productSKUs) {
+			List<OrderItem> orderItems = orderItemRepository.findByProductSKU(productSKU);
+			if (!orderItems.isEmpty())
+				orderItemRepository.deleteAll(orderItems);
+			List<CartItem> cartItems = cartItemRepository.findByProductSKU(productSKU);
+			if (!cartItems.isEmpty())
+				cartItemRepository.deleteAll(cartItems);
+		}
+		categoryRepository.saveAllAndFlush(categories);
 		productRepository.delete(products);
 	}
 
