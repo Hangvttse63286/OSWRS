@@ -70,7 +70,7 @@ public class CategoryServiceImp implements CategoryService{
 		public List<CategoryDTO> listAllCategories() {
 			List<Category> resultOptional= categoryRepository.findAll();
 			if(resultOptional.isEmpty()) {
-				throw new NullPointerException("Error: No object found.");
+				return new ArrayList<>();
 			}
 			List<CategoryDTO> categoryDTOs= new ArrayList<CategoryDTO>();
 
