@@ -17,6 +17,8 @@ import com.example.demo.entity.Category;
 import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
+import com.example.demo.entity.Recommendation;
+import com.example.demo.entity.Review;
 import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductDetailDTO;
 import com.example.demo.payload.ProductListDTO;
@@ -32,6 +34,8 @@ import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductImageRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ProductSKURepository;
+import com.example.demo.repository.RecommendationRepository;
+import com.example.demo.repository.ReviewRepository;
 
 
 @Service
@@ -42,14 +46,18 @@ public class ProductServiceImp implements ProductService{
 	private final CategoryRepository categoryRepository;
 	private final OrderItemRepository orderItemRepository;
 	private final CartItemRepository cartItemRepository;
+	private final RecommendationRepository recommendationRepository;
+	private final ReviewRepository reviewRepository;
 
-	public ProductServiceImp(ProductRepository productRepository, CategoryRepository categoryRepository, ProductSKURepository productSKURepository, OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository) {
+	public ProductServiceImp(ProductRepository productRepository, CategoryRepository categoryRepository, ProductSKURepository productSKURepository, OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository, RecommendationRepository recommendationRepository, ReviewRepository reviewRepository) {
 		super();
 		this.productRepository= productRepository;
 		this.categoryRepository= categoryRepository;
 		this.productSKURepository= productSKURepository;
 		this.orderItemRepository= orderItemRepository;
 		this.cartItemRepository= cartItemRepository;
+		this.recommendationRepository= recommendationRepository;
+		this.reviewRepository= reviewRepository;
 	}
 
 //	//List Product [User] ->ok
@@ -278,6 +286,14 @@ public class ProductServiceImp implements ProductService{
 		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 		Collection<Category> categories = products.getCategories();
 		Set<Product_SKU> productSKUs = products.getProductSKUs();
+		List<Recommendation> recommendations = recommendationRepository.findByProduct(products);
+		List<Review> reviews = reviewRepository.findByProducts(products);
+		if (!recommendations.isEmpty()) {
+			recommendationRepository.deleteAll(recommendations);
+		}
+		if (!reviews.isEmpty()) {
+			reviewRepository.deleteAll(reviews);
+		}
 		for (Category category : categories) {
 			category.getProducts().remove(products);
 		}
