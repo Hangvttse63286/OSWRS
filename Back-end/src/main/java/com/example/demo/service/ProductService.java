@@ -27,7 +27,7 @@ public interface ProductService {
 		//Product_SKU
 		List<ProductIncludeImageDTO> listAllProductIncludeImage();
 		List<Product> listProductBySKUId(Long id);
-		void deleteProductSku(Long id);
+//		void deleteProductSku(Long id);
 		Product createProductAll(ProductCreateDTO productRequest);
 		Product createProduct(ProductDTO productRequest);
 

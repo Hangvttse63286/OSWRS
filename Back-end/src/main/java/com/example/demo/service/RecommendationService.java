@@ -90,18 +90,22 @@ public class RecommendationService {
 	}
 
 	public int saveRecommendedProducts (List<String> imageUrlList, String username) {
-		User user = userRepository.findByUsername(username).get();
-		if (user == null)
+		try {
+			User user = userRepository.findByUsername(username).get();
+
+			for (String imageUrl : imageUrlList) {
+				Product_Image image = productImageRepository.findByUrl(imageUrl).get();
+				Product product = image.getProducts();
+				Recommendation recommedation = new Recommendation();
+				recommedation.setUser(user);
+				recommedation.setProduct(product);
+				recommendationRepository.saveAndFlush(recommedation);
+			}
+			return 1;
+		} catch (Exception e) {
 			return 0;
-		for (String imageUrl : imageUrlList) {
-			Product_Image image = productImageRepository.findByUrl(imageUrl).get();
-			Product product = image.getProducts();
-			Recommendation recommedation = new Recommendation();
-			recommedation.setUser(user);
-			recommedation.setProduct(product);
-			recommendationRepository.saveAndFlush(recommedation);
 		}
-		return 1;
+
 	}
 
 	public List<String> getLatestBoughtImagesByUser(String username) {

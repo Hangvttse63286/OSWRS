@@ -195,6 +195,8 @@ public class OrderService {
 
 		orderDto.setId(order.getId());
 		orderDto.setOrderStatus(order.getOrderStatus().toString());
+		if (order.getUser() != null)
+			orderDto.setUsername(order.getUser().getUsername());
 		orderDto.setUsername(order.getUser().getUsername());
 		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 		orderDto.setPayment(order.getPayment().getName().toString());
@@ -269,132 +271,136 @@ public class OrderService {
 	}
 
 	public OrderDto changeOrderStatus (Long id, OrderStatusDto orderStatusDto) {
-		Order order = orderRepository.findById(id).get();
-		if (order == null)
-			return null;
-		switch (orderStatusDto.getOrderStatus()) {
-		case "INCOMPLETE":
-			order.setOrderStatus(EOrderStatus.INCOMPLETE);
-			break;
-		case "CANCELLED":
-			order.setOrderStatus(EOrderStatus.CANCELLED);
-			Set<OrderItem> orderItems = order.getOrderItems();
-            for (OrderItem orderItem : orderItems) {
-            	Product_SKU productSKU = orderItem.getProductSKU();
-            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
-            }
-			break;
-		case "DECLINED":
-			order.setOrderStatus(EOrderStatus.DECLINED);
-			break;
-		case "PENDING":
-			order.setOrderStatus(EOrderStatus.PENDING);
-			break;
-		case "PROCCESSING":
-			order.setOrderStatus(EOrderStatus.PROCCESSING);
-			break;
-		case "COMPLETED":
-			order.setOrderStatus(EOrderStatus.COMPLETED);
-			for (OrderItem orderItem : order.getOrderItems()) {
-				Product product = orderItem.getProductSKU().getProducts();
-				product.setSold(product.getSold() + orderItem.getQuantity());
-				productRepository.save(product);
+		try {
+			Order order = orderRepository.findById(id).get();
+
+			switch (orderStatusDto.getOrderStatus()) {
+			case "INCOMPLETE":
+				order.setOrderStatus(EOrderStatus.INCOMPLETE);
+				break;
+			case "CANCELLED":
+				order.setOrderStatus(EOrderStatus.CANCELLED);
+				Set<OrderItem> orderItems = order.getOrderItems();
+	            for (OrderItem orderItem : orderItems) {
+	            	Product_SKU productSKU = orderItem.getProductSKU();
+	            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
+	            }
+				break;
+			case "DECLINED":
+				order.setOrderStatus(EOrderStatus.DECLINED);
+				break;
+			case "PENDING":
+				order.setOrderStatus(EOrderStatus.PENDING);
+				break;
+			case "PROCCESSING":
+				order.setOrderStatus(EOrderStatus.PROCCESSING);
+				break;
+			case "COMPLETED":
+				order.setOrderStatus(EOrderStatus.COMPLETED);
+				for (OrderItem orderItem : order.getOrderItems()) {
+					Product product = orderItem.getProductSKU().getProducts();
+					product.setSold(product.getSold() + orderItem.getQuantity());
+					productRepository.save(product);
+				}
+				break;
 			}
-			break;
+			switch (orderStatusDto.getPaymentStatus()) {
+			case "AWAITING_REFUND":
+				order.setPaymentStatus(EPaymentStatus.AWAITING_REFUND);
+				break;
+			case "DENIED":
+				order.setPaymentStatus(EPaymentStatus.DENIED);
+				break;
+			case "FAILED":
+				order.setPaymentStatus(EPaymentStatus.FAILED);
+				break;
+			case "PENDING":
+				order.setPaymentStatus(EPaymentStatus.PENDING);
+				break;
+			case "REFUNDED":
+				order.setPaymentStatus(EPaymentStatus.REFUNDED);
+				break;
+			case "COMPLETED":
+				order.setPaymentStatus(EPaymentStatus.COMPLETED);
+				order.setPaymentDate(Calendar.getInstance().getTime());
+				break;
+			}
+			orderRepository.save(order);
+			return getOrderDto(order);
+		} catch (Exception e) {
+			return null;
 		}
-		switch (orderStatusDto.getPaymentStatus()) {
-		case "AWAITING_REFUND":
-			order.setPaymentStatus(EPaymentStatus.AWAITING_REFUND);
-			break;
-		case "DENIED":
-			order.setPaymentStatus(EPaymentStatus.DENIED);
-			break;
-		case "FAILED":
-			order.setPaymentStatus(EPaymentStatus.FAILED);
-			break;
-		case "PENDING":
-			order.setPaymentStatus(EPaymentStatus.PENDING);
-			break;
-		case "REFUNDED":
-			order.setPaymentStatus(EPaymentStatus.REFUNDED);
-			break;
-		case "COMPLETED":
-			order.setPaymentStatus(EPaymentStatus.COMPLETED);
-			order.setPaymentDate(Calendar.getInstance().getTime());
-			break;
-		}
-		orderRepository.save(order);
-		return getOrderDto(order);
+
 	}
 
-	public OrderDto UpdateOrder(Long id, OrderDto orderDto) {
-		Set<OrderItem> orderItemList = new HashSet<>();
-
-		Order order = orderRepository.findById(id)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
-//		OrderItem orderItem = new OrderItem();
-		switch (orderDto.getOrderStatus()) {
-		case "INCOMPLETE":
-			order.setOrderStatus(EOrderStatus.INCOMPLETE);
-			break;
-		case "CANCELLED":
-			order.setOrderStatus(EOrderStatus.CANCELLED);
-			break;
-		case "DECLINED":
-			order.setOrderStatus(EOrderStatus.DECLINED);
-			break;
-		case "PENDING":
-			order.setOrderStatus(EOrderStatus.PENDING);
-			break;
-		case "PROCCESSING":
-			order.setOrderStatus(EOrderStatus.PROCCESSING);
-			break;
-		case "COMPLETED":
-			order.setOrderStatus(EOrderStatus.COMPLETED);
-			break;
-		}
-		switch (orderDto.getPaymentStatus()) {
-		case "AWAITING_REFUND":
-			order.setPaymentStatus(EPaymentStatus.AWAITING_REFUND);
-			break;
-		case "DENIED":
-			order.setPaymentStatus(EPaymentStatus.DENIED);
-			break;
-		case "FAILED":
-			order.setPaymentStatus(EPaymentStatus.FAILED);
-			break;
-		case "PENDING":
-			order.setPaymentStatus(EPaymentStatus.PENDING);
-			break;
-		case "REFUNDED":
-			order.setPaymentStatus(EPaymentStatus.REFUNDED);
-			break;
-		case "COMPLETED":
-			order.setPaymentStatus(EPaymentStatus.COMPLETED);
-			break;
-		}
-//		for (OrderItemDto orderItemDto : orderDto.getOrderItemDtos()) {
-//			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
-//			productSKU.setStock(productSKU.getStock() - (orderItemRepository.findByOrderAndProductSKU(orderItemDto.getOrderId(),orderItemDto.getProductSKUId()) - orderItemDto.getQuantity()));
-//			productSKURepository.save(productSKU);
-//			orderItem.setProductSKU(productSKU);
-//			orderItem.setQuantity(orderItemDto.getQuantity());
-//			orderItem.setPrice(orderItemDto.getPrice());
-//			orderItemList.add(orderItem);
+//	public OrderDto UpdateOrder(Long id, OrderDto orderDto) {
+//		Set<OrderItem> orderItemList = new HashSet<>();
+//
+//		Order order = orderRepository.findById(id)
+//				.orElseThrow(() -> new NullPointerException("Error: No object found."));
+////		OrderItem orderItem = new OrderItem();
+//		switch (orderDto.getOrderStatus()) {
+//		case "INCOMPLETE":
+//			order.setOrderStatus(EOrderStatus.INCOMPLETE);
+//			break;
+//		case "CANCELLED":
+//			order.setOrderStatus(EOrderStatus.CANCELLED);
+//			break;
+//		case "DECLINED":
+//			order.setOrderStatus(EOrderStatus.DECLINED);
+//			break;
+//		case "PENDING":
+//			order.setOrderStatus(EOrderStatus.PENDING);
+//			break;
+//		case "PROCCESSING":
+//			order.setOrderStatus(EOrderStatus.PROCCESSING);
+//			break;
+//		case "COMPLETED":
+//			order.setOrderStatus(EOrderStatus.COMPLETED);
+//			break;
 //		}
-//		order.setOrderItems(orderItemList);
-//		order.setSubTotal(orderDto.getSubTotal());
-//		if (orderDto.getVoucherCode() != null)
-//			order.setVoucher(voucherRepository.findByCode(orderDto.getVoucherCode()).get());
-//		order.setDeliveryFeeTotal(orderDto.getDeliveryFeeTotal());
-//		order.setPaymentTotal(orderDto.getPaymentTotal());
-		if (orderDto.getPaymentDate() != null)
-			order.setPaymentDate(orderDto.getPaymentDate());
-
-		orderRepository.save(order);
-
-		return getOrderDto(order);
-	}
+//		switch (orderDto.getPaymentStatus()) {
+//		case "AWAITING_REFUND":
+//			order.setPaymentStatus(EPaymentStatus.AWAITING_REFUND);
+//			break;
+//		case "DENIED":
+//			order.setPaymentStatus(EPaymentStatus.DENIED);
+//			break;
+//		case "FAILED":
+//			order.setPaymentStatus(EPaymentStatus.FAILED);
+//			break;
+//		case "PENDING":
+//			order.setPaymentStatus(EPaymentStatus.PENDING);
+//			break;
+//		case "REFUNDED":
+//			order.setPaymentStatus(EPaymentStatus.REFUNDED);
+//			break;
+//		case "COMPLETED":
+//			order.setPaymentStatus(EPaymentStatus.COMPLETED);
+//			break;
+//		}
+////		for (OrderItemDto orderItemDto : orderDto.getOrderItemDtos()) {
+////			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
+////			productSKU.setStock(productSKU.getStock() - (orderItemRepository.findByOrderAndProductSKU(orderItemDto.getOrderId(),orderItemDto.getProductSKUId()) - orderItemDto.getQuantity()));
+////			productSKURepository.save(productSKU);
+////			orderItem.setProductSKU(productSKU);
+////			orderItem.setQuantity(orderItemDto.getQuantity());
+////			orderItem.setPrice(orderItemDto.getPrice());
+////			orderItemList.add(orderItem);
+////		}
+////		order.setOrderItems(orderItemList);
+////		order.setSubTotal(orderDto.getSubTotal());
+////		if (orderDto.getVoucherCode() != null)
+////			order.setVoucher(voucherRepository.findByCode(orderDto.getVoucherCode()).get());
+////		order.setDeliveryFeeTotal(orderDto.getDeliveryFeeTotal());
+////		order.setPaymentTotal(orderDto.getPaymentTotal());
+//		if (orderDto.getPaymentDate() != null)
+//			order.setPaymentDate(orderDto.getPaymentDate());
+//
+//		orderRepository.save(order);
+//
+//		return getOrderDto(order);
+//	}
 
 	public void deleteOrder (Long id) {
 		Order order = orderRepository.findById(id)

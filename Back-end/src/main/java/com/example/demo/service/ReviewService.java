@@ -40,15 +40,19 @@ public class ReviewService {
 	ReviewRepository reviewRepository;
 
 	public ReviewDto getReviewById(Long id) {
-		Review review = reviewRepository.findById(id).get();
-		if (review == null)
+		try {
+			Review review = reviewRepository.findById(id).get();
+
+			ReviewDto reviewDto = new ReviewDto();
+			reviewDto.setId(review.getId());
+			reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
+			reviewDto.setNumberRating(review.getNumberRating());
+			reviewDto.setDescription(review.getDescription());
+			return reviewDto;
+		} catch (Exception e) {
 			return null;
-		ReviewDto reviewDto = new ReviewDto();
-		reviewDto.setId(review.getId());
-		reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
-		reviewDto.setNumberRating(review.getNumberRating());
-		reviewDto.setDescription(review.getDescription());
-		return reviewDto;
+		}
+
 	}
 
 	public ReviewDto getReviewDto(Review review) {
@@ -69,7 +73,10 @@ public class ReviewService {
 		for (Review review : reviewList) {
 			ReviewDto reviewDto = new ReviewDto();
 			reviewDto.setId(review.getId());
-			reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
+			if (review.getUser() !=null)
+				reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
+			else
+				reviewDto.setFullname("Khách hàng");
 			reviewDto.setNumberRating(review.getNumberRating());
 			reviewDto.setDescription(review.getDescription());
 			reviewDtoList.add(reviewDto);

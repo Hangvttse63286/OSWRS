@@ -14,14 +14,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.common.ERole;
+import com.example.demo.entity.Address;
+import com.example.demo.entity.Order;
+import com.example.demo.entity.Recommendation;
+import com.example.demo.entity.Review;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.payload.RoleChangeDto;
 import com.example.demo.payload.UpdateUserDto;
 import com.example.demo.payload.UserDto;
+import com.example.demo.repository.AddressRepository;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.RecommendationRepository;
+import com.example.demo.repository.ReviewRepository;
 
 @Service
 @Transactional
@@ -32,6 +40,18 @@ public class AccountService {
 
 	@Autowired
     private RoleRepository roleRepository;
+
+	@Autowired
+    private OrderRepository orderRepository;
+
+	@Autowired
+    private ReviewRepository reviewRepository;
+
+	@Autowired
+    private RecommendationRepository recommendationRepository;
+
+	@Autowired
+    private AddressRepository addressRepository;
 
 	public List<UserDto> findAll () {
 		List<User> userList = userRepository.findAll();
@@ -57,59 +77,95 @@ public class AccountService {
 	}
 
 	public UserDto findByUsername (String username) {
-		UserDto userDto = new UserDto();
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
-		userDto.setFirst_name(user.getFirst_name());
-		userDto.setLast_name(user.getLast_name());
-		userDto.setEmail(user.getEmail());
-		userDto.setUsername(user.getUsername());
-		userDto.setPhone_number(user.getPhone_number());
-		userDto.setGender_id(user.getGender_id());
-		userDto.setBirthday(user.getBirthday());
-		List<String> roles = user.getRoles().stream()
-        		.map(item -> item.getName().toString())
-        		.collect(Collectors.toList());
-		userDto.setRoles(roles);
+		try {
+			User user = userRepository.findByUsername(username).get();
 
-		return userDto;
+			UserDto userDto = new UserDto();
+			userDto.setFirst_name(user.getFirst_name());
+			userDto.setLast_name(user.getLast_name());
+			userDto.setEmail(user.getEmail());
+			userDto.setUsername(user.getUsername());
+			userDto.setPhone_number(user.getPhone_number());
+			userDto.setGender_id(user.getGender_id());
+			userDto.setBirthday(user.getBirthday());
+			List<String> roles = user.getRoles().stream().map(item -> item.getName().toString())
+					.collect(Collectors.toList());
+			userDto.setRoles(roles);
+
+			return userDto;
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	public String changeRole (String username, RoleChangeDto roleChangeDto) {
-		User user = userRepository.findByUsername(username).get();
-		if (user == null)
+		try {
+			User user = userRepository.findByUsername(username).get();
+
+			Set<String> strRoles = roleChangeDto.getRoles();
+	        Set<Role> roles = new HashSet<>();
+
+			strRoles.forEach(role -> {
+				switch (role) {
+				case "admin":
+					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+							.orElseThrow(() -> new RuntimeException("Role not found:" + role));
+					roles.add(adminRole);
+					break;
+				case "staff":
+					Role staffRole = roleRepository.findByName(ERole.ROLE_STAFF)
+							.orElseThrow(() -> new RuntimeException("Role not found:" + role));
+					roles.add(staffRole);
+					break;
+				case "user":
+					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+							.orElseThrow(() -> new RuntimeException("Role not found:" + role));
+					roles.add(userRole);
+					break;
+				}
+			});
+
+			user.setRoles(roles);
+			userRepository.save(user);
+			return "Change roles successfully!";
+		} catch (Exception e) {
 			return null;
+		}
 
-		Set<String> strRoles = roleChangeDto.getRoles();
-        Set<Role> roles = new HashSet<>();
-
-		strRoles.forEach(role -> {
-			switch (role) {
-			case "admin":
-				Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-						.orElseThrow(() -> new RuntimeException("Role not found:" + role));
-				roles.add(adminRole);
-				break;
-			case "staff":
-				Role staffRole = roleRepository.findByName(ERole.ROLE_STAFF)
-						.orElseThrow(() -> new RuntimeException("Role not found:" + role));
-				roles.add(staffRole);
-				break;
-			case "user":
-				Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-						.orElseThrow(() -> new RuntimeException("Role not found:" + role));
-				roles.add(userRole);
-				break;
-			}
-		});
-
-		user.setRoles(roles);
-		userRepository.save(user);
-		return "Change roles successfully!";
 	}
 
 
 	public String deleteAcc (String username) {
+		User user = userRepository.findByUsername(username).get();
+
+		List<Order> orders = orderRepository.findByUser(user);
+		if (!orders.isEmpty()) {
+			for (Order order : orders) {
+				order.setUser(null);
+				order.setAddress(null);
+			}
+			orderRepository.saveAllAndFlush(orders);
+		}
+
+		List<Address> addresses = addressRepository.findByUser(user);
+		if (!addresses.isEmpty()) {
+			addressRepository.deleteAllInBatch(addresses);
+		}
+
+		List<Recommendation> recommendations = recommendationRepository.findByUser(user);
+		if (!recommendations.isEmpty()) {
+			recommendationRepository.deleteAllInBatch(recommendations);
+		}
+
+		List<Review> reviews = reviewRepository.findByUser(user);
+		if (!reviews.isEmpty()) {
+			for (Review review  : reviews) {
+				review.setUser(null);
+			}
+			reviewRepository.saveAllAndFlush(reviews);
+		}
+
 		userRepository.deleteByUsername(username);
 		return "Delete successfully!";
 	}

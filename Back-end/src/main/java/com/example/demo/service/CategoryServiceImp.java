@@ -64,10 +64,13 @@ public class CategoryServiceImp implements CategoryService{
 		public void deleteCategory(Long id) {
 			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
 			Set<Product> products = category.getProducts();
-			for (Product product : products) {
-				product.getCategories().remove(category);
+			if (!products.isEmpty()) {
+				for (Product product : products) {
+					product.getCategories().remove(category);
+				}
+				productRepository.saveAllAndFlush(products);
 			}
-			productRepository.saveAllAndFlush(products);
+
 			categoryRepository.delete(category);
 		}
 

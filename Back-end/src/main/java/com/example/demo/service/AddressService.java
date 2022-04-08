@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Address;
+import com.example.demo.entity.Order;
 import com.example.demo.entity.User;
 import com.example.demo.payload.AddressDto;
 import com.example.demo.payload.UserDto;
 import com.example.demo.repository.AddressRepository;
+import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.UserRepository;
 
 @Service
@@ -21,6 +23,9 @@ public class AddressService {
 
 	@Autowired
     private UserRepository userRepository;
+
+	@Autowired
+    private OrderRepository orderRepository;
 
 	public List<AddressDto> getAddressList (String username) {
 		User user = userRepository.findByUsername(username)
@@ -47,23 +52,25 @@ public class AddressService {
 	}
 
 	public AddressDto getAddressById (Long id) {
-		Address address = addressRepository.findById(id).get();
+		try {
+			Address address = addressRepository.findById(id).get();
 
-		if (address == null)
+			AddressDto addressDto = new AddressDto();
+			addressDto.setId(address.getId());
+			addressDto.setReceiverName(address.getReceiverName());
+			addressDto.setProvince(address.getProvince());
+			addressDto.setCity(address.getCity());
+			addressDto.setDistrict(address.getDistrict());
+			addressDto.setSubDistrict(address.getSubDistrict());
+			addressDto.setStreet(address.getStreet());
+			addressDto.setPostalCode(address.getPostalCode());
+			addressDto.setPhoneNumber(address.getPhoneNumber());
+
+			return addressDto;
+		} catch (Exception e) {
 			return null;
+		}
 
-		AddressDto addressDto = new AddressDto();
-		addressDto.setId(address.getId());
-		addressDto.setReceiverName(address.getReceiverName());
-		addressDto.setProvince(address.getProvince());
-		addressDto.setCity(address.getCity());
-		addressDto.setDistrict(address.getDistrict());
-		addressDto.setSubDistrict(address.getSubDistrict());
-		addressDto.setStreet(address.getStreet());
-		addressDto.setPostalCode(address.getPostalCode());
-		addressDto.setPhoneNumber(address.getPhoneNumber());
-
-		return addressDto;
 	}
 
 	public AddressDto getAddressDto (Address address) {
@@ -82,22 +89,24 @@ public class AddressService {
 	}
 
 	public AddressDto updateAddress (Long id, AddressDto addressDto) {
-		Address address = addressRepository.findById(id).get();
+		try {
+			Address address = addressRepository.findById(id).get();
 
-		if (address == null)
+			address.setReceiverName(addressDto.getReceiverName());
+			address.setProvince(addressDto.getProvince());
+			address.setCity(addressDto.getCity());
+			address.setDistrict(addressDto.getDistrict());
+			address.setSubDistrict(addressDto.getSubDistrict());
+			address.setStreet(addressDto.getStreet());
+			address.setPostalCode(addressDto.getPostalCode());
+			address.setPhoneNumber(addressDto.getPhoneNumber());
+			addressRepository.save(address);
+
+			return getAddressDto(address);
+		} catch (Exception e) {
 			return null;
+		}
 
-		address.setReceiverName(addressDto.getReceiverName());
-		address.setProvince(addressDto.getProvince());
-		address.setCity(addressDto.getCity());
-		address.setDistrict(addressDto.getDistrict());
-		address.setSubDistrict(addressDto.getSubDistrict());
-		address.setStreet(addressDto.getStreet());
-		address.setPostalCode(addressDto.getPostalCode());
-		address.setPhoneNumber(addressDto.getPhoneNumber());
-		addressRepository.save(address);
-
-		return getAddressDto(address);
 	}
 
 	public AddressDto createAddress (AddressDto addressDto, String username) {
@@ -120,6 +129,14 @@ public class AddressService {
 	}
 
 	public void deleteAddressById (Long id) {
+		Address address = addressRepository.findById(id).get();
+		List<Order> orders = orderRepository.findByAddress(address);
+		if (!orders.isEmpty()) {
+			for (Order order : orders) {
+				order.setAddress(null);
+			}
+			orderRepository.saveAllAndFlush(orders);
+		}
 		addressRepository.deleteById(id);
 	}
 }

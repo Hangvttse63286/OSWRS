@@ -8,9 +8,13 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Product_SKU;
+import com.example.demo.entity.CartItem;
+import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product;
 import com.example.demo.payload.ProductSkuDTO;
+import com.example.demo.repository.CartItemRepository;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ProductSKURepository;
 
@@ -19,11 +23,15 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 
 	private final ProductSKURepository productSKURepository;
 	private final ProductRepository productRepository;
+	private final OrderItemRepository orderItemRepository;
+	private final CartItemRepository cartItemRepository;
 
-	public ProductSKUServiceImpl(ProductSKURepository productSKURepository, ProductRepository productRepository) {
+	public ProductSKUServiceImpl(ProductSKURepository productSKURepository, ProductRepository productRepository, OrderItemRepository orderItemRepository, CartItemRepository cartItemRepository) {
 		super();
 		this.productSKURepository= productSKURepository;
 		this.productRepository= productRepository;
+		this.orderItemRepository= orderItemRepository;
+		this.cartItemRepository= cartItemRepository;
 	}
 
 //	@Override
@@ -48,6 +56,12 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 	@Override
 	public void deleteProductSkuById(Long id) {
 		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		List<OrderItem> orderItems = orderItemRepository.findByProductSKU(product_SKU);
+		if (!orderItems.isEmpty())
+			orderItemRepository.deleteAllInBatch(orderItems);
+		List<CartItem> cartItems = cartItemRepository.findByProductSKU(product_SKU);
+		if (!cartItems.isEmpty())
+			cartItemRepository.deleteAllInBatch(cartItems);
 		productSKURepository.delete(product_SKU);
 	}
 

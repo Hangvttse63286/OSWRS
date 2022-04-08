@@ -289,23 +289,28 @@ public class ProductServiceImp implements ProductService{
 		List<Recommendation> recommendations = recommendationRepository.findByProduct(products);
 		List<Review> reviews = reviewRepository.findByProducts(products);
 		if (!recommendations.isEmpty()) {
-			recommendationRepository.deleteAll(recommendations);
+			recommendationRepository.deleteAllInBatch(recommendations);
 		}
 		if (!reviews.isEmpty()) {
-			reviewRepository.deleteAll(reviews);
+			reviewRepository.deleteAllInBatch(reviews);
 		}
-		for (Category category : categories) {
-			category.getProducts().remove(products);
+		if (!categories.isEmpty()) {
+			for (Category category : categories) {
+				category.getProducts().remove(products);
+			}
+			categoryRepository.saveAllAndFlush(categories);
 		}
-		for (Product_SKU productSKU : productSKUs) {
-			List<OrderItem> orderItems = orderItemRepository.findByProductSKU(productSKU);
-			if (!orderItems.isEmpty())
-				orderItemRepository.deleteAll(orderItems);
-			List<CartItem> cartItems = cartItemRepository.findByProductSKU(productSKU);
-			if (!cartItems.isEmpty())
-				cartItemRepository.deleteAll(cartItems);
+		if (!productSKUs.isEmpty()) {
+			for (Product_SKU productSKU : productSKUs) {
+				List<OrderItem> orderItems = orderItemRepository.findByProductSKU(productSKU);
+				if (!orderItems.isEmpty())
+					orderItemRepository.deleteAllInBatch(orderItems);
+				List<CartItem> cartItems = cartItemRepository.findByProductSKU(productSKU);
+				if (!cartItems.isEmpty())
+					cartItemRepository.deleteAllInBatch(cartItems);
+			}
 		}
-		categoryRepository.saveAllAndFlush(categories);
+
 		productRepository.delete(products);
 	}
 
@@ -342,11 +347,11 @@ public class ProductServiceImp implements ProductService{
 
 
 	//Delete Product-sku - Admin
-	@Override
-	public void deleteProductSku(Long id) {
-		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		productSKURepository.delete(product_SKU);
-	}
+//	@Override
+//	public void deleteProductSku(Long id) {
+//		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+//		productSKURepository.delete(product_SKU);
+//	}
 
 	@Override
 	public List<ProductDTO> listAllProducts() {

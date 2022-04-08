@@ -9,8 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.demo.entity.Product;
 import com.example.demo.entity.Review;
+import com.example.demo.entity.User;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>{
 	@EntityGraph(attributePaths = { "user", "order", "products" })
 	List<Review> findByProducts(Product product);
+
+	@EntityGraph(attributePaths = { "user", "order", "products" })
+	List<Review> findByUser(User user);
 }
