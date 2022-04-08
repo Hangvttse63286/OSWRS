@@ -35,16 +35,16 @@ public class CategoryControllerUser {
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
 		List<CategoryDTO> categoryList = categoryService.listAllCategories();
-		if(categoryList != null)
+		if(!categoryList.isEmpty())
 			return new ResponseEntity<>(categoryList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@RequestMapping(value = "/getProductByCategoryId/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "id") Long id) {
 		List<ProductIncludeImageDTO> pList= categoryService.listProductByCategoryId(id);
-		if(pList != null) 
+		if(!pList.isEmpty())
 			return new ResponseEntity<>(pList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

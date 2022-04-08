@@ -36,7 +36,7 @@ public class CategoryControllerAdmin {
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
 		List<CategoryDTO> categoryList = categoryService.listAllCategories();
-		if(categoryList != null)
+		if(!categoryList.isEmpty())
 			return new ResponseEntity<>(categoryList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -45,7 +45,7 @@ public class CategoryControllerAdmin {
 	@RequestMapping(value = "/getProductByCategoryName/{name}", method = RequestMethod.GET)
 	public ResponseEntity<?> getProductByCategory(@PathVariable(name = "name") String name) {
 		List<ProductIncludeImageDTO> productList = categoryService.listProductByCategoryName(name);
-		if(productList != null)
+		if(!productList.isEmpty())
 			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
