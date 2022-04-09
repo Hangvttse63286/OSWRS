@@ -30,8 +30,9 @@ public class VoucherService {
 		if(voucherList.isEmpty())
 			return new ArrayList<>();
 		List<VoucherDto> voucherDtoList = new ArrayList<>();
-		VoucherDto voucherDto = new VoucherDto();
+
 		for (Voucher voucher : voucherList) {
+			VoucherDto voucherDto = new VoucherDto();
 			voucherDto.setId(voucher.getId());
 			voucherDto.setCode(voucher.getCode());
 			voucherDto.setName(voucher.getName());
@@ -224,7 +225,7 @@ public class VoucherService {
 			CartTotalResponse newCartTotal = new CartTotalResponse();
 			newCartTotal.setCode(code);
 			if (voucher.getType().equals(EVoucherType.FIX_VALUE)) {
-				newCartTotal.setDiscountValue(voucher.getDiscountAmount());
+				newCartTotal.setDiscountValue(voucher.getMaxDiscount());
 				newCartTotal.setNewTotal(cartTotal-newCartTotal.getDiscountValue());
 			} else if (voucher.getType().equals(EVoucherType.PERCENTAGE)) {
 				newCartTotal.setDiscountValue((cartTotal*voucher.getDiscountAmount())/100);
