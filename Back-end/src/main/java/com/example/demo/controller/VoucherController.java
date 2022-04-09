@@ -68,8 +68,9 @@ public class VoucherController {
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateVoucher(@PathVariable Long id, @RequestBody VoucherDto voucherDto) {
-    	if (voucherService.getVoucherByCode(voucherDto.getCode()) != null)
-    		return new ResponseEntity<>("Error: Code has already existed.", HttpStatus.BAD_REQUEST);
+    	if (!voucherService.getVoucherById(id).getCode().equals(voucherDto.getCode()))
+    		if (voucherService.existsByVoucher(voucherDto.getCode()))
+    			return new ResponseEntity<>("Error: Code has already existed.", HttpStatus.CONFLICT);
     	VoucherDto updateResult = voucherService.updateVoucher(id, voucherDto);
     	if (updateResult != null)
     		return new ResponseEntity<>(updateResult, HttpStatus.OK);

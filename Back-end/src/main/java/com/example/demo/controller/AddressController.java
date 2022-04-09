@@ -60,7 +60,7 @@ public class AddressController {
     public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody AddressDto updateAddressDto) {
     	AddressDto address = addressService.updateAddress(id, updateAddressDto);
     	if (address != null)
-    		return new ResponseEntity<>(addressService.updateAddress(id, updateAddressDto), HttpStatus.OK);
+    		return new ResponseEntity<>(address, HttpStatus.OK);
 
     	return new ResponseEntity<>("No address found", HttpStatus.NOT_FOUND);
     }

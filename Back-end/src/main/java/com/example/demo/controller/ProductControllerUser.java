@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.repository.query.Param;
@@ -62,12 +63,16 @@ public class ProductControllerUser {
 	@RequestMapping(value = "/web/listAllProductIncludeImage/{fromIndex}", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProductWeb(@PathVariable int fromIndex) {
 		List<ProductIncludeImageDTO> productList = productService.listAllProductIncludeImage();
-		int toIndex = fromIndex + 20;
+		int toIndex = fromIndex + 10;
 		if (!productList.isEmpty()) {
-			if (toIndex < productList.size())
-				return new ResponseEntity<>(productList.subList(fromIndex, toIndex), HttpStatus.OK);
-			else
-				return new ResponseEntity<>(productList.subList(fromIndex, productList.size()), HttpStatus.OK);
+			if (toIndex < productList.size()) {
+				List<ProductIncludeImageDTO> subProductList = productList.subList(fromIndex, toIndex);
+				return new ResponseEntity<>(subProductList, HttpStatus.OK);
+			}
+			else {
+				List<ProductIncludeImageDTO> subProductList = productList.subList(fromIndex, productList.size());
+				return new ResponseEntity<>(subProductList, HttpStatus.OK);
+			}
 		} else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -75,12 +80,16 @@ public class ProductControllerUser {
 	@RequestMapping(value = "/m/listAllProductIncludeImage/{fromIndex}", method = RequestMethod.GET)
 	public ResponseEntity<?> listAllProductMobile(@PathVariable int fromIndex) {
 		List<ProductIncludeImageDTO> productList = productService.listAllProductIncludeImage();
-		int toIndex = fromIndex + 10;
+		int toIndex = fromIndex + 5;
 		if (!productList.isEmpty()) {
-			if (toIndex < productList.size())
-				return new ResponseEntity<>(productList.subList(fromIndex, toIndex), HttpStatus.OK);
-			else
-				return new ResponseEntity<>(productList.subList(fromIndex, productList.size()), HttpStatus.OK);
+			if (toIndex < productList.size()) {
+				List<ProductIncludeImageDTO> subProductList = productList.subList(fromIndex, toIndex);
+				return new ResponseEntity<>(subProductList, HttpStatus.OK);
+			}
+			else {
+				List<ProductIncludeImageDTO> subProductList = productList.subList(fromIndex, productList.size());
+				return new ResponseEntity<>(subProductList, HttpStatus.OK);
+			}
 		} else
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}

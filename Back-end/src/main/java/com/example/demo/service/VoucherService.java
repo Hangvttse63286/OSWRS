@@ -238,6 +238,8 @@ public class VoucherService {
 
 	}
 
-
+	public boolean existsByVoucher (String code) {
+		return voucherRepository.existsByCode(code);
+	}
 
 }

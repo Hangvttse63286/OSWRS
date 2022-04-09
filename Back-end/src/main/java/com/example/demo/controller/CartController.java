@@ -56,12 +56,12 @@ public class CartController {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		if (cartService.checkStock(cartItemDto.getProductSKUId(), cartItemDto.getQuantity())) {
+    		if (cartService.checkStockAndSaleLimit(cartItemDto.getProductSKUId(), cartItemDto.getQuantity())) {
     			CartItemResponse cartItemResponse = cartService.addToCart(cartItemDto, userDetails.getUsername());
     			return new ResponseEntity<>(cartItemResponse, HttpStatus.CREATED);
 
     		}
-    		return new ResponseEntity<>("Quantity exceeds product's stock!", HttpStatus.NOT_ACCEPTABLE);
+    		return new ResponseEntity<>("Quantity exceeds product's stock or sale limit!", HttpStatus.NOT_ACCEPTABLE);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
@@ -74,11 +74,11 @@ public class CartController {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		if (cartService.checkStock(cartItemDto.getProductSKUId(), cartItemDto.getQuantity())) {
+    		if (cartService.checkStockAndSaleLimit(cartItemDto.getProductSKUId(), cartItemDto.getQuantity())) {
     			CartItemResponse cartItemResponse = cartService.changeQuantity(cartItemDto);
     			return new ResponseEntity<>(cartItemResponse, HttpStatus.OK);
     		}
-    		return new ResponseEntity<>("Quantity exceeds product's stock!", HttpStatus.NOT_ACCEPTABLE);
+    		return new ResponseEntity<>("Quantity exceeds product's stock or sale limit!", HttpStatus.NOT_ACCEPTABLE);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }

@@ -114,10 +114,11 @@ public class CartService {
 		return getCartItemDto(cartItem);
 	}
 
-	public boolean checkStock (Long productSKUId, int quantity) {
+	public boolean checkStockAndSaleLimit (Long productSKUId, int quantity) {
 		Product_SKU productSKU = productSKURepository.getById(productSKUId);
-		return quantity >= productSKU.getStock() ? true:false;
+		return (quantity <= productSKU.getStock() && quantity <= productSKU.getSale_limit()) ? true:false;
 	}
+
 
 	public CartItemResponse changeQuantity (CartItemDto cartItemDto) {
 		CartItem cartItem = cartItemRepository.getById(cartItemDto.getId());
