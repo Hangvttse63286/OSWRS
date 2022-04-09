@@ -40,30 +40,34 @@ public class UserController {
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
 
-	@GetMapping("/profile/updateInfo")
-	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
-    public ResponseEntity<?> getUpdateInfo() {
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
-    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-    	    return new ResponseEntity<>(userService.findByUsername(userDetails.getUsername()), HttpStatus.OK);
-    	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
-    }
+//	@GetMapping("/profile/updateInfo")
+//	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+//    public ResponseEntity<?> getUpdateInfo() {
+//    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+//    	    return new ResponseEntity<>(userService.findByUsername(userDetails.getUsername()), HttpStatus.OK);
+//    	}
+//    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+//    }
 
     @PostMapping("/profile/updateInfo")
     @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> updateInfo(@RequestBody UpdateUserDto updateUserDto) {
-    	if (userService.existsByUsername(updateUserDto.getUsername()))
-    		return new ResponseEntity<>("Error: Username is already taken!", HttpStatus.BAD_REQUEST);
-    	if (userService.existsByEmail(updateUserDto.getEmail()))
-    		return new ResponseEntity<>("Error: Email is already taken!", HttpStatus.BAD_REQUEST);
-    	else {
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    		if (!updateUserDto.getUsername().equals(userDetails.getUsername()) || !updateUserDto.getEmail().equals(userDetails.getEmail())) {
+    			if (userService.existsByUsername(updateUserDto.getUsername()))
+    	    		return new ResponseEntity<>("Error: Username is already taken!", HttpStatus.BAD_REQUEST);
+    	    	if (userService.existsByEmail(updateUserDto.getEmail()))
+    	    		return new ResponseEntity<>("Error: Email is already taken!", HttpStatus.BAD_REQUEST);
+    		}
     		userService.updateInfo(updateUserDto);
     		return new ResponseEntity<>("Update Info successfully!", HttpStatus.OK);
     	}
-
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
     }
 
     @PostMapping("/changePassword")
