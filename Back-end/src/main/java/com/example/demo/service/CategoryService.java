@@ -12,10 +12,11 @@ import com.example.demo.payload.ProductIncludeImageDTO;
 public interface CategoryService {
 	//Category
 		List<CategoryDTO> listAllCategories();
-		List<ProductIncludeImageDTO> listProductByCategoryId(Long id);	
+		List<ProductIncludeImageDTO> listProductByCategoryId(Long id);
 		void deleteCategory(Long id);
 		CategoryDTO getCategoryById(Long id);
 		CategoryDTO updateCategoryById(Long id, CategoryDTO categoryRequest);
-		Category createCategory(CategoryDTO categoryRequest);
+		CategoryDTO createCategory(CategoryDTO categoryRequest);
 		List<ProductIncludeImageDTO> listProductByCategoryName(String name);
+		public boolean existsByName(String name);
 }

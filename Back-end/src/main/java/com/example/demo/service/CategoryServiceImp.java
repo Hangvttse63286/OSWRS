@@ -39,17 +39,25 @@ public class CategoryServiceImp implements CategoryService{
 	//Update Category [Admin] - ok
 		@Override
 		public CategoryDTO updateCategoryById(Long id, CategoryDTO categoryRequest) {
-			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No category found."));
 
 			category.setName(categoryRequest.getCategory_name());
 			category.setIs_deleted(categoryRequest.isIs_deleted());
 			categoryRepository.save(category);
-			return getCategoryById(id);
+			return getCategory(category);
 		}
 
 		@Override
 		public CategoryDTO getCategoryById(Long id) {
-			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No category found."));
+			CategoryDTO categoryDTO= new CategoryDTO();
+
+			categoryDTO.setCategory_name(category.getName());
+			categoryDTO.setIs_deleted(category.isIs_deleted());
+			return categoryDTO;
+		}
+
+		public CategoryDTO getCategory(Category category) {
 			CategoryDTO categoryDTO= new CategoryDTO();
 
 			categoryDTO.setCategory_name(category.getName());
@@ -61,7 +69,7 @@ public class CategoryServiceImp implements CategoryService{
 		//Delete Category - Admin
 		@Override
 		public void deleteCategory(Long id) {
-			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No category found."));
 			Set<Product> products = category.getProducts();
 			if (!products.isEmpty()) {
 				for (Product product : products) {
@@ -93,16 +101,19 @@ public class CategoryServiceImp implements CategoryService{
 			return categoryDTOs;
 		}
 
+		@Override
+		public boolean existsByName(String name) {
+			return categoryRepository.existsByName(name);
+		}
 
 		@Override
-		public Category createCategory(CategoryDTO categoryRequest) {
-			Category category= new Category();
-			Category category2= categoryRepository.findByName(categoryRequest.getCategory_name());
-
-			if(category2 == null) {
+		public CategoryDTO createCategory(CategoryDTO categoryRequest) {
+			if(!categoryRepository.existsByName(categoryRequest.getCategory_name())) {
+				Category category= new Category();
 				category.setName(categoryRequest.getCategory_name());
 				category.setIs_deleted(categoryRequest.isIs_deleted());
-				return categoryRepository.save(category);
+				categoryRepository.save(category);
+				return getCategory(category);
 			}
 			else
 				return null;
@@ -112,9 +123,13 @@ public class CategoryServiceImp implements CategoryService{
 		public List<ProductIncludeImageDTO> listProductByCategoryId(Long id) {
 			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No category found."));
 
+			Set<Product> products = category.getProducts();
+			if (products.isEmpty())
+				return new ArrayList<ProductIncludeImageDTO>();
+
 			List<ProductIncludeImageDTO> productList= new ArrayList<>();
 
-			for(Product product: category.getProducts()) {
+			for(Product product: products) {
 
 				ProductIncludeImageDTO productDTO= new ProductIncludeImageDTO();
 				productDTO.setProduct_id(product.getProduct_id());

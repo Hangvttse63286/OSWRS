@@ -69,19 +69,22 @@ public class CategoryController {
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/admin/updateCategoryById/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateCategoryById(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
-		CategoryDTO category = categoryService.updateCategoryById(id, categoryDTO);
-		if(category != null) {
+		try {
+			if (!categoryService.getCategoryById(id).getCategory_name().equalsIgnoreCase(categoryDTO.getCategory_name()))
+				if (categoryService.existsByName(categoryDTO.getCategory_name()))
+					return new ResponseEntity<>("Error: Category has already existed", HttpStatus.CONFLICT);
+
+			CategoryDTO category = categoryService.updateCategoryById(id, categoryDTO);
 			return new ResponseEntity<>(category, HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<>("Error: No category found.", HttpStatus.NOT_FOUND);
+		} catch (NullPointerException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/admin/createCategory", method = RequestMethod.POST)
 	public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO) {
-		Category result = categoryService.createCategory(categoryDTO);
+		CategoryDTO result = categoryService.createCategory(categoryDTO);
 		if(result == null) {
 			return new ResponseEntity<>("Error: Category has already existed", HttpStatus.CONFLICT);
 		}
@@ -94,12 +97,12 @@ public class CategoryController {
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/admin/deleteCatgoryById/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteCatgoryById(@PathVariable(name = "id") Long id) {
-		if(categoryService.getCategoryById(id) != null) {
+		try {
 			categoryService.deleteCategory(id);
 			return new ResponseEntity<>("Delete successfully!", HttpStatus.OK);
 		}
-		else {
-			return new ResponseEntity<>("Error: No category found.", HttpStatus.NOT_FOUND);
+		catch (NullPointerException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 }
