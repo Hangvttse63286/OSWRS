@@ -9,7 +9,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.example.demo.common.ECategory;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product;
 import com.example.demo.repository.ProductRepository;
@@ -37,12 +36,12 @@ public class DemoApplication {
 //		products.setProduct_status_id("instok");
 //		products.setProduct_name("Jeans");
 //		products.setSearch_word("JS");
-//		
+//
 //		Category category= new Category();
 //		category.setCategory_name(ECategory.JEANS);
 //		category.setIs_deleted(false);
 //		List<Category> categories= Collections.singletonList(category);
-//		
+//
 //		products.setCategories(categories);
 //		return products;
 //	}

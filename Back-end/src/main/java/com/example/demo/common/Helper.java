@@ -24,7 +24,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.entity.ImgurResponse;
+import com.example.demo.payload.ImgurResponse;
 import com.google.gson.Gson;
 
 import javax.xml.bind.DatatypeConverter;

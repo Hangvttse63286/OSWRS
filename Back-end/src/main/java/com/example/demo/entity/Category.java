@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.example.demo.common.ECategory;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;

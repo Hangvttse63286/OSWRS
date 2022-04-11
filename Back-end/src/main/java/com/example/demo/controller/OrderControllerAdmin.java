@@ -63,6 +63,16 @@ public class OrderControllerAdmin {
     	else
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	 }
+    
+    @GetMapping("/delivery/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    public ResponseEntity<?> getDeliveryOrder(@PathVariable Long id) {
+        OrderDto order = orderService.getOrderById(id);
+    	if (order != null)
+        	return new ResponseEntity<>(order, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
 //    @PutMapping("/update/{id}")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
@@ -86,13 +96,13 @@ public class OrderControllerAdmin {
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    }
 
-    @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
-    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
-        if (orderService.getOrderById(id) != null) {
-        	orderService.deleteOrder(id);
-        	return new ResponseEntity<>("Delete order successfully!", HttpStatus.OK);
-        } else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @DeleteMapping("/delete/{id}")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+//        if (orderService.getOrderById(id) != null) {
+//        	orderService.deleteOrder(id);
+//        	return new ResponseEntity<>("Delete order successfully!", HttpStatus.OK);
+//        } else
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 }

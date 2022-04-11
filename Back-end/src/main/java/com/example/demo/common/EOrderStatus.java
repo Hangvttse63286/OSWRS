@@ -1,10 +1,9 @@
 package com.example.demo.common;
 
 public enum EOrderStatus {
-	INCOMPLETE,
+	DELIVERING,
 	PENDING,
 	CANCELLED,
-	DECLINED,
 	PROCCESSING,
 	COMPLETED,
 }

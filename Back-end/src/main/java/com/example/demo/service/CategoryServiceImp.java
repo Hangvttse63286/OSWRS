@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.common.ECategory;
 import com.example.demo.entity.Category;
 import com.example.demo.entity.Product_Image;
 import com.example.demo.entity.Product_SKU;
@@ -111,7 +110,7 @@ public class CategoryServiceImp implements CategoryService{
 
 		@Override
 		public List<ProductIncludeImageDTO> listProductByCategoryId(Long id) {
-			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No category found."));
 
 			List<ProductIncludeImageDTO> productList= new ArrayList<>();
 

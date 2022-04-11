@@ -275,8 +275,8 @@ public class OrderService {
 			Order order = orderRepository.findById(id).get();
 
 			switch (orderStatusDto.getOrderStatus()) {
-			case "INCOMPLETE":
-				order.setOrderStatus(EOrderStatus.INCOMPLETE);
+			case "DELIVERING":
+				order.setOrderStatus(EOrderStatus.DELIVERING);
 				break;
 			case "CANCELLED":
 				order.setOrderStatus(EOrderStatus.CANCELLED);
@@ -285,9 +285,6 @@ public class OrderService {
 	            	Product_SKU productSKU = orderItem.getProductSKU();
 	            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
 	            }
-				break;
-			case "DECLINED":
-				order.setOrderStatus(EOrderStatus.DECLINED);
 				break;
 			case "PENDING":
 				order.setOrderStatus(EOrderStatus.PENDING);
@@ -307,9 +304,6 @@ public class OrderService {
 			switch (orderStatusDto.getPaymentStatus()) {
 			case "AWAITING_REFUND":
 				order.setPaymentStatus(EPaymentStatus.AWAITING_REFUND);
-				break;
-			case "DENIED":
-				order.setPaymentStatus(EPaymentStatus.DENIED);
 				break;
 			case "FAILED":
 				order.setPaymentStatus(EPaymentStatus.FAILED);
