@@ -9,6 +9,7 @@ public class CartItemResponse {
 	private Double price;
 	private boolean isStock;
 	private String imageUrl;
+	private float unitPrice;
 	public Long getId() {
 		return id;
 	}
@@ -56,6 +57,12 @@ public class CartItemResponse {
 	}
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+	public float getUnitPrice() {
+		return unitPrice;
+	}
+	public void setUnitPrice(float unitPrice) {
+		this.unitPrice = unitPrice;
 	}
 
 

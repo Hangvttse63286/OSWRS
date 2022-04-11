@@ -1,5 +1,7 @@
 package com.example.demo.payload;
 
+import java.util.Date;
+
 public class VoucherDto {
 	private Long id;
 	private String code;
@@ -10,6 +12,9 @@ public class VoucherDto {
 	private Double maxDiscount;
 	private Double discountAmount;
 	private boolean isActive;
+	private Date fromDate;
+	private Date toDate;
+	private int quantity;
 	public Long getId() {
 		return id;
 	}
@@ -63,6 +68,24 @@ public class VoucherDto {
 	}
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	public Date getFromDate() {
+		return fromDate;
+	}
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+	public Date getToDate() {
+		return toDate;
+	}
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 

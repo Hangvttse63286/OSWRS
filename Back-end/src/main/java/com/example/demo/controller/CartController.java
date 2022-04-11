@@ -37,7 +37,7 @@ public class CartController {
     private UserService userService;
 
 	@GetMapping("/")
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getCartList() {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -47,11 +47,11 @@ public class CartController {
     			return new ResponseEntity<>(cartItemList, HttpStatus.FOUND);
     		return new ResponseEntity<>("No item found!", HttpStatus.NOT_FOUND);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 
 	@PostMapping("/add")
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> addToCart(@RequestBody CartItemDto cartItemDto) {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -63,11 +63,11 @@ public class CartController {
     		}
     		return new ResponseEntity<>("Quantity exceeds product's stock or sale limit!", HttpStatus.NOT_ACCEPTABLE);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 
 	@PutMapping("/change_quantity")
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> changeQuantity(@RequestBody CartItemDto cartItemDto) {
 		if (!cartService.isExistCartItem(cartItemDto.getId()))
 			return new ResponseEntity<>("No item found!", HttpStatus.NOT_FOUND);
@@ -80,16 +80,16 @@ public class CartController {
     		}
     		return new ResponseEntity<>("Quantity exceeds product's stock or sale limit!", HttpStatus.NOT_ACCEPTABLE);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 
 	@DeleteMapping("/delete/{id}")
-	@PreAuthorize("hasRole('USER')")
+	//@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteCartItem(@PathVariable Long id) {
 		if (!cartService.isExistCartItem(id))
 			return new ResponseEntity<>("No item found!", HttpStatus.NOT_FOUND);
     	cartService.deleteCartItem(id);
-    	return new ResponseEntity<>("Delete successfully!", HttpStatus.OK);
+    	return new ResponseEntity<>("Delete item successfully!", HttpStatus.OK);
     }
 
 }

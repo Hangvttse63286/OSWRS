@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -7,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.example.demo.common.EVoucherType;
@@ -31,6 +35,14 @@ public class Voucher {
 	private Double maxDiscount;
 	private Double discountAmount;
 	private boolean isActive;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fromDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date toDate;
+
+	private int quantity;
 
 	public long getId() {
 		return id;
@@ -85,6 +97,24 @@ public class Voucher {
 	}
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	public Date getFromDate() {
+		return fromDate;
+	}
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+	public Date getToDate() {
+		return toDate;
+	}
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 

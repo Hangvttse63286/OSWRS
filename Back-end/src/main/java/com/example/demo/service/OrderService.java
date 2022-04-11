@@ -229,7 +229,7 @@ public class OrderService {
 		Order order = new Order();
 		User user = userRepository.findByUsername(orderDto.getUsername()).get();
 		if (orderDto.getPayment().equalsIgnoreCase(EPayment.COD.toString())) {
-			order.setOrderStatus(EOrderStatus.PROCCESSING);
+			order.setOrderStatus(EOrderStatus.PENDING);
 			order.setPayment(paymentRepository.findByName(EPayment.COD).get());
 			Cart cart = cartRepository.findByUser(user).get();
 			cart.setCartItems(null);
@@ -275,11 +275,8 @@ public class OrderService {
 			Order order = orderRepository.findById(id).get();
 
 			switch (orderStatusDto.getOrderStatus()) {
-			case "DELIVERING":
-				order.setOrderStatus(EOrderStatus.DELIVERING);
-				break;
-			case "CANCELLED":
-				order.setOrderStatus(EOrderStatus.CANCELLED);
+			case "UNSUCCESSFUL":
+				order.setOrderStatus(EOrderStatus.UNSUCCESSFUL);
 				Set<OrderItem> orderItems = order.getOrderItems();
 	            for (OrderItem orderItem : orderItems) {
 	            	Product_SKU productSKU = orderItem.getProductSKU();
@@ -289,11 +286,8 @@ public class OrderService {
 			case "PENDING":
 				order.setOrderStatus(EOrderStatus.PENDING);
 				break;
-			case "PROCCESSING":
-				order.setOrderStatus(EOrderStatus.PROCCESSING);
-				break;
-			case "COMPLETED":
-				order.setOrderStatus(EOrderStatus.COMPLETED);
+			case "SUCCESSFUL":
+				order.setOrderStatus(EOrderStatus.SUCCESSFUL);
 				for (OrderItem orderItem : order.getOrderItems()) {
 					Product product = orderItem.getProductSKU().getProducts();
 					product.setSold(product.getSold() + orderItem.getQuantity());
@@ -302,20 +296,14 @@ public class OrderService {
 				break;
 			}
 			switch (orderStatusDto.getPaymentStatus()) {
-			case "AWAITING_REFUND":
-				order.setPaymentStatus(EPaymentStatus.AWAITING_REFUND);
-				break;
-			case "FAILED":
-				order.setPaymentStatus(EPaymentStatus.FAILED);
+			case "UNSUCCESSFUL":
+				order.setPaymentStatus(EPaymentStatus.UNSUCCESSFUL);
 				break;
 			case "PENDING":
 				order.setPaymentStatus(EPaymentStatus.PENDING);
 				break;
-			case "REFUNDED":
-				order.setPaymentStatus(EPaymentStatus.REFUNDED);
-				break;
 			case "COMPLETED":
-				order.setPaymentStatus(EPaymentStatus.COMPLETED);
+				order.setPaymentStatus(EPaymentStatus.SUCCESSFUL);
 				order.setPaymentDate(Calendar.getInstance().getTime());
 				break;
 			}

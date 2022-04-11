@@ -61,12 +61,12 @@ public class AuthController {
 
         // add check for username exists in a DB
         if(userRepository.existsByUsername(signUpDto.getUsername())){
-            return new ResponseEntity<>("Error: Username is already taken!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error: Username is already taken!", HttpStatus.CONFLICT);
         }
 
         // add check for email exists in DB
         if(userRepository.existsByEmail(signUpDto.getEmail())){
-            return new ResponseEntity<>("Error: Email is already taken!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error: Email is already taken!", HttpStatus.CONFLICT);
         }
 
         // create user object
@@ -101,10 +101,12 @@ public class AuthController {
     @PostMapping("/forgot_password/reset")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
     	if(authService.validatePasswordResetToken(resetPasswordDto.getToken())) {
+    		if (!resetPasswordDto.getNewPassword().equals(resetPasswordDto.getRepeatNewPassword()))
+    			return new ResponseEntity<>("Error: Repeat new password doesn't match new password.", HttpStatus.BAD_REQUEST);
     		authService.resetPassword(resetPasswordDto);
     		return new ResponseEntity<>("Your password is changed successfully. Please login with the new password.", HttpStatus.OK);
     	}
-    	return new ResponseEntity<>("Invalid token!", HttpStatus.BAD_REQUEST);
+    	return new ResponseEntity<>("Error: Invalid token!", HttpStatus.BAD_REQUEST);
     }
 
 	@PostMapping("/signout")

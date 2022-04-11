@@ -331,8 +331,7 @@ public class VNPayService {
         if (signValue.equals(vnp_SecureHash)) {
             if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
                 Order order = orderRepository.findById(Long.valueOf(request.getParameter("vnp_OrderInfo"))).get();
-                order.setPaymentStatus(EPaymentStatus.COMPLETED);
-                order.setOrderStatus(EOrderStatus.PROCCESSING);
+                order.setPaymentStatus(EPaymentStatus.SUCCESSFUL);
                 order.setPaymentDate(Calendar.getInstance().getTime());
                 orderRepository.saveAndFlush(order);
                 Cart cart = cartRepository.findByUser(order.getUser()).get();
@@ -348,8 +347,8 @@ public class VNPayService {
                 return "Thanh toan thanh cong don hang " + request.getParameter("vnp_OrderInfo") + ". Ma don hang: " + request.getParameter("vnp_TxnRef") + ". So tien: " + request.getParameter("vnp_Amount");
             } else {
             	Order order = orderRepository.findById(Long.valueOf(request.getParameter("vnp_OrderInfo"))).get();
-                order.setPaymentStatus(EPaymentStatus.FAILED);
-                order.setOrderStatus(EOrderStatus.CANCELLED);
+                order.setPaymentStatus(EPaymentStatus.UNSUCCESSFUL);
+                order.setOrderStatus(EOrderStatus.UNSUCCESSFUL);
                 orderRepository.saveAndFlush(order);
                 Set<OrderItem> orderItems = order.getOrderItems();
                 for (OrderItem orderItem : orderItems) {

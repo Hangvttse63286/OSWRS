@@ -61,7 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/configuration/security",
             "/swagger-ui.html",
             "/swagger-ui.html#/**",
-            "/webjars/**"
+            "/webjars/**",
+            "/api/recommendation/**"
     };
 
     private static final String[] ROLE_LIST = {

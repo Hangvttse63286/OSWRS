@@ -108,6 +108,35 @@ public class RecommendationService {
 
 	}
 
+	public List<ProductRecommendationResponse> getRecommendedProductList(List<String> imageUrlList) {
+
+		List<Product> productList = new ArrayList<>();
+
+		for (String imageUrl : imageUrlList) {
+			Product_Image image = productImageRepository.findByUrl(imageUrl).get();
+			Product product = image.getProducts();
+			productList.add(product);
+		}
+
+		List<ProductRecommendationResponse> productResponseList = new ArrayList<>();
+		for (Product product : productList) {
+			ProductRecommendationResponse productResponse = new ProductRecommendationResponse();
+			productResponse.setProduct_id(product.getProduct_id());
+			productResponse.setProduct_name(product.getProduct_name());
+			productResponse.setProduct_status_id(product.getProduct_status_id());
+			productResponse.setPrice(product.getPrice());
+			Set<Product_Image> imageList = product.getProduct_Image();
+			for(Product_Image image : imageList) {
+				if (image.isPrimary())
+					productResponse.setImageUrl(image.getUrl());
+			}
+			productResponseList.add(productResponse);
+			if (productResponseList.size() == 10)
+				break;
+		}
+		return productResponseList;
+	}
+
 	public List<String> getLatestBoughtImagesByUser(String username) {
 
 		if (username.isEmpty())
