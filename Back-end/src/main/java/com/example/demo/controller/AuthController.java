@@ -85,7 +85,7 @@ public class AuthController {
 
     @PostMapping("/forgot_password")
     public ResponseEntity<?> forgotPassword(@RequestParam(name = "email") String email, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
-    	if(authService.getUserByEmail(email) == null)
+    	if(!authService.existsByEmail(email))
     		return new ResponseEntity<>("Error: Invalid email!", HttpStatus.BAD_REQUEST);
     	authService.updateResetPasswordToken(email, req);
     	return ResponseEntity.ok(new MessageResponse("We hanve sent a reset password link to your email. Please check."));
