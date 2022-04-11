@@ -11,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -48,17 +47,13 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginDto loginDto){
-        try {
-    	JwtResponse jwtResponse = authService.loginUser(loginDto);
+        JwtResponse jwtResponse = authService.loginUser(loginDto);
         if(jwtResponse == null) {
         	return new ResponseEntity<>("Error: Unverified account! Please check your email for verification", HttpStatus.NOT_ACCEPTABLE);
         }
 
     	return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtUtils.getJwtCookie(jwtResponse.getAccessToken()).toString())
         		.body(jwtResponse);
-        } catch (AccessDeniedException e) {
-        	return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-        }
     }
 
     @PostMapping("/signup")

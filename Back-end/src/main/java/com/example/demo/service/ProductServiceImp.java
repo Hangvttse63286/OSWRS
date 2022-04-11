@@ -153,7 +153,7 @@ public class ProductServiceImp implements ProductService{
 		Set<Product_Image> productImageList= new HashSet<>();
 
 		Set<Category> categoryList= new HashSet<Category>();
-		Category cate= new Category();
+
 
 		Category category= categoryRepository.findByName(productRequest.getCategory().get(0).getCategory_name());
 
@@ -164,6 +164,7 @@ public class ProductServiceImp implements ProductService{
 
 		if(category == null) {
 			for(CategoryDTO c: productRequest.getCategory()) {
+				Category cate= new Category();
 				cate.setName(c.getCategory_name());
 				cate.setIs_deleted(c.isIs_deleted());
 				categoryList.add(cate);

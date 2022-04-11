@@ -102,15 +102,15 @@ public class ProductController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	// ok
-	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
-	public ResponseEntity<ProductDetailDTO> getProductById(@PathVariable(name = "id") String id) {
-		ProductDetailDTO productDetailDTO = productService.getProductByIdUser(id);
-		if (productService.getProductById(id) != null)
-			return new ResponseEntity<ProductDetailDTO>(productDetailDTO, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
+//	// ok
+//	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
+//	public ResponseEntity<ProductDetailDTO> getProductById(@PathVariable(name = "id") String id) {
+//		ProductDetailDTO productDetailDTO = productService.getProductByIdUser(id);
+//		if (productService.getProductById(id) != null)
+//			return new ResponseEntity<ProductDetailDTO>(productDetailDTO, HttpStatus.OK);
+//		else
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//	}
 
 //		//ok
 //		@RequestMapping(value = "/getProductAllById/{id}", method = RequestMethod.GET)
@@ -120,10 +120,10 @@ public class ProductController {
 //			else
 //				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //		}
-	
+
 	//ok
-		@RequestMapping(value = "/admin/getProductById/{id}", method = RequestMethod.GET)
-		public ResponseEntity<ProductListDTO> getProductByIdAdmin(@PathVariable(name = "id") String id) {
+		@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
+		public ResponseEntity<ProductListDTO> getProductById(@PathVariable(name = "id") String id) {
 			ProductListDTO productListDTO= productService.getProductByIdAdmin(id);
 			if(productService.getProductById(id) != null)
 				return new ResponseEntity<>(productListDTO, HttpStatus.OK);
@@ -132,7 +132,7 @@ public class ProductController {
 		}
 
 		//ok
-		@RequestMapping(value = "/deleteProductById/{id}", method = RequestMethod.DELETE)
+		@RequestMapping(value = "/admin/deleteProductById/{id}", method = RequestMethod.DELETE)
 		public ResponseEntity<?> deleteProductById(@PathVariable(name = "id") String id) {
 			if(productService.getProductById(id) != null) {
 				productService.deleteProduct(id);
@@ -143,7 +143,7 @@ public class ProductController {
 			}
 		}
 
-		@RequestMapping(value = "/updateProductById/{id}", method = RequestMethod.PUT)
+		@RequestMapping(value = "admin/updateProductById/{id}", method = RequestMethod.PUT)
 		public ResponseEntity<ProductDTO> updateProductById(@PathVariable(name = "id") String id, @RequestBody ProductDTO productDTO) {
 			ProductDTO product= productService.updateProductById(id, productDTO);
 			if(productService.getProductById(id) != null) {
@@ -154,7 +154,7 @@ public class ProductController {
 			}
 		}
 
-		@RequestMapping(value = "/createProduct", method = RequestMethod.POST)
+		@RequestMapping(value = "/admin/createProduct", method = RequestMethod.POST)
 		public ResponseEntity<?> createProduct(@RequestBody ProductDTO productRequest) {
 			Product product= productService.createProduct(productRequest);
 			if( product == null) {
@@ -165,7 +165,7 @@ public class ProductController {
 			}
 		}
 
-		@RequestMapping(value = "/createProductAll", method = RequestMethod.POST,
+		@RequestMapping(value = "/admin/createProductAll", method = RequestMethod.POST,
 				consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 		public ResponseEntity<ProductListDTO> createProductncludeImage(
 				@RequestPart("fileImage") MultipartFile[] multipartFile, ProductCreateDTO productRequest) throws Exception {
