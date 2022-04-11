@@ -75,7 +75,7 @@ public class UserController {
     	    	if (userService.existsByEmail(updateUserDto.getEmail()))
     	    		return new ResponseEntity<>("Error: Email is already taken!", HttpStatus.BAD_REQUEST);
     		}
-    		userService.updateInfo(updateUserDto);
+    		userService.updateInfo(userDetails.getId() , updateUserDto);
     		return new ResponseEntity<>("Update Info successfully!", HttpStatus.OK);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
@@ -88,6 +88,8 @@ public class UserController {
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     		if (userService.checkIfValidOldPassword(userDetails.getId(), changePassDto.getOldPassword())) {
+    			if (!changePassDto.getNewPassword().equals(changePassDto.getRepeatNewPassword()))
+    				return new ResponseEntity<>("Error: Repeat new password doesn't match new password.", HttpStatus.BAD_REQUEST);
     			userService.changePassword(userDetails.getId(), changePassDto.getNewPassword());
     			return new ResponseEntity<>("Change password successfully!", HttpStatus.OK);
     		} else
