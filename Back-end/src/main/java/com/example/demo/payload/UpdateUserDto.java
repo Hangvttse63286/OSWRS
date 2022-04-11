@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Set;
 
 public class UpdateUserDto {
-	private Long id;
 	private String email;
 	private String username;
     private String first_name;
@@ -12,13 +11,7 @@ public class UpdateUserDto {
     private String phone_number;
     private int gender_id;
     private Date birthday;
-    
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -61,6 +54,6 @@ public class UpdateUserDto {
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
-    
-    
+
+
 }
