@@ -40,29 +40,34 @@ public class AccountController {
     @GetMapping("/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUser(@PathVariable String username) {
-        UserDto user = accountService.findByUsername(username);
-    	if (user != null)
+        try {
+    		UserDto user = accountService.findByUsername(username);
         	return new ResponseEntity<>(user, HttpStatus.OK);
-        else
-            return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    	}
     }
 
     @PutMapping("/change_role/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeRoles(@PathVariable String username, @RequestBody RoleChangeDto roleChangeDto) {
-    	String result = accountService.changeRole(username, roleChangeDto);
-    	if (result != null)
+    	try {
+    		String result = accountService.changeRole(username, roleChangeDto);
     		return new ResponseEntity<>(result, HttpStatus.OK);
-    	else
-            return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
+    	}	catch (NullPointerException e1) {
+            return new ResponseEntity<>(e1.getMessage(), HttpStatus.NOT_FOUND);
+    	} catch (RuntimeException e2) {
+    		return new ResponseEntity<>(e2.getMessage(), HttpStatus.BAD_REQUEST);
+    	}
     }
 
     @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAccount(@PathVariable String username) {
-    	if (accountService.findByUsername(username) != null)
+    	try	{
     		return new ResponseEntity<>(accountService.deleteAcc(username), HttpStatus.OK);
-    	else
-            return new ResponseEntity<>("No user found!", HttpStatus.NOT_FOUND);
+    	} catch (NullPointerException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    	}
     }
 }

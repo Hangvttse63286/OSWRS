@@ -92,7 +92,7 @@ public class RecommedationController {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
     		List<String> imageList = recommendationService.getLatestBoughtImagesByUser(userDetails.getUsername());
-    		String URL = "https://my-recommendation-api.herokuapp.com/recommend";
+    		String URL = "https://recommendation-system-o7alw.ondigitalocean.app/recommend";
     		HttpHeaders headers = new HttpHeaders();
     	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     	    headers.setContentType(MediaType.APPLICATION_JSON);

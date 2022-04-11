@@ -34,7 +34,7 @@ public class VoucherController {
         if (!voucherList.isEmpty())
         	return new ResponseEntity<>(voucherList, HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Error: No voucher found.", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{id}")
@@ -44,7 +44,7 @@ public class VoucherController {
     	if (voucher != null)
         	return new ResponseEntity<>(voucher, HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Error: No voucher found.", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/create")
@@ -52,17 +52,8 @@ public class VoucherController {
     public ResponseEntity<?> createVoucher(@RequestBody VoucherDto voucherDto) {
     	VoucherDto voucher = voucherService.createVoucher(voucherDto);
     	if (voucher == null)
-    		return new ResponseEntity<>("Error: Code has already existed.", HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<>("Error: Code has already existed.", HttpStatus.CONFLICT);
     	return new ResponseEntity<>(voucher, HttpStatus.OK);
-    }
-
-    @GetMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getUpdateVoucher(@PathVariable Long id) {
-        if (voucherService.getVoucherById(id) != null)
-        	return new ResponseEntity<>(voucherService.getVoucherById(id), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/update/{id}")
@@ -75,7 +66,7 @@ public class VoucherController {
     	if (updateResult != null)
     		return new ResponseEntity<>(updateResult, HttpStatus.OK);
     	else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Error: No voucher found.", HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/activation/{id}")
@@ -85,7 +76,7 @@ public class VoucherController {
     	if (updateResult != null)
     		return new ResponseEntity<>(updateResult, HttpStatus.OK);
     	else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Error: No voucher found.", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -95,7 +86,7 @@ public class VoucherController {
         	voucherService.deleteVoucher(id);
         	return new ResponseEntity<>("Delete voucher successfully!", HttpStatus.OK);
         } else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Error: No voucher found.", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/validate")

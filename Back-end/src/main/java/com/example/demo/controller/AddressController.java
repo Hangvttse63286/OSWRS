@@ -31,7 +31,7 @@ public class AddressController {
     private AddressService addressService;
 
 	@GetMapping("/")
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAddressList() {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -39,39 +39,54 @@ public class AddressController {
     		List<AddressDto> addressList = addressService.getAddressList(userDetails.getUsername());
     		if (!addressList.isEmpty())
     			return new ResponseEntity<>(addressList, HttpStatus.OK);
-    		return new ResponseEntity<>("No address found", HttpStatus.NOT_FOUND);
+    		return new ResponseEntity<>("Error: No address found", HttpStatus.NOT_FOUND);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
+    }
+
+	@GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getAddress(@PathVariable Long id) {
+		try {
+			AddressDto address = addressService.getAddressById(id);
+			return new ResponseEntity<>(address, HttpStatus.OK);
+    	} catch (NullPointerException e) {
+    		return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    	}
     }
 
 	@PostMapping("/create")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createAddress(@RequestBody AddressDto createAddressDto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     		return new ResponseEntity<>(addressService.createAddress(createAddressDto, userDetails.getUsername()), HttpStatus.OK);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 
 	@PutMapping("/update/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody AddressDto updateAddressDto) {
-    	AddressDto address = addressService.updateAddress(id, updateAddressDto);
-    	if (address != null)
-    		return new ResponseEntity<>(address, HttpStatus.OK);
+    	try {
+    		AddressDto address = addressService.updateAddress(id, updateAddressDto);
+        	return new ResponseEntity<>(address, HttpStatus.OK);
 
-    	return new ResponseEntity<>("No address found", HttpStatus.NOT_FOUND);
+    	} catch (NullPointerException e) {
+    		return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    	}
     }
 
 	@DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
-		if (addressService.getAddressById(id) != null) {
+
+		try {
 			addressService.deleteAddressById(id);
 			return new ResponseEntity<>("Delete address successfully!", HttpStatus.OK);
-		} else
-            return new ResponseEntity<>("No address found", HttpStatus.NOT_FOUND);
+    	} catch (NullPointerException e) {
+    		return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    	}
     }
 }

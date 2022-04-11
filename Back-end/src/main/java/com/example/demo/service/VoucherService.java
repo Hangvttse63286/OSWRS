@@ -228,7 +228,7 @@ public class VoucherService {
 				newCartTotal.setDiscountValue(voucher.getMaxDiscount());
 				newCartTotal.setNewTotal(cartTotal-newCartTotal.getDiscountValue());
 			} else if (voucher.getType().equals(EVoucherType.PERCENTAGE)) {
-				newCartTotal.setDiscountValue((cartTotal*voucher.getDiscountAmount())/100);
+				newCartTotal.setDiscountValue(Math.ceil((cartTotal*voucher.getDiscountAmount())/100) > voucher.getMaxDiscount() ? voucher.getMaxDiscount() : Math.ceil((cartTotal*voucher.getDiscountAmount())/100));
 				newCartTotal.setNewTotal(cartTotal-newCartTotal.getDiscountValue());
 			}
 			return newCartTotal;

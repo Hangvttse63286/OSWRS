@@ -77,8 +77,8 @@ public class AccountService {
 	}
 
 	public UserDto findByUsername (String username) {
-		try {
-			User user = userRepository.findByUsername(username).get();
+			User user = userRepository.findByUsername(username)
+					.orElseThrow(() -> new NullPointerException("Error: No user found."));
 
 			UserDto userDto = new UserDto();
 			userDto.setFirst_name(user.getFirst_name());
@@ -93,15 +93,12 @@ public class AccountService {
 			userDto.setRoles(roles);
 
 			return userDto;
-		} catch (Exception e) {
-			return null;
-		}
 
 	}
 
 	public String changeRole (String username, RoleChangeDto roleChangeDto) {
-		try {
-			User user = userRepository.findByUsername(username).get();
+			User user = userRepository.findByUsername(username)
+					.orElseThrow(() -> new NullPointerException("Error: No user found."));
 
 			Set<String> strRoles = roleChangeDto.getRoles();
 	        Set<Role> roles = new HashSet<>();
@@ -109,35 +106,32 @@ public class AccountService {
 			strRoles.forEach(role -> {
 				switch (role) {
 				case "admin":
-					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException("Role not found:" + role));
+					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).get();
 					roles.add(adminRole);
 					break;
 				case "staff":
-					Role staffRole = roleRepository.findByName(ERole.ROLE_STAFF)
-							.orElseThrow(() -> new RuntimeException("Role not found:" + role));
+					Role staffRole = roleRepository.findByName(ERole.ROLE_STAFF).get();
 					roles.add(staffRole);
 					break;
 				case "user":
-					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-							.orElseThrow(() -> new RuntimeException("Role not found:" + role));
+					Role userRole = roleRepository.findByName(ERole.ROLE_USER).get();
 					roles.add(userRole);
 					break;
+				default:
+					throw new RuntimeException("Error: Role not found: " + role);
 				}
 			});
 
 			user.setRoles(roles);
 			userRepository.save(user);
 			return "Change roles successfully!";
-		} catch (Exception e) {
-			return null;
-		}
 
 	}
 
 
 	public String deleteAcc (String username) {
-		User user = userRepository.findByUsername(username).get();
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new NullPointerException("Error: No user found."));
 
 		List<Order> orders = orderRepository.findByUser(user);
 		if (!orders.isEmpty()) {

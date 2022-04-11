@@ -29,7 +29,7 @@ public class AddressService {
 
 	public List<AddressDto> getAddressList (String username) {
 		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
+				.orElseThrow(() -> new NullPointerException("Error: No user found."));
 		List<AddressDto> addressListDto = new ArrayList<>();
 		List<Address> addressList = addressRepository.findByUser(user);
 		if (addressList.isEmpty())
@@ -52,8 +52,8 @@ public class AddressService {
 	}
 
 	public AddressDto getAddressById (Long id) {
-		try {
-			Address address = addressRepository.findById(id).get();
+			Address address = addressRepository.findById(id)
+					.orElseThrow(() -> new NullPointerException("Error: No address found."));
 
 			AddressDto addressDto = new AddressDto();
 			addressDto.setId(address.getId());
@@ -67,9 +67,6 @@ public class AddressService {
 			addressDto.setPhoneNumber(address.getPhoneNumber());
 
 			return addressDto;
-		} catch (Exception e) {
-			return null;
-		}
 
 	}
 
@@ -89,8 +86,8 @@ public class AddressService {
 	}
 
 	public AddressDto updateAddress (Long id, AddressDto addressDto) {
-		try {
-			Address address = addressRepository.findById(id).get();
+			Address address = addressRepository.findById(id)
+					.orElseThrow(() -> new NullPointerException("Error: No address found."));
 
 			address.setReceiverName(addressDto.getReceiverName());
 			address.setProvince(addressDto.getProvince());
@@ -103,15 +100,11 @@ public class AddressService {
 			addressRepository.save(address);
 
 			return getAddressDto(address);
-		} catch (Exception e) {
-			return null;
-		}
-
 	}
 
 	public AddressDto createAddress (AddressDto addressDto, String username) {
 		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
+				.orElseThrow(() -> new NullPointerException("Error: No user found."));
 		Address address = new Address();
 
 		address.setUser(user);
@@ -129,7 +122,8 @@ public class AddressService {
 	}
 
 	public void deleteAddressById (Long id) {
-		Address address = addressRepository.findById(id).get();
+		Address address = addressRepository.findById(id)
+				.orElseThrow(() -> new NullPointerException("Error: No address found."));
 		List<Order> orders = orderRepository.findByAddress(address);
 		if (!orders.isEmpty()) {
 			for (Order order : orders) {

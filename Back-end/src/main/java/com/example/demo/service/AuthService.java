@@ -142,25 +142,21 @@ public class AuthService {
         Set<Role> roles = new HashSet<>();
 
         if(strRoles == null) {
-        	Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-        			.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        	Role userRole = roleRepository.findByName(ERole.ROLE_USER).get();
         	roles.add(userRole);
         } else {
         	strRoles.forEach(role -> {
         		switch (role) {
         		case "admin":
-        			Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-        				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        			Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).get();
         			roles.add(adminRole);
         			break;
         		case "staff":
-        			Role staffRole = roleRepository.findByName(ERole.ROLE_STAFF)
-        				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        			Role staffRole = roleRepository.findByName(ERole.ROLE_STAFF).get();
         			roles.add(staffRole);
         			break;
         		default:
-        			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-        				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        			Role userRole = roleRepository.findByName(ERole.ROLE_USER).get();
         			roles.add(userRole);
         		}
         	});

@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.service.UserService;
+import com.example.demo.common.JwtUtils;
 import com.example.demo.payload.ChangePassDto;
+import com.example.demo.payload.MessageResponse;
 import com.example.demo.payload.UpdateUserDto;
+import com.example.demo.service.AuthService;
 import com.example.demo.service.UserDetailsImpl;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,8 +33,14 @@ public class UserController {
 	@Autowired
     private UserService userService;
 
+	 @Autowired
+	 private AuthService authService;
+
+	 @Autowired
+	 private JwtUtils jwtUtils;
+
 	@GetMapping("/profile")
-	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+//	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> getInfo() {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -37,7 +48,7 @@ public class UserController {
 
     	    return new ResponseEntity<>(userService.findByUsername(userDetails.getUsername()), HttpStatus.OK);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 
 //	@GetMapping("/profile/updateInfo")
@@ -53,7 +64,7 @@ public class UserController {
 //    }
 
     @PostMapping("/profile/updateInfo")
-    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> updateInfo(@RequestBody UpdateUserDto updateUserDto) {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -67,11 +78,11 @@ public class UserController {
     		userService.updateInfo(updateUserDto);
     		return new ResponseEntity<>("Update Info successfully!", HttpStatus.OK);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/changePassword")
-    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> changePassword(@RequestBody ChangePassDto changePassDto) {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -82,18 +93,21 @@ public class UserController {
     		} else
     			return new ResponseEntity<>("Error: Invalid password.", HttpStatus.BAD_REQUEST);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUSer() {
+//    @PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUser() {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     		userService.deleteUser(userDetails.getId());
-    		return new ResponseEntity<>("Delete user successfully!", HttpStatus.OK);
+    		authService.setLogoutStatus(authentication);
+    		ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+    		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+			.body(new MessageResponse("Delete user successfully!"));
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
 }
