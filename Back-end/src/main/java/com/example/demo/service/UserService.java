@@ -72,8 +72,8 @@ public class UserService {
 	}
 
 
-	public void updateInfo (UpdateUserDto updateUserDto) {
-		User user = userRepository.findById(updateUserDto.getId()).get();
+	public void updateInfo (Long id, UpdateUserDto updateUserDto) {
+		User user = userRepository.findById(id).get();
 
         user.setFirst_name(updateUserDto.getFirst_name());
         user.setLast_name(updateUserDto.getLast_name());
