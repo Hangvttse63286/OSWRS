@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Address;
+import com.example.demo.entity.Cart;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Recommendation;
 import com.example.demo.entity.Review;
@@ -15,6 +16,7 @@ import com.example.demo.entity.User;
 import com.example.demo.payload.UpdateUserDto;
 import com.example.demo.payload.UserDto;
 import com.example.demo.repository.AddressRepository;
+import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.RecommendationRepository;
 import com.example.demo.repository.ReviewRepository;
@@ -40,6 +42,9 @@ public class UserService {
 
 	@Autowired
     private AddressRepository addressRepository;
+
+	@Autowired
+    private CartRepository cartRepository;
 
 	public UserDto findById (Long id) {
 		UserDto userDto = new UserDto();
@@ -128,6 +133,18 @@ public class UserService {
 			}
 			reviewRepository.saveAllAndFlush(reviews);
 		}
+
+		Cart cart = cartRepository.findByUser(user).get();
+		if(!cart.getCartItems().isEmpty()) {
+			cart.getCartItems().clear();
+			cartRepository.saveAndFlush(cart);
+		}
+		cartRepository.delete(cart);
+
+		user.getRoles().clear();
+
+		userRepository.saveAndFlush(user);
+
 		userRepository.deleteById(id);
 	}
 
