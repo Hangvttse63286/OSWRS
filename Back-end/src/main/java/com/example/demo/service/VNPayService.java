@@ -310,7 +310,7 @@ public class VNPayService {
         return vnpResponse;
 	}
 
-	public String checkResult (HttpServletRequest request) {
+	public int checkResult (HttpServletRequest request) {
 		Map fields = new HashMap();
         for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
             String fieldName = (String) params.nextElement();
@@ -344,7 +344,7 @@ public class VNPayService {
     				productRepository.save(product);
                 }
 
-                return "Thanh toan thanh cong don hang " + request.getParameter("vnp_OrderInfo") + ". Ma don hang: " + request.getParameter("vnp_TxnRef") + ". So tien: " + request.getParameter("vnp_Amount");
+                return 1;
             } else {
             	Order order = orderRepository.findById(Long.valueOf(request.getParameter("vnp_OrderInfo"))).get();
                 order.setPaymentStatus(EPaymentStatus.UNSUCCESSFUL);
@@ -355,11 +355,11 @@ public class VNPayService {
                 	Product_SKU productSKU = orderItem.getProductSKU();
                 	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
                 }
-                return "Error: Thanh toan khong thanh cong don hang " + request.getParameter("vnp_OrderInfo");
+                return 2;
             }
 
         } else {
-            return "Error: Chu ky khong hop le";
+            return 3;
         }
 	}
 }

@@ -55,14 +55,15 @@ public class OrderControllerAdmin {
     }
 
     @PutMapping("/change_status/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> changeOrderStatus(@PathVariable Long id, OrderStatusDto orderStatusDto) {
     	OrderDto updateResult = orderService.changeOrderStatus(id, orderStatusDto);
     	if (updateResult != null)
     		return new ResponseEntity<>(updateResult, HttpStatus.OK);
     	else
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	 }
+	}
+
 
 //    @GetMapping("/delivery/{id}")
 //    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")

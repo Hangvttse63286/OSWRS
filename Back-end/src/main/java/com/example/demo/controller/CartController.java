@@ -44,7 +44,7 @@ public class CartController {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     		List<CartItemResponse> cartItemList = cartService.getCartItemList(userDetails.getUsername());
     		if (!cartItemList.isEmpty())
-    			return new ResponseEntity<>(cartItemList, HttpStatus.FOUND);
+    			return new ResponseEntity<>(cartItemList, HttpStatus.OK);
     		return new ResponseEntity<>("No item found!", HttpStatus.NOT_FOUND);
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
@@ -58,7 +58,7 @@ public class CartController {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     		if (cartService.checkStockAndSaleLimit(cartItemDto.getProductSKUId(), cartItemDto.getQuantity())) {
     			CartItemResponse cartItemResponse = cartService.addToCart(cartItemDto, userDetails.getUsername());
-    			return new ResponseEntity<>(cartItemResponse, HttpStatus.CREATED);
+    			return new ResponseEntity<>(cartItemResponse, HttpStatus.OK);
 
     		}
     		return new ResponseEntity<>("Quantity exceeds product's stock or sale limit!", HttpStatus.NOT_ACCEPTABLE);

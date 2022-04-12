@@ -91,18 +91,20 @@ public class AuthController {
     	return ResponseEntity.ok(new MessageResponse("We hanve sent a reset password link to your email. Please check."));
     }
 
-    @GetMapping("/forgot_password/reset")
-    public ResponseEntity<?> verifyPasswordResetToken(@Param("token") String token) {
-    	if(authService.validatePasswordResetToken(token))
-    		return new ResponseEntity<>(token, HttpStatus.OK);
-    	return new ResponseEntity<>("Error: Email verification failed!", HttpStatus.BAD_REQUEST);
-    }
+//    @GetMapping("/forgot_password/reset")
+//    public ResponseEntity<?> verifyPasswordResetToken(@Param("token") String token) {
+//    	if(authService.validatePasswordResetToken(token))
+//    		return new ResponseEntity<>(token, HttpStatus.OK);
+//    	return new ResponseEntity<>("Error: Email verification failed!", HttpStatus.BAD_REQUEST);
+//    }
 
     @PostMapping("/forgot_password/reset")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
     	if(authService.validatePasswordResetToken(resetPasswordDto.getToken())) {
+    		if (authService.isExpired(resetPasswordDto.getToken()))
+    			return new ResponseEntity<>("Error: Token is expired!", HttpStatus.NOT_ACCEPTABLE);
     		if (!resetPasswordDto.getNewPassword().equals(resetPasswordDto.getRepeatNewPassword()))
-    			return new ResponseEntity<>("Error: Repeat new password doesn't match new password.", HttpStatus.BAD_REQUEST);
+    			return new ResponseEntity<>("Error: Repeat new password doesn't match new password.", HttpStatus.CONFLICT);
     		authService.resetPassword(resetPasswordDto);
     		return new ResponseEntity<>("Your password is changed successfully. Please login with the new password.", HttpStatus.OK);
     	}

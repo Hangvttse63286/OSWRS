@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 @Entity
@@ -27,6 +29,9 @@ public class PasswordResetToken {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    Date expiredDate;
 
     public Long getId() {
         return id;
@@ -51,6 +56,14 @@ public class PasswordResetToken {
     public void setUser(User user) {
         this.user = user;
     }
+
+	public Date getExpiredDate() {
+		return expiredDate;
+	}
+
+	public void setExpiredDate(Date expiredDate) {
+		this.expiredDate = expiredDate;
+	}
 
 
 }

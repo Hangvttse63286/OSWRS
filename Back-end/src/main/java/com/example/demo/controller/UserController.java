@@ -89,7 +89,7 @@ public class UserController {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     		if (userService.checkIfValidOldPassword(userDetails.getId(), changePassDto.getOldPassword())) {
     			if (!changePassDto.getNewPassword().equals(changePassDto.getRepeatNewPassword()))
-    				return new ResponseEntity<>("Error: Repeat new password doesn't match new password.", HttpStatus.BAD_REQUEST);
+    				return new ResponseEntity<>("Error: Repeat new password doesn't match new password.", HttpStatus.CONFLICT);
     			userService.changePassword(userDetails.getId(), changePassDto.getNewPassword());
     			return new ResponseEntity<>("Change password successfully!", HttpStatus.OK);
     		} else

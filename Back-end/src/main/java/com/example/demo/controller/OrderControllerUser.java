@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.payload.OrderDto;
+import com.example.demo.payload.OrderStatusDto;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.UserDetailsImpl;
 import com.example.demo.service.UserService;
@@ -42,7 +44,7 @@ public class OrderControllerUser {
             else
                 return new ResponseEntity<>("No order found!", HttpStatus.NOT_FOUND);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
     }
 
@@ -62,17 +64,20 @@ public class OrderControllerUser {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		return new ResponseEntity<>(orderService.createOrder(orderDto, userDetails.getUsername()), HttpStatus.OK);
+    		OrderDto result = orderService.createOrder(orderDto, userDetails.getUsername());
+    		if (result != null)
+    			return new ResponseEntity<>(result, HttpStatus.OK);
+    		return new ResponseEntity<>("Error: Some items are out of stock, please check your cart again." ,HttpStatus.NOT_ACCEPTABLE);
     	}
-    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.PRECONDITION_REQUIRED);
+    	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PutMapping("/cancel")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+    public ResponseEntity<?> cancelOrder(@RequestBody Long id) {
         if (orderService.getOrderById(id) != null) {
-        	orderService.deleteOrder(id);
+        	orderService.changeOrderStatus(id, new OrderStatusDto("UNSUCCESSFUL", "UNSUCCESSFUL"));
         	return new ResponseEntity<>("Delete order successfully!", HttpStatus.OK);
         } else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

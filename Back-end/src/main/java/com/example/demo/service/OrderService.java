@@ -256,6 +256,8 @@ public class OrderService {
 			OrderItem orderItem = new OrderItem();
 			orderItem.setOrder(orderRepository.findById(order.getId()).get());
 			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
+			if (productSKU.getStock() < orderItemDto.getQuantity())
+				return null;
 			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
 			productSKURepository.save(productSKU);
 			orderItem.setProductSKU(productSKU);
@@ -273,41 +275,54 @@ public class OrderService {
 	public OrderDto changeOrderStatus (Long id, OrderStatusDto orderStatusDto) {
 		try {
 			Order order = orderRepository.findById(id).get();
+			boolean flag = false;
 
-			switch (orderStatusDto.getOrderStatus()) {
-			case "UNSUCCESSFUL":
-				order.setOrderStatus(EOrderStatus.UNSUCCESSFUL);
-				Set<OrderItem> orderItems = order.getOrderItems();
-	            for (OrderItem orderItem : orderItems) {
-	            	Product_SKU productSKU = orderItem.getProductSKU();
-	            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
-	            }
-				break;
-			case "PENDING":
-				order.setOrderStatus(EOrderStatus.PENDING);
-				break;
-			case "SUCCESSFUL":
-				order.setOrderStatus(EOrderStatus.SUCCESSFUL);
-				for (OrderItem orderItem : order.getOrderItems()) {
-					Product product = orderItem.getProductSKU().getProducts();
-					product.setSold(product.getSold() + orderItem.getQuantity());
-					productRepository.save(product);
+			if (orderStatusDto.getOrderStatus() != null && !orderStatusDto.getOrderStatus().trim().isEmpty()) {
+				switch (orderStatusDto.getOrderStatus()) {
+				case "UNSUCCESSFUL":
+					order.setOrderStatus(EOrderStatus.UNSUCCESSFUL);
+					Set<OrderItem> orderItems = order.getOrderItems();
+		            for (OrderItem orderItem : orderItems) {
+		            	Product_SKU productSKU = orderItem.getProductSKU();
+		            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
+		            }
+					break;
+				case "PENDING":
+					order.setOrderStatus(EOrderStatus.PENDING);
+					break;
+				case "CONFIRMED":
+					order.setOrderStatus(EOrderStatus.CONFIRMED);
+					break;
+				case "SUCCESSFUL":
+					order.setOrderStatus(EOrderStatus.SUCCESSFUL);
+					for (OrderItem orderItem : order.getOrderItems()) {
+						Product product = orderItem.getProductSKU().getProducts();
+						product.setSold(product.getSold() + orderItem.getQuantity());
+						productRepository.save(product);
+					}
+					break;
 				}
-				break;
+				flag = true;
 			}
-			switch (orderStatusDto.getPaymentStatus()) {
-			case "UNSUCCESSFUL":
-				order.setPaymentStatus(EPaymentStatus.UNSUCCESSFUL);
-				break;
-			case "PENDING":
-				order.setPaymentStatus(EPaymentStatus.PENDING);
-				break;
-			case "COMPLETED":
-				order.setPaymentStatus(EPaymentStatus.SUCCESSFUL);
-				order.setPaymentDate(Calendar.getInstance().getTime());
-				break;
+
+			if (orderStatusDto.getPaymentStatus() != null && !orderStatusDto.getPaymentStatus().trim().isEmpty()) {
+				switch (orderStatusDto.getPaymentStatus()) {
+				case "UNSUCCESSFUL":
+					order.setPaymentStatus(EPaymentStatus.UNSUCCESSFUL);
+					break;
+				case "PENDING":
+					order.setPaymentStatus(EPaymentStatus.PENDING);
+					break;
+				case "COMPLETED":
+					order.setPaymentStatus(EPaymentStatus.SUCCESSFUL);
+					order.setPaymentDate(Calendar.getInstance().getTime());
+					break;
+				}
+				flag = true;
 			}
-			orderRepository.save(order);
+
+			if (flag)
+				orderRepository.save(order);
 			return getOrderDto(order);
 		} catch (Exception e) {
 			return null;

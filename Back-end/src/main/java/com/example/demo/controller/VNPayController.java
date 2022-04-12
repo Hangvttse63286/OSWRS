@@ -42,10 +42,15 @@ public class VNPayController {
 	@GetMapping("/return")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getVnpPaymentResult(HttpServletRequest req) throws IOException {
-		String vnpResponse = vnpService.checkResult(req);
-    	if(vnpResponse.startsWith("Error:"))
-    		return new ResponseEntity<>(vnpResponse, HttpStatus.BAD_REQUEST);
-    	return new ResponseEntity<>(vnpResponse, HttpStatus.OK);
+		int vnpResponse = vnpService.checkResult(req);
+    	switch (vnpResponse) {
+    	 case 1:
+    		 return new ResponseEntity<>("Payment successfully!", HttpStatus.OK);
+    	 case 2:
+    		 return new ResponseEntity<>("Error: Payment failed!", HttpStatus.EXPECTATION_FAILED);
+    	 default:
+    		 return new ResponseEntity<>("Error: Signature is invalid!", HttpStatus.BAD_REQUEST);
+    	}
 	}
 
 //	@GetMapping("/query")

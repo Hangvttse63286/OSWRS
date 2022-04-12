@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -206,15 +207,15 @@ public class AuthService {
 			mailContent += "<p>Trân trọng,<br>Spotlight On Style</p>";
 		}
 		else {
-			subject = "Mã đặt lại mật khẩu của bạn";
+			subject = "Đặt lại mật khẩu của bạn";
 			senderName = "Spotlight On Style";
 			mailContent = "<p>Xin chào " + user.getLast_name() + " " + user.getFirst_name() + ",</p>";
-			mailContent += "<p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của bạn:</p>";
-			mailContent += "<p>Điền mã xác thực bên dưới để đặt lại mật khẩu:</p>";
+			mailContent += "<p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>";
+			mailContent += "<p>Điền mã xác thực bên dưới để đặt lại mật khẩu, mã sẽ hết hiệu lực sau 5 phút:</p>";
 
 			mailContent += "<h3>" + user.getPasswordResetToken().getToken() + "</h3>";
 
-			mailContent += "<p>Vui lòng bỏ qua email này nếu yêu cầu đổi mật khẩu này không phải từ bạn</p>";
+			mailContent += "<p>Vui lòng bỏ qua email này nếu yêu cầu đổi mật khẩu này không phải từ bạn.</p>";
 
 			mailContent += "<p>Trân trọng,<br>Spotlight On Style</p>";
 		}
@@ -255,6 +256,11 @@ public class AuthService {
 		token = String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10));
 		} while (passwordResetTokenRepository.existsByToken(token));
 	    passwordResetToken.setToken(token);
+	    Calendar currentTimeNow = Calendar.getInstance();
+
+	    currentTimeNow.add(Calendar.MINUTE, 5);
+	    Date fiveMinsFromNow = currentTimeNow.getTime();
+	    passwordResetToken.setExpiredDate(fiveMinsFromNow);
 		passwordResetTokenRepository.saveAndFlush(passwordResetToken);
 
 		sendVerificationEmail(passwordResetToken.getUser(),req, 1);
@@ -269,8 +275,19 @@ public class AuthService {
 	}
 
 	public void resetPassword(ResetPasswordDto resetPasswordDto) {
-		User user = passwordResetTokenRepository.findByToken(resetPasswordDto.getToken()).getUser();
+		PasswordResetToken passToken = passwordResetTokenRepository.findByToken(resetPasswordDto.getToken());
+		User user = passToken.getUser();
 		user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
 		userRepository.save(user);
+
+		passToken.setToken(null);
+		passwordResetTokenRepository.saveAndFlush(passToken);
 	}
+
+	public boolean isExpired (String token) {
+		PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
+		Date currentTimeNow = Calendar.getInstance().getTime();
+		return currentTimeNow.after(passToken.getExpiredDate()) ? true : false;
+	}
+
 }
