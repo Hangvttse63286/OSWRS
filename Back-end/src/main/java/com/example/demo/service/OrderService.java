@@ -69,7 +69,7 @@ public class OrderService {
 	AddressService addressService;
 
 	public List<OrderDto> getOrderList() {
-		List<Order> orderList = orderRepository.findAll();
+		List<Order> orderList = orderRepository.findAllByOrderByOrderDateDesc();
 		if (orderList.isEmpty()) {
 			return null;
 		}
