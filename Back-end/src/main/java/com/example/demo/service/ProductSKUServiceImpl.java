@@ -73,7 +73,7 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 		product_SKU.setSize(productSkuDTO.getSize());
 		product_SKU.setSale_limit(productSkuDTO.getSale_limit());
 		product_SKU.setStock(productSkuDTO.getStock());
-		productSKURepository.save(product_SKU);
+		productSKURepository.saveAndFlush(product_SKU);
 		return getSku(product_SKU);
 	}
 
@@ -131,10 +131,8 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 		product_SKU.setStock(productRequest.getStock());
 		product_SKU.setSale_limit(productRequest.getSale_limit());
 		product_SKU.setSize(productRequest.getSize());
-		product_SKU.setProducts(productRepository.findById(products.getProduct_id()).get());
-		product_SKU_List.add(product_SKU);
-		products.setProductSKUs(product_SKU_List);
-		productSKURepository.save(product_SKU);
+		product_SKU.setProducts(products);
+		productSKURepository.saveAndFlush(product_SKU);
 		return getSku(product_SKU);
 	}
 

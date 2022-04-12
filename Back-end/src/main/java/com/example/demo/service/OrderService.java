@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.common.EOrderStatus;
 import com.example.demo.common.EPayment;
 import com.example.demo.common.EPaymentStatus;
+import com.example.demo.entity.Address;
 import com.example.demo.entity.Cart;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderItem;
@@ -88,7 +89,9 @@ public class OrderService {
 
 			orderDto.setId(order.getId());
 			orderDto.setOrderStatus(order.getOrderStatus().toString());
-			orderDto.setUsername(order.getUser().getUsername());
+			User user = order.getUser();
+			if (user != null)
+				orderDto.setUsername(user.getUsername());
 			orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 			orderDto.setPayment(order.getPayment().getName().toString());
 			Set<OrderItem> orderItems = order.getOrderItems();
@@ -109,7 +112,9 @@ public class OrderService {
 			orderDto.setOrderDate(order.getOrderDate());
 			if (order.getPaymentDate() != null)
 				orderDto.setPaymentDate(order.getPaymentDate());
-			orderDto.setAddressId(order.getAddress().getId());
+			Address address = order.getAddress();
+			if (address != null)
+				orderDto.setAddressId(address.getId());
 
 			orderListDto.add(orderDto);
 		}
@@ -154,7 +159,9 @@ public class OrderService {
 			orderDto.setOrderDate(order.getOrderDate());
 			if (order.getPaymentDate() != null)
 				orderDto.setPaymentDate(order.getPaymentDate());
-			orderDto.setAddressId(order.getAddress().getId());
+			Address address = order.getAddress();
+			if (address != null)
+				orderDto.setAddressId(address.getId());
 
 			orderListDto.add(orderDto);
 		}
@@ -171,7 +178,9 @@ public class OrderService {
 
 		orderDto.setId(order.getId());
 		orderDto.setOrderStatus(order.getOrderStatus().toString());
-		orderDto.setUsername(order.getUser().getUsername());
+		User user = order.getUser();
+		if (user != null)
+			orderDto.setUsername(user.getUsername());
 		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 		orderDto.setPayment(order.getPayment().getName().toString());
 		Set<OrderItem> orderItems = order.getOrderItems();
@@ -192,7 +201,9 @@ public class OrderService {
 		orderDto.setOrderDate(order.getOrderDate());
 		if (order.getPaymentDate() != null)
 			orderDto.setPaymentDate(order.getPaymentDate());
-		orderDto.setAddressId(order.getAddress().getId());
+		Address address = order.getAddress();
+		if (address != null)
+			orderDto.setAddressId(address.getId());
 
 		return orderDto;
 	}
@@ -205,8 +216,9 @@ public class OrderService {
 
 		orderDto.setId(order.getId());
 		orderDto.setOrderStatus(order.getOrderStatus().toString());
-		if (order.getUser() != null)
-			orderDto.setUsername(order.getUser().getUsername());
+		User user = order.getUser();
+		if (user != null)
+			orderDto.setUsername(user.getUsername());
 		orderDto.setUsername(order.getUser().getUsername());
 		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
 		orderDto.setPayment(order.getPayment().getName().toString());
@@ -228,7 +240,9 @@ public class OrderService {
 		orderDto.setOrderDate(order.getOrderDate());
 		if (order.getPaymentDate() != null)
 			orderDto.setPaymentDate(order.getPaymentDate());
-		orderDto.setAddressId(order.getAddress().getId());
+		Address address = order.getAddress();
+		if (address != null)
+			orderDto.setAddressId(address.getId());
 
 		return orderDto;
 	}

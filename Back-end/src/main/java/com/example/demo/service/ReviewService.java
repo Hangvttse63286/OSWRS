@@ -46,7 +46,10 @@ public class ReviewService {
 
 			ReviewDto reviewDto = new ReviewDto();
 			reviewDto.setId(review.getId());
-			reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
+			if (review.getUser() !=null)
+				reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
+			else
+				reviewDto.setFullname("Khách hàng");
 			reviewDto.setNumberRating(review.getNumberRating());
 			reviewDto.setDescription(review.getDescription());
 			return reviewDto;
@@ -59,8 +62,10 @@ public class ReviewService {
 	public ReviewDto getReviewDto(Review review) {
 		ReviewDto reviewDto = new ReviewDto();
 		reviewDto.setId(review.getId());
-		reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
-		reviewDto.setNumberRating(review.getNumberRating());
+		if (review.getUser() !=null)
+			reviewDto.setFullname(review.getUser().getLast_name() + " " + review.getUser().getFirst_name());
+		else
+			reviewDto.setFullname("Khách hàng");
 		reviewDto.setDescription(review.getDescription());
 		return reviewDto;
 	}
