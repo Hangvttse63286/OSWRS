@@ -100,7 +100,7 @@ public class AuthController {
 
     @PostMapping("/forgot_password/reset")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
-    	if(authService.validatePasswordResetToken(resetPasswordDto.getToken())) {
+    	if(authService.validatePasswordResetToken(resetPasswordDto.getToken(), resetPasswordDto.getEmail())) {
     		if (authService.isExpired(resetPasswordDto.getToken()))
     			return new ResponseEntity<>("Error: Token is expired!", HttpStatus.NOT_ACCEPTABLE);
     		if (!resetPasswordDto.getNewPassword().equals(resetPasswordDto.getRepeatNewPassword()))

@@ -266,9 +266,8 @@ public class AuthService {
 		sendVerificationEmail(passwordResetToken.getUser(),req, 1);
 	}
 
-	public Boolean validatePasswordResetToken(String token) {
-        final PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
-        if (passToken != null) {
+	public Boolean validatePasswordResetToken(String token, String email) {
+        if (passwordResetTokenRepository.existsByToken(token) && passwordResetTokenRepository.findByToken(token).getUser().getEmail().equals(email)) {
             return true;
         }
         return false;
@@ -286,8 +285,11 @@ public class AuthService {
 
 	public boolean isExpired (String token) {
 		PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
+
 		Date currentTimeNow = Calendar.getInstance().getTime();
 		return currentTimeNow.after(passToken.getExpiredDate()) ? true : false;
 	}
+
+
 
 }

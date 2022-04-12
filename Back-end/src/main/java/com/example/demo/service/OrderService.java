@@ -313,7 +313,7 @@ public class OrderService {
 				case "PENDING":
 					order.setPaymentStatus(EPaymentStatus.PENDING);
 					break;
-				case "COMPLETED":
+				case "SUCCESSFUL":
 					order.setPaymentStatus(EPaymentStatus.SUCCESSFUL);
 					order.setPaymentDate(Calendar.getInstance().getTime());
 					break;
