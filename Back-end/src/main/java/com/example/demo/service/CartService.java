@@ -53,6 +53,7 @@ public class CartService {
 		cartItemResponse.setPrice(cartItem.getPrice());
 		cartItemResponse.setStock(cartItem.getQuantity() >= cartItem.getProductSKU().getStock() ? true : false);
 		cartItemResponse.setImageUrl(getPrimaryImageUrl(cartItem.getProductSKU().getProducts()));
+		cartItemResponse.setUnitPrice(cartItem.getProductSKU().getProducts().getPrice());
 
 		return cartItemResponse;
 	}

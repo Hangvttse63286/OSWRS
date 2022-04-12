@@ -100,6 +100,12 @@ public class VoucherController {
     		return new ResponseEntity<>("Error: Voucher is not activate.", HttpStatus.BAD_REQUEST);
     	case 2:
     		return new ResponseEntity<>("Error: Cart total does not meet voucher requirement.", HttpStatus.BAD_REQUEST);
+    	case 3:
+    		return new ResponseEntity<>("Error: Not yet time to apply voucher.", HttpStatus.BAD_REQUEST);
+    	case 4:
+    		return new ResponseEntity<>("Error: Voucher is expired.", HttpStatus.BAD_REQUEST);
+    	case 5:
+    		return new ResponseEntity<>("Error: Voucher out of quantity.", HttpStatus.BAD_REQUEST);
     	default:
     		return new ResponseEntity<>(voucherService.calculateDiscount(validateVoucherRequest.getVoucherCode(), validateVoucherRequest.getCartTotal()), HttpStatus.OK);
     	}

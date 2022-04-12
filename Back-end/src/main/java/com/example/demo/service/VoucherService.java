@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,9 @@ public class VoucherService {
 		voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 		voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 		voucherDto.setActive(voucher.isActive());
+		voucherDto.setMaxDiscount(voucher.getMaxDiscount());
+		voucherDto.setDiscountAmount(voucher.getDiscountAmount());
+		voucherDto.setActive(voucher.isActive());
 
 		return voucherDto;
 	}
@@ -75,6 +80,9 @@ public class VoucherService {
 			voucherDto.setDescription(voucher.getDescription());
 			voucherDto.setType(voucher.getType().toString());
 			voucherDto.setMinSpend(voucher.getMinSpend());
+			voucherDto.setMaxDiscount(voucher.getMaxDiscount());
+			voucherDto.setDiscountAmount(voucher.getDiscountAmount());
+			voucherDto.setActive(voucher.isActive());
 			voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 			voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 			voucherDto.setActive(voucher.isActive());
@@ -100,6 +108,9 @@ public class VoucherService {
 			voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 			voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 			voucherDto.setActive(voucher.isActive());
+			voucherDto.setFromDate(voucher.getFromDate());
+			voucherDto.setToDate(voucher.getToDate());
+			voucherDto.setQuantity(voucher.getQuantity());
 
 			return voucherDto;
 		} catch (Exception e) {
@@ -128,6 +139,9 @@ public class VoucherService {
 		voucher.setMaxDiscount(voucherDto.getMaxDiscount());
 		voucher.setDiscountAmount(voucherDto.getDiscountAmount());
 		voucher.setActive(voucherDto.isActive());
+		voucher.setFromDate(voucherDto.getFromDate());
+		voucher.setToDate(voucherDto.getToDate());
+		voucher.setQuantity(voucherDto.getQuantity());
 		voucherRepository.saveAndFlush(voucher);
 
 		return getVoucherDto(voucher);
@@ -155,6 +169,9 @@ public class VoucherService {
 			voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 			voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 			voucherDto.setActive(voucher.isActive());
+			voucherDto.setFromDate(voucher.getFromDate());
+			voucherDto.setToDate(voucher.getToDate());
+			voucherDto.setQuantity(voucher.getQuantity());
 
 			return voucherDto;
 		} catch (Exception e) {
@@ -181,6 +198,9 @@ public class VoucherService {
 			voucher.setMaxDiscount(voucherDto.getMaxDiscount());
 			voucher.setDiscountAmount(voucherDto.getDiscountAmount());
 			voucher.setActive(voucherDto.isActive());
+			voucher.setFromDate(voucherDto.getFromDate());
+			voucher.setToDate(voucherDto.getToDate());
+			voucher.setQuantity(voucherDto.getQuantity());
 			voucherRepository.save(voucher);
 
 			return getVoucherDto(voucher);
@@ -205,13 +225,20 @@ public class VoucherService {
 	public int validateVoucher (String code, Double cartTotal) {
 		try {
 			Voucher voucher = voucherRepository.findByCode(code).get();
+			Date applyDate = Calendar.getInstance().getTime();
 
 			if (!voucher.isActive())
 				return 1;
 			else if (cartTotal > voucher.getMinSpend())
 				return 2;
-			else
+			else if (applyDate.before(voucher.getFromDate()))
 				return 3;
+			else if (applyDate.after(voucher.getToDate()))
+				return 4;
+			else if (voucher.getQuantity() == 0)
+				return 5;
+			else
+				return 6;
 		} catch (Exception e) {
 			return 0;
 		}
@@ -231,6 +258,8 @@ public class VoucherService {
 				newCartTotal.setDiscountValue(Math.ceil((cartTotal*voucher.getDiscountAmount())/100) > voucher.getMaxDiscount() ? voucher.getMaxDiscount() : Math.ceil((cartTotal*voucher.getDiscountAmount())/100));
 				newCartTotal.setNewTotal(cartTotal-newCartTotal.getDiscountValue());
 			}
+			voucher.setQuantity(voucher.getQuantity() - 1);
+			voucherRepository.saveAndFlush(voucher);
 			return newCartTotal;
 		} catch (Exception e) {
 			return null;
