@@ -192,29 +192,30 @@ public class AuthService {
 		String mailContent;
 		String verifyURL;
 		if (type == 0) {
-			subject = "Please verify your registration";
-			senderName = "OSWRS Store";
-			mailContent = "<p>Dear " + user.getFirst_name() + " " + user.getLast_name() + ",</p>";
-			mailContent += "<p>Please click the link below to verify to your registration:</p>";
+			subject = "Xác nhận tài khoản";
+			senderName = "Spotlight On Style";
+			mailContent = "<p>Xin chào " + user.getLast_name() + " " + user.getFirst_name() + ",</p>";
+			mailContent += "<p>Cảm ơn bạn đã đăng ký tài khoản tại Spotlight On Style</p>";
+			mailContent += "<p>Vui lòng nhấn vào đường link bên dưới để xác thực tài khoản của bạn:</p>";
 
 			verifyURL = req.getRequestURL().toString() + "/verify?code=" + user.getVerification().getVerificationCode();
 
-			mailContent += "<h3><a href=\"" + verifyURL + "\">VERIFY</a></h3>";
+			mailContent += "<h3><a href=\"" + verifyURL + "\">XÁC THỰC</a></h3>";
 
-			mailContent += "<p>Thank you<br>OSWRS Store</p>";
+			mailContent += "<p>Trân trọng,<br>Spotlight On Style</p>";
 		}
 		else {
-			subject = "Here's the link to reset your password";
-			senderName = "OSWRS Store Support";
-			mailContent = "<p>Dear " + user.getFirst_name() + " " + user.getLast_name() + ",</p>";
-			mailContent += "<p>You have requested to reset your password:</p>";
-			mailContent += "<p>Please click the link below to change your password:</p>";
+			subject = "Mã đặt lại mật khẩu của bạn";
+			senderName = "Spotlight On Style";
+			mailContent = "<p>Xin chào " + user.getLast_name() + " " + user.getFirst_name() + ",</p>";
+			mailContent += "<p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của bạn:</p>";
+			mailContent += "<p>Điền mã xác thực bên dưới để đặt lại mật khẩu:</p>";
 
-			verifyURL = req.getRequestURL().toString() + "/reset?token=" + user.getPasswordResetToken().getToken();
+			mailContent += "<h3>" + user.getPasswordResetToken().getToken() + "</h3>";
 
-			mailContent += "<h3><a href=\"" + verifyURL + "\">CHANGE MY PASSWORD</a></h3>";
+			mailContent += "<p>Vui lòng bỏ qua email này nếu yêu cầu đổi mật khẩu này không phải từ bạn</p>";
 
-			mailContent += "<p>Thank you<br>OSWRS Store</p>";
+			mailContent += "<p>Trân trọng,<br>Spotlight On Style</p>";
 		}
 
 		MimeMessage message = mailSender.createMimeMessage();
