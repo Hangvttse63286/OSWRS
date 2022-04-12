@@ -24,7 +24,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 	@EntityGraph(attributePaths = { "user", "address", "payment", "voucher", "orderItems" })
 	List<Order> findByUserOrderByOrderDateDesc(User user);
 	@EntityGraph(attributePaths = { "user", "address", "payment", "voucher", "orderItems" })
-	List<Order> findAll();
+	List<Order> findAllByOrderByOrderDateDesc();
 	@EntityGraph(attributePaths = { "user", "address", "payment", "voucher", "orderItems" })
 	void deleteById(Long id);
 }
