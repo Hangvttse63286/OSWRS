@@ -111,7 +111,7 @@ public class OrderService {
 	}
 
 	public List<OrderDto> getOrderListByUser(String username) {
-		List<Order> orderList = orderRepository.findByUser(userRepository.findByUsername(username).get());
+		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(userRepository.findByUsername(username).get());
 		if (orderList.isEmpty()) {
 			return new ArrayList<OrderDto>();
 		}
