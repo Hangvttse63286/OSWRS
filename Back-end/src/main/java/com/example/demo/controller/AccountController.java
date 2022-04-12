@@ -28,7 +28,7 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUser() {
         List<UserDto> userList = accountService.findAll();
     	if (!userList.isEmpty())
