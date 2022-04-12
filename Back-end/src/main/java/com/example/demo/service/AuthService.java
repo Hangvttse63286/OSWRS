@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -247,8 +248,12 @@ public class AuthService {
 	public void updateResetPasswordToken(String email, HttpServletRequest req) throws UnsupportedEncodingException, MessagingException {
 		User user = userRepository.findByUsernameOrEmail(email, email).get();
 		PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser(user);
-		String token = RandomString.make(45);
 
+		Random random = new Random();
+		String token;
+		do {
+		token = String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10)) + String.valueOf(random.nextInt(10));
+		} while (passwordResetTokenRepository.existsByToken(token));
 	    passwordResetToken.setToken(token);
 		passwordResetTokenRepository.saveAndFlush(passwordResetToken);
 

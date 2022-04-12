@@ -10,4 +10,6 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
 	PasswordResetToken findByToken(String token);
 	@EntityGraph(attributePaths = { "user" })
     PasswordResetToken findByUser(User user);
+
+	boolean existsByToken(String token);
 }
