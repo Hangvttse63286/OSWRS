@@ -6,8 +6,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,7 +32,6 @@ public class Category {
     //@Enumerated(EnumType.STRING)
     @Column(length = 60)
     private String name ;
-    private boolean is_deleted;
 
     @ManyToMany(mappedBy = "categories",
     		fetch = FetchType.LAZY,
@@ -53,10 +50,9 @@ public class Category {
 
     }
 
-    public Category(long id, String category_name, boolean is_deleted) {
+    public Category(long id, String category_name) {
     	this.name= category_name;
     	this.id= id;
-    	this.is_deleted= is_deleted;
     }
 
     public void setId(long id) {
@@ -64,13 +60,6 @@ public class Category {
 	}
     public long getId() {
 		return id;
-	}
-
-    public void setIs_deleted(boolean is_deleted) {
-		this.is_deleted = is_deleted;
-	}
-    public boolean isIs_deleted() {
-		return is_deleted;
 	}
 
 	public String getName() {

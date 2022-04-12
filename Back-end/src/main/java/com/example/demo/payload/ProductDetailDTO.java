@@ -12,20 +12,18 @@ public class ProductDetailDTO {
     private String product_id;
 	private String product_status_id;
 	private String product_name;
-	private String description_list;
 	private String description_details;
 	private float price;
 	private List<ProductSkuDTO> productSKUs;
-	
+
 	public ProductDetailDTO() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public ProductDetailDTO(List<String> urlImage, String product_id, String description_details, String description_list, String product_name, String product_status_id, float price, List<ProductSkuDTO> product_SKUs ) {
+
+	public ProductDetailDTO(List<String> urlImage, String product_id, String description_details, String product_name, String product_status_id, float price, List<ProductSkuDTO> product_SKUs ) {
 		this.urlImage= urlImage;
 		this.product_id= product_id;
 		this.description_details= description_details;
-		this.description_list= description_list;
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
 		this.price= price;
@@ -40,7 +38,7 @@ public class ProductDetailDTO {
 	public void setProductSKUs(List<ProductSkuDTO> productSKUs) {
 		this.productSKUs = productSKUs;
 	}
-	
+
 	public List<ProductSkuDTO> getProductSKUs() {
 		return productSKUs;
 	}
@@ -54,9 +52,6 @@ public class ProductDetailDTO {
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
 	}
-	public void setDescription_list(String description_list) {
-		this.description_list = description_list;
-	}
 	public void setProduct_id(String product_id) {
 		this.product_id = product_id;
 	}
@@ -67,9 +62,6 @@ public class ProductDetailDTO {
 	}
 	public String getDescription_details() {
 		return description_details;
-	}
-	public String getDescription_list() {
-		return description_list;
 	}
 	public String getProduct_id() {
 		return product_id;

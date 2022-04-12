@@ -40,9 +40,7 @@ public class Product {
 
 	private String product_status_id;
 	private String product_name;
-	private String description_list;
 	private String description_details;
-	private String search_word;
 	private float price;
 	private int sold;
 
@@ -65,7 +63,7 @@ public class Product {
     @JoinTable(name = "product_categories",
         joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"))
-	private Collection<Category> categories = new ArrayList();
+	private Set<Category> categories = new HashSet<>();
 
 	@OneToMany(mappedBy = "products", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Product_SKU> productSKUs= new HashSet<Product_SKU>();
@@ -78,13 +76,11 @@ public class Product {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Product(String product_id, String description_details, String description_list, String product_name, String product_status_id, float price, String search_word, Collection<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
+	public Product(String product_id, String description_details, String product_name, String product_status_id, float price, Set<Category> categories, Set<Product_SKU> product_SKUs, int sold ) {
 		this.product_id= product_id;
 		this.description_details= description_details;
-		this.description_list= description_list;
 		this.product_name= product_name;
 		this.product_status_id= product_status_id;
-		this.search_word= search_word;
 		this.price= price;
 		this.categories= categories;
 		this.productSKUs= product_SKUs;
@@ -98,7 +94,7 @@ public class Product {
 		return price;
 	}
 
-	public Collection<Category> getCategories() {
+	public Set<Category> getCategories() {
 		return categories;
 	}
 
@@ -110,16 +106,14 @@ public class Product {
 		return productSKUs;
 	}
 
-	public void setCategories(Collection<Category> categories) {
+	public void setCategories(Set<Category> categories) {
 		this.categories = categories;
 	}
 
 	public void setDescription_details(String description_details) {
 		this.description_details = description_details;
 	}
-	public void setDescription_list(String description_list) {
-		this.description_list = description_list;
-	}
+
 	public void setProduct_id(String product_id) {
 		this.product_id = product_id;
 	}
@@ -127,8 +121,6 @@ public class Product {
 		this.product_name = product_name;
 	}public void setProduct_status_id(String product_status_id) {
 		this.product_status_id = product_status_id;
-	}public void setSearch_word(String search_word) {
-		this.search_word = search_word;
 	}
 
 //	public Set<Category> getCategories() {
@@ -136,9 +128,6 @@ public class Product {
 //	}
 	public String getDescription_details() {
 		return description_details;
-	}
-	public String getDescription_list() {
-		return description_list;
 	}
 	public String getProduct_id() {
 		return product_id;
@@ -148,9 +137,6 @@ public class Product {
 	}
 	public String getProduct_status_id() {
 		return product_status_id;
-	}
-	public String getSearch_word() {
-		return search_word;
 	}
 
 	public void setProduct_Image(Set<Product_Image> product_Image) {

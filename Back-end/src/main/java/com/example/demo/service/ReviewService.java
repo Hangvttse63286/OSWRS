@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Order;
 import com.example.demo.entity.Product;
+import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.Review;
 import com.example.demo.entity.User;
 import com.example.demo.payload.ReviewDto;
@@ -95,9 +96,15 @@ public class ReviewService {
 	}
 
 	public ReviewDto createReview (ReviewRequest reviewRequest) {
-		Order order = orderRepository.findById(reviewRequest.getOrderId()).get();
+		Order order = orderRepository.findById(reviewRequest.getOrderId())
+				.orElseThrow(() -> new NullPointerException("Error: No order found."));
+
 		User user = order.getUser();
-		Product product = productSKURepository.findById(reviewRequest.getProductSKUId()).get().getProducts();
+
+		Product_SKU productSKU = productSKURepository.findById(reviewRequest.getProductSKUId())
+				.orElseThrow(() -> new NullPointerException("Error: No product sku found."));
+
+		Product product = productSKU.getProducts();
 
 		Review review = new Review();
 		review.setOrder(order);

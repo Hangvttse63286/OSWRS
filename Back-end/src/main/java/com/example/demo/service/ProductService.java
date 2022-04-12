@@ -16,7 +16,7 @@ import com.example.demo.payload.ProductIncludeImageDTO;
 
 public interface ProductService {
 	//Product
-		List<ProductDTO> listAllProducts();
+//		List<ProductDTO> listAllProducts();
 		ProductDTO updateProductById(String id, ProductDTO products);
 		void deleteProduct(String id);
 		ProductDetailDTO getProductByIdUser(String id);
@@ -26,9 +26,9 @@ public interface ProductService {
 
 		//Product_SKU
 		List<ProductIncludeImageDTO> listAllProductIncludeImage();
-		List<Product> listProductBySKUId(Long id);
+//		List<Product> listProductBySKUId(Long id);
 //		void deleteProductSku(Long id);
-		Product createProductAll(ProductCreateDTO productRequest);
-		Product createProduct(ProductDTO productRequest);
-
+		ProductListDTO createProductAll(ProductCreateDTO productRequest, List<ProductImageDTO> listImageDTOs);
+//		Product createProduct(ProductDTO productRequest);
+		ProductListDTO getProductFull(Product products);
 }

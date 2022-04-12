@@ -37,7 +37,7 @@ public class ReviewController {
 		List<ReviewDto> reviewDtoList = reviewService.getReviewListByProductId(product_id);
 		if (!reviewDtoList.isEmpty())
 			return new ResponseEntity<>(reviewDtoList, HttpStatus.OK);
-		return new ResponseEntity<>("No review available!", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("No review available.", HttpStatus.NOT_FOUND);
 	}
 
 	@GetMapping("/avg_rating/{product_id}")
@@ -45,6 +45,6 @@ public class ReviewController {
 		Double avgRating = reviewService.getAvgRatingByProduct(product_id);
 		if (avgRating != 0)
 			return new ResponseEntity<>(avgRating, HttpStatus.OK);
-		return new ResponseEntity<>("No review available!", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("No review available.", HttpStatus.NOT_FOUND);
 	}
 }

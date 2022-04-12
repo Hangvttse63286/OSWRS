@@ -45,35 +45,33 @@ public class ProductSKUController {
 //		}
 
 	@RequestMapping(value = "/updateProductBySKUId/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<ProductSkuDTO> UpdateProductBySKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
-		ProductSkuDTO product= productSKUService.updateProductSkuById(id, productSkuDTO);
-		if(productSKUService.getSkuById(id) != null) {
+	public ResponseEntity<?> UpdateProductBySKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
+		try {
+			ProductSkuDTO product= productSKUService.updateProductSkuById(id, productSkuDTO);
 			return new ResponseEntity<>(product, HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (NullPointerException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@RequestMapping(value = "/deleteProductBySKUById/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteProductBySKUById(@PathVariable(name = "id") Long id) {
-		if(productSKUService.getSkuById(id) != null) {
+		try {
 			productSKUService.deleteProductSkuById(id);
-			return new ResponseEntity<>("Delete successfully!", HttpStatus.OK);
-		}
-		else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Delete product sku successfully!", HttpStatus.OK);
+		} catch (NullPointerException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
-	@RequestMapping(value = "/createSKU/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> createSKU(@PathVariable(name = "id") String id, @RequestBody ProductSkuDTO PproductSkuDTO) {
-		Product_SKU product_SKU= productSKUService.createProductSku(id, PproductSkuDTO);
-		if(productService.getProductById(id) != null) {
+	@PreAuthorize("hasRole('ADMIN')")
+	@RequestMapping(value = "/createSKU/{product_id}", method = RequestMethod.POST)
+	public ResponseEntity<?> createSKU(@PathVariable(name = "product_id") String product_id, @RequestBody ProductSkuDTO productSkuDTO) {
+		try {
+			ProductSkuDTO product_SKU = productSKUService.createProductSku(product_id, productSkuDTO);
 			return new ResponseEntity<>(product_SKU, HttpStatus.OK);
+		} catch (NullPointerException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
-		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 }

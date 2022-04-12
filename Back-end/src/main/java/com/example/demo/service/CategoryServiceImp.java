@@ -42,7 +42,6 @@ public class CategoryServiceImp implements CategoryService{
 			Category category= categoryRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No category found."));
 
 			category.setName(categoryRequest.getCategory_name());
-			category.setIs_deleted(categoryRequest.isIs_deleted());
 			categoryRepository.save(category);
 			return getCategory(category);
 		}
@@ -53,7 +52,6 @@ public class CategoryServiceImp implements CategoryService{
 			CategoryDTO categoryDTO= new CategoryDTO();
 
 			categoryDTO.setCategory_name(category.getName());
-			categoryDTO.setIs_deleted(category.isIs_deleted());
 			return categoryDTO;
 		}
 
@@ -61,7 +59,6 @@ public class CategoryServiceImp implements CategoryService{
 			CategoryDTO categoryDTO= new CategoryDTO();
 
 			categoryDTO.setCategory_name(category.getName());
-			categoryDTO.setIs_deleted(category.isIs_deleted());
 			return categoryDTO;
 		}
 
@@ -94,7 +91,6 @@ public class CategoryServiceImp implements CategoryService{
 				CategoryDTO categoryDTO= new CategoryDTO();
 				categoryDTO.setId(c.getId());
 				categoryDTO.setCategory_name(c.getName());
-				categoryDTO.setIs_deleted(c.isIs_deleted());
 
 				categoryDTOs.add(categoryDTO);
 			}
@@ -111,7 +107,6 @@ public class CategoryServiceImp implements CategoryService{
 			if(!categoryRepository.existsByName(categoryRequest.getCategory_name())) {
 				Category category= new Category();
 				category.setName(categoryRequest.getCategory_name());
-				category.setIs_deleted(categoryRequest.isIs_deleted());
 				categoryRepository.save(category);
 				return getCategory(category);
 			}
@@ -135,7 +130,6 @@ public class CategoryServiceImp implements CategoryService{
 				productDTO.setProduct_id(product.getProduct_id());
 				productDTO.setProduct_status_id(product.getProduct_status_id());
 				productDTO.setProduct_name(product.getProduct_name());
-				productDTO.setSearch_word(product.getSearch_word());
 				productDTO.setPrice(product.getPrice());
 				for(Product_Image p: product.getProduct_Image()) {
 					if(p.isPrimary() == true) {
@@ -160,7 +154,6 @@ public class CategoryServiceImp implements CategoryService{
 				productDTO.setProduct_id(product.getProduct_id());
 				productDTO.setProduct_status_id(product.getProduct_status_id());
 				productDTO.setProduct_name(product.getProduct_name());
-				productDTO.setSearch_word(product.getSearch_word());
 				productDTO.setPrice(product.getPrice());
 				for(Product_Image p: product.getProduct_Image()) {
 					if(p.isPrimary() == true) {

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderStatusDto;
+import com.example.demo.payload.OrderUserDto;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.UserDetailsImpl;
 import com.example.demo.service.UserService;
@@ -38,7 +39,7 @@ public class OrderControllerUser {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		List<OrderDto> orderList = orderService.getOrderListByUser(userDetails.getUsername());
+    		List<OrderUserDto> orderList = orderService.getOrderListByUser(userDetails.getUsername());
     		if (!orderList.isEmpty())
             	return new ResponseEntity<>(orderList, HttpStatus.OK);
             else

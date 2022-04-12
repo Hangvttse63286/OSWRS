@@ -23,13 +23,16 @@ import com.example.demo.entity.User;
 import com.example.demo.entity.Product;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderItemDto;
+import com.example.demo.payload.OrderItemUserDto;
 import com.example.demo.payload.OrderStatusDto;
+import com.example.demo.payload.OrderUserDto;
 import com.example.demo.payload.ProductIncludeImageDTO;
 import com.example.demo.repository.AddressRepository;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PaymentRepository;
+import com.example.demo.repository.ReviewRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.VoucherRepository;
 import com.example.demo.repository.ProductSKURepository;
@@ -64,6 +67,9 @@ public class OrderService {
 
 	@Autowired
 	CartRepository cartRepository;
+
+	@Autowired
+	ReviewRepository reviewRepository;
 
 	@Autowired
 	AddressService addressService;
@@ -110,17 +116,17 @@ public class OrderService {
 		return orderListDto;
 	}
 
-	public List<OrderDto> getOrderListByUser(String username) {
+	public List<OrderUserDto> getOrderListByUser(String username) {
 		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(userRepository.findByUsername(username).get());
 		if (orderList.isEmpty()) {
-			return new ArrayList<OrderDto>();
+			return new ArrayList<>();
 		}
 
-		List<OrderDto> orderListDto = new ArrayList<>();
+		List<OrderUserDto> orderListDto = new ArrayList<>();
 
 		for (Order order : orderList) {
-			OrderDto orderDto = new OrderDto();
-			List<OrderItemDto> orderItemList = new ArrayList<>();
+			OrderUserDto orderDto = new OrderUserDto();
+			List<OrderItemUserDto> orderItemList = new ArrayList<>();
 
 			orderDto.setId(order.getId());
 			orderDto.setOrderStatus(order.getOrderStatus().toString());
@@ -128,11 +134,15 @@ public class OrderService {
 			orderDto.setPayment(order.getPayment().getName().toString());
 			Set<OrderItem> orderItems = order.getOrderItems();
 			for (OrderItem orderItem : orderItems) {
-				OrderItemDto orderItemDto = new OrderItemDto();
+				OrderItemUserDto orderItemDto = new OrderItemUserDto();
 				orderItemDto.setOrderId(orderItem.getOrder().getId());
 				orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 				orderItemDto.setQuantity(orderItem.getQuantity());
 				orderItemDto.setPrice(orderItem.getPrice());
+				if(reviewRepository.existsByUserAndOrderAndProducts(order.getUser(), order, orderItem.getProductSKU().getProducts()))
+					orderItemDto.setReview(true);
+				else
+					orderItemDto.setReview(false);
 				orderItemList.add(orderItemDto);
 			}
 			orderDto.setOrderItemDtos(orderItemList);

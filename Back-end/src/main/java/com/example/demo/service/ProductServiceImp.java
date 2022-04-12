@@ -86,30 +86,31 @@ public class ProductServiceImp implements ProductService{
 	// get product by id [user]->ok
 	@Override
 	public ProductDetailDTO getProductByIdUser(String id) {
-		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product found."));
 
 		ProductDetailDTO productDetailDTO= new ProductDetailDTO();
-		List<ProductDetailDTO> productDTOList= new ArrayList<ProductDetailDTO>();
 
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
 		List<String> pList= new ArrayList<>();
-		for(Product_Image p: products.getProduct_Image()) {
+
+		Set<Product_Image> images = products.getProduct_Image();
+		for(Product_Image p: images) {
 			pList.add(p.getUrl());
 		}
 		productDetailDTO.setUrlImage(pList);
 		productDetailDTO.setProduct_id(products.getProduct_id());
 		productDetailDTO.setProduct_status_id(products.getProduct_status_id());
 		productDetailDTO.setProduct_name(products.getProduct_name());
-		productDetailDTO.setDescription_list(products.getDescription_list());
 		productDetailDTO.setDescription_details(products.getDescription_details());
 		productDetailDTO.setPrice(products.getPrice());
-		for(Product_SKU pSKU: products.getProductSKUs()) {
+
+		Set<Product_SKU> productSKUs = products.getProductSKUs();
+		for(Product_SKU pSKU: productSKUs) {
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 			productSkuDTO.setId(pSKU.getId());
 			productSkuDTO.setStock(pSKU.getStock());
 			productSkuDTO.setSale_limit(pSKU.getSale_limit());
 			productSkuDTO.setSize(pSKU.getSize());
-			productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
 			productSkuDTO.setProduct_id(products.getProduct_id());
 			productSkuDTOList.add(productSkuDTO);
 		}
@@ -147,46 +148,34 @@ public class ProductServiceImp implements ProductService{
 
 	//Create product(category+image) - Admin
 	@Override
-	public Product createProductAll(ProductCreateDTO productRequest) {
-		Product product=  productRepository.findById(productRequest.getProduct_id()).get();
+	public ProductListDTO createProductAll(ProductCreateDTO productRequest, List<ProductImageDTO> listImageDTOs) {
+		if (productRepository.existsById(productRequest.getProduct_id()))
+			return null;
+
 		Set<Product_Image> productImageList= new HashSet<>();
 
 		Set<Category> categoryList= new HashSet<Category>();
 
 
-		Category category= categoryRepository.findByName(productRequest.getCategory().get(0).getCategory_name());
+//		Category category= categoryRepository.findByName(productRequest.getCategory().get(0).getCategory_name());
 
-		List<Product_SKU> product_SKU_List= new ArrayList<Product_SKU>();
-		Product_SKU product_SKU= new Product_SKU();
+//		List<Product_SKU> product_SKU_List= new ArrayList<Product_SKU>();
+//		Product_SKU product_SKU= new Product_SKU();
 
 		Product products= new Product();
-
-		if(category == null) {
-			for(CategoryDTO c: productRequest.getCategory()) {
-				Category cate= new Category();
-				cate.setName(c.getCategory_name());
-				cate.setIs_deleted(c.isIs_deleted());
+		List<String> categoryNames = productRequest.getCategory();
+		if (!categoryNames.isEmpty()) {
+			for (String categoryName : categoryNames) {
+				Category cate = categoryRepository.findByName(categoryName);
 				categoryList.add(cate);
 			}
+			products.setCategories(categoryList);
 		}
-		else {
-			categoryList.add(category);
-		}
-		products.setCategories(categoryList);
-		for(ProductImageDTO p: productRequest.getProductImage()) {
-			Product_Image productImage= new Product_Image();
-			productImage.setName(p.getName());
-			productImage.setUrl(p.getUrl());
-			productImage.setProducts(product);
-			productImageList.add(productImage);
-		}
-		products.setProduct_Image(productImageList);
+
 		products.setProduct_id(productRequest.getProduct_id());
 		products.setProduct_status_id(productRequest.getProduct_status_id());
 		products.setProduct_name(productRequest.getProduct_name());
-		products.setDescription_list(productRequest.getDescription_list());
 		products.setDescription_details(productRequest.getDescription_details());
-		products.setSearch_word(productRequest.getSearch_word());
 		products.setPrice(productRequest.getPrice());
 //		for(ProductSkuDTO p: productRequest.getProductSKUs()) {
 //			product_SKU.setId(p.getId());
@@ -203,88 +192,149 @@ public class ProductServiceImp implements ProductService{
 //
 //		products.setProductSKUs(product_SKUs);
 
-		return productRepository.save(products);
+		productRepository.saveAndFlush(products);
+
+		for(ProductImageDTO p: listImageDTOs) {
+			Product_Image productImage= new Product_Image();
+			productImage.setName(p.getName());
+			productImage.setUrl(p.getUrl());
+			productImage.setProducts(products);
+			productImageList.add(productImage);
+		}
+		products.setProduct_Image(productImageList);
+
+		productRepository.saveAndFlush(products);
+
+		return getProductFull(products);
 	}
 
-		@Override
-		public Product createProduct(ProductDTO productRequest) {
-			List<Product> productList= productRepository.findAll();
-			Product_SKU product_SKU= new Product_SKU();
-
-			Product products= new Product();
-
-			for(Product p: productList) {
-				if(productRequest.getProduct_id().equalsIgnoreCase(p.getProduct_id())) {
-					return null;
-				}
-				else {
-					products.setProduct_id(productRequest.getProduct_id());
-					products.setProduct_status_id(productRequest.getProduct_status_id());
-					products.setProduct_name(productRequest.getProduct_name());
-					products.setDescription_list(productRequest.getDescription_list());
-					products.setDescription_details(productRequest.getDescription_details());
-					products.setSearch_word(productRequest.getSearch_word());
-				}
-			}
-
-			return productRepository.save(products);
-		}
+//		@Override
+//		public Product createProduct(ProductDTO productRequest) {
+//			List<Product> productList= productRepository.findAll();
+//			Product_SKU product_SKU= new Product_SKU();
+//
+//			Product products= new Product();
+//
+//			for(Product p: productList) {
+//				if(productRequest.getProduct_id().equalsIgnoreCase(p.getProduct_id())) {
+//					return null;
+//				}
+//				else {
+//					products.setProduct_id(productRequest.getProduct_id());
+//					products.setProduct_status_id(productRequest.getProduct_status_id());
+//					products.setProduct_name(productRequest.getProduct_name());
+//					products.setDescription_list(productRequest.getDescription_list());
+//					products.setDescription_details(productRequest.getDescription_details());
+//					products.setSearch_word(productRequest.getSearch_word());
+//				}
+//			}
+//
+//			return productRepository.save(products);
+//		}
 
 	// Get product by id [Admin]->ok
 	@Override
 	public ProductListDTO getProductByIdAdmin(String id) {
-		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product found."));
 
-		ProductListDTO ProductListDTO= new ProductListDTO();
-		List<ProductListDTO> productDTOList= new ArrayList<ProductListDTO>();
+		ProductListDTO productListDTO= new ProductListDTO();
 
 		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
 		List<CategoryDTO> categoryDTOList= new ArrayList<CategoryDTO>();
 
 		List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
 
-		CategoryDTO categoryDTO= new CategoryDTO();
-		for(Category c: products.getCategories()) {
+		Set<Category> categories = products.getCategories();
+		for(Category c: categories) {
+			CategoryDTO categoryDTO= new CategoryDTO();
 			categoryDTO.setId(c.getId());
 			categoryDTO.setCategory_name(c.getName());
-			categoryDTO.setIs_deleted(c.isIs_deleted());
 			categoryDTOList.add(categoryDTO);
 		}
-		ProductListDTO.setCategory(categoryDTOList);
-		for(Product_Image p: products.getProduct_Image()) {
+		productListDTO.setCategory(categoryDTOList);
+
+		Set<Product_Image> images = products.getProduct_Image();
+		for(Product_Image p: images) {
 			ProductImageDTO pDto= new ProductImageDTO();
 			pDto.setName(p.getName());
 			pDto.setProduct_image_id(p.getProduct_image_id());
 			pDto.setUrl(p.getUrl());
 			pList.add(pDto);
 		}
-		ProductListDTO.setProductImage(pList);
-		ProductListDTO.setProduct_id(products.getProduct_id());
-		ProductListDTO.setProduct_status_id(products.getProduct_status_id());
-		ProductListDTO.setProduct_name(products.getProduct_name());
-		ProductListDTO.setDescription_list(products.getDescription_list());
-		ProductListDTO.setDescription_details(products.getDescription_details());
-		ProductListDTO.setSearch_word(products.getSearch_word());
-		ProductListDTO.setPrice(products.getPrice());
-		for(Product_SKU pSKU: products.getProductSKUs()) {
+		productListDTO.setProductImage(pList);
+		productListDTO.setProduct_id(products.getProduct_id());
+		productListDTO.setProduct_status_id(products.getProduct_status_id());
+		productListDTO.setProduct_name(products.getProduct_name());
+		productListDTO.setDescription_details(products.getDescription_details());
+		productListDTO.setPrice(products.getPrice());
+
+		Set<Product_SKU> productSKUs = products.getProductSKUs();
+		for(Product_SKU pSKU: productSKUs) {
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 			productSkuDTO.setId(pSKU.getId());
 			productSkuDTO.setStock(pSKU.getStock());
 			productSkuDTO.setSale_limit(pSKU.getSale_limit());
 			productSkuDTO.setSize(pSKU.getSize());
-			productSkuDTO.setIs_deleted(pSKU.isIs_deleted());
 			productSkuDTO.setProduct_id(products.getProduct_id());
 			productSkuDTOList.add(productSkuDTO);
 		}
-		ProductListDTO.setProductSKUs(productSkuDTOList);
-		return ProductListDTO;
+		productListDTO.setProductSKUs(productSkuDTOList);
+		return productListDTO;
+	}
+
+	@Override
+	public ProductListDTO getProductFull(Product products) {
+
+		ProductListDTO productListDTO= new ProductListDTO();
+
+		List<ProductSkuDTO> productSkuDTOList= new ArrayList<ProductSkuDTO>();
+		List<CategoryDTO> categoryDTOList= new ArrayList<CategoryDTO>();
+
+		List<ProductImageDTO> pList= new ArrayList<ProductImageDTO>();
+
+		Set<Category> categories = products.getCategories();
+		for(Category c: categories) {
+			CategoryDTO categoryDTO= new CategoryDTO();
+			categoryDTO.setId(c.getId());
+			categoryDTO.setCategory_name(c.getName());
+			categoryDTOList.add(categoryDTO);
+		}
+		productListDTO.setCategory(categoryDTOList);
+
+		Set<Product_Image> images = products.getProduct_Image();
+		for(Product_Image p: images) {
+			ProductImageDTO pDto= new ProductImageDTO();
+			pDto.setName(p.getName());
+			pDto.setProduct_image_id(p.getProduct_image_id());
+			pDto.setUrl(p.getUrl());
+			pList.add(pDto);
+		}
+		productListDTO.setProductImage(pList);
+		productListDTO.setProduct_id(products.getProduct_id());
+		productListDTO.setProduct_status_id(products.getProduct_status_id());
+		productListDTO.setProduct_name(products.getProduct_name());
+		productListDTO.setDescription_details(products.getDescription_details());
+		productListDTO.setPrice(products.getPrice());
+
+		Set<Product_SKU> productSKUs = products.getProductSKUs();
+		for(Product_SKU pSKU: productSKUs) {
+			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
+			productSkuDTO.setId(pSKU.getId());
+			productSkuDTO.setStock(pSKU.getStock());
+			productSkuDTO.setSale_limit(pSKU.getSale_limit());
+			productSkuDTO.setSize(pSKU.getSize());
+			productSkuDTO.setProduct_id(products.getProduct_id());
+			productSkuDTOList.add(productSkuDTO);
+		}
+		productListDTO.setProductSKUs(productSkuDTOList);
+		return productListDTO;
 	}
 
 	//Delete PRoduct [Admin] - ok
 	@Override
 	public void deleteProduct(String id) {
-		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
-		Collection<Category> categories = products.getCategories();
+		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product found."));
+		Set<Category> categories = products.getCategories();
 		Set<Product_SKU> productSKUs = products.getProductSKUs();
 		List<Recommendation> recommendations = recommendationRepository.findByProduct(products);
 		List<Review> reviews = reviewRepository.findByProducts(products);
@@ -317,30 +367,41 @@ public class ProductServiceImp implements ProductService{
 	//Update Product [Admin] - ok
 	@Override
 	public ProductDTO updateProductById(String id, ProductDTO productRequest) {
-		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products= productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product found."));
 
 		products.setDescription_details(productRequest.getDescription_details());
-		products.setDescription_list(productRequest.getDescription_list());
 		products.setProduct_name(productRequest.getProduct_name());
 		products.setProduct_status_id(productRequest.getProduct_status_id());
-		products.setSearch_word(productRequest.getSearch_word());
+		products.setPrice(productRequest.getPrice());
 		productRepository.save(products);
-		return getProductById(id);
+		return getProduct(products);
 	}
 
 	//ok
 	@Override
 	public ProductDTO getProductById(String id) {
-		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product found."));
 
 		ProductDTO productDTO= new ProductDTO();
 
 		productDTO.setProduct_id(products.getProduct_id());
 		productDTO.setProduct_status_id(products.getProduct_status_id());
 		productDTO.setProduct_name(products.getProduct_name());
-		productDTO.setDescription_list(products.getDescription_list());
 		productDTO.setDescription_details(products.getDescription_details());
-		productDTO.setSearch_word(products.getSearch_word());
+		productDTO.setPrice(products.getPrice());
+
+		return productDTO;
+	}
+
+	public ProductDTO getProduct(Product products) {
+
+		ProductDTO productDTO= new ProductDTO();
+
+		productDTO.setProduct_id(products.getProduct_id());
+		productDTO.setProduct_status_id(products.getProduct_status_id());
+		productDTO.setProduct_name(products.getProduct_name());
+		productDTO.setDescription_details(products.getDescription_details());
+		productDTO.setPrice(products.getPrice());
 
 		return productDTO;
 	}
@@ -353,17 +414,17 @@ public class ProductServiceImp implements ProductService{
 //		productSKURepository.delete(product_SKU);
 //	}
 
-	@Override
-	public List<ProductDTO> listAllProducts() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public List<ProductDTO> listAllProducts() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public List<ProductIncludeImageDTO> listAllProductIncludeImage() {
 		List<Product> products= productRepository.findAll();
 		if(products.isEmpty())
-			return new ArrayList<ProductIncludeImageDTO>();
+			return new ArrayList<>();
 
 		List<ProductIncludeImageDTO> productList= new ArrayList<>();
 
@@ -374,7 +435,6 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setProduct_id(product.getProduct_id());
 			productDTO.setProduct_status_id(product.getProduct_status_id());
 			productDTO.setProduct_name(product.getProduct_name());
-			productDTO.setSearch_word(product.getSearch_word());
 			productDTO.setPrice(product.getPrice());
 			for(Product_Image p: product.getProduct_Image()) {
 				if(p.isPrimary() == true) {
@@ -396,7 +456,6 @@ public class ProductServiceImp implements ProductService{
 			productDTO.setProduct_id(product.getProduct_id());
 			productDTO.setProduct_status_id(product.getProduct_status_id());
 			productDTO.setProduct_name(product.getProduct_name());
-			productDTO.setSearch_word(product.getSearch_word());
 			productDTO.setPrice(product.getPrice());
 			for(Product_Image p: product.getProduct_Image()) {
 				if(p.isPrimary() == true) {
@@ -406,12 +465,6 @@ public class ProductServiceImp implements ProductService{
 			productList.add(productDTO);
 		}
 		return productList;
-	}
-
-	@Override
-	public List<Product> listProductBySKUId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

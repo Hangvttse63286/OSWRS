@@ -56,7 +56,7 @@ public class ProductController {
 		if (!productList.isEmpty())
 			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Error: No product found.", HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -65,7 +65,7 @@ public class ProductController {
 		if (!productList.isEmpty())
 			return new ResponseEntity<>(productList, HttpStatus.OK);
 		else
-			return new ResponseEntity<>("No product found!", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Error: No product found!", HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/web/listAllProductIncludeImage/{fromIndex}", method = RequestMethod.GET)
@@ -82,7 +82,7 @@ public class ProductController {
 				return new ResponseEntity<>(subProductList, HttpStatus.OK);
 			}
 		} else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Error: No product found!", HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/m/listAllProductIncludeImage/{fromIndex}", method = RequestMethod.GET)
@@ -99,7 +99,7 @@ public class ProductController {
 				return new ResponseEntity<>(subProductList, HttpStatus.OK);
 			}
 		} else
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Error: No product found!", HttpStatus.NOT_FOUND);
 	}
 
 //	// ok
@@ -123,51 +123,50 @@ public class ProductController {
 
 	//ok
 		@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
-		public ResponseEntity<ProductListDTO> getProductById(@PathVariable(name = "id") String id) {
-			ProductListDTO productListDTO= productService.getProductByIdAdmin(id);
-			if(productService.getProductById(id) != null)
+		public ResponseEntity<?> getProductById(@PathVariable(name = "id") String id) {
+			try {
+				ProductListDTO productListDTO= productService.getProductByIdAdmin(id);
 				return new ResponseEntity<>(productListDTO, HttpStatus.OK);
-			else
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			} catch (NullPointerException e) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+			}
 		}
 
 		//ok
 		@RequestMapping(value = "/admin/deleteProductById/{id}", method = RequestMethod.DELETE)
 		public ResponseEntity<?> deleteProductById(@PathVariable(name = "id") String id) {
-			if(productService.getProductById(id) != null) {
+			try {
 				productService.deleteProduct(id);
 				return new ResponseEntity<>("Delete product successfully!", HttpStatus.OK);
-			}
-			else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			} catch (NullPointerException e) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 			}
 		}
 
 		@RequestMapping(value = "admin/updateProductById/{id}", method = RequestMethod.PUT)
-		public ResponseEntity<ProductDTO> updateProductById(@PathVariable(name = "id") String id, @RequestBody ProductDTO productDTO) {
-			ProductDTO product= productService.updateProductById(id, productDTO);
-			if(productService.getProductById(id) != null) {
+		public ResponseEntity<?> updateProductById(@PathVariable(name = "id") String id, @RequestBody ProductDTO productDTO) {
+			try {
+				ProductDTO product= productService.updateProductById(id, productDTO);
 				return new ResponseEntity<>(product, HttpStatus.OK);
-			}
-			else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			} catch (NullPointerException e) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 			}
 		}
 
-		@RequestMapping(value = "/admin/createProduct", method = RequestMethod.POST)
-		public ResponseEntity<?> createProduct(@RequestBody ProductDTO productRequest) {
-			Product product= productService.createProduct(productRequest);
-			if( product == null) {
-				return new ResponseEntity<>(HttpStatus.CONFLICT);
-			}
-			else {
-				return new ResponseEntity<>(HttpStatus.OK);
-			}
-		}
+//		@RequestMapping(value = "/admin/createProduct", method = RequestMethod.POST)
+//		public ResponseEntity<?> createProduct(@RequestBody ProductDTO productRequest) {
+//			Product product= productService.createProduct(productRequest);
+//			if( product == null) {
+//				return new ResponseEntity<>(HttpStatus.CONFLICT);
+//			}
+//			else {
+//				return new ResponseEntity<>(HttpStatus.OK);
+//			}
+//		}
 
 		@RequestMapping(value = "/admin/createProductAll", method = RequestMethod.POST,
 				consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-		public ResponseEntity<ProductListDTO> createProductncludeImage(
+		public ResponseEntity<?> createProductncludeImage(
 				@RequestPart("fileImage") MultipartFile[] multipartFile, ProductCreateDTO productRequest) throws Exception {
 
 			List<ProductImageDTO> listImageDTOs= new ArrayList<ProductImageDTO>();
@@ -206,10 +205,12 @@ public class ProductController {
 				listImageDTOs.add(productImageDTO);
 			}
 
-			productRequest.setProductImage(listImageDTOs);
+//			productRequest.setProductImage(listImageDTOs);
 
-			Product savedProductIncludeImageDTO = productService.createProductAll(productRequest);
+			ProductListDTO savedProductIncludeImageDTO = productService.createProductAll(productRequest, listImageDTOs);
 
-			return new ResponseEntity<ProductListDTO>(HttpStatus.OK);
+			if (savedProductIncludeImageDTO != null)
+				return new ResponseEntity<>(savedProductIncludeImageDTO ,HttpStatus.OK);
+			return new ResponseEntity<>("Error: Product id is existed in database." ,HttpStatus.CONFLICT);
 		}
 }

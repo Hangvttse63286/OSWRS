@@ -55,7 +55,7 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 
 	@Override
 	public void deleteProductSkuById(Long id) {
-		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product sku found."));
 		List<OrderItem> orderItems = orderItemRepository.findByProductSKU(product_SKU);
 		if (!orderItems.isEmpty())
 			orderItemRepository.deleteAllInBatch(orderItems);
@@ -68,33 +68,43 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 
 	@Override
 	public ProductSkuDTO updateProductSkuById(Long id, ProductSkuDTO productSkuDTO) {
-		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product sku found."));
 
-		product_SKU.setIs_deleted(productSkuDTO.isIs_deleted());
 		product_SKU.setSize(productSkuDTO.getSize());
 		product_SKU.setSale_limit(productSkuDTO.getSale_limit());
 		product_SKU.setStock(productSkuDTO.getStock());
 		productSKURepository.save(product_SKU);
-		return getSkuById(id);
+		return getSku(product_SKU);
 	}
 
 	@Override
 	public ProductSkuDTO getSkuById(Long id) {
-		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product_SKU product_SKU= productSKURepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product sku found."));
 
 		ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 		productSkuDTO.setId(product_SKU.getId());
 		productSkuDTO.setStock(product_SKU.getStock());
 		productSkuDTO.setSale_limit(product_SKU.getSale_limit());
 		productSkuDTO.setSize(product_SKU.getSize());
-		productSkuDTO.setIs_deleted(product_SKU.isIs_deleted());
+		productSkuDTO.setProduct_id(product_SKU.getProducts().getProduct_id());
+		return productSkuDTO;
+	}
+
+	@Override
+	public ProductSkuDTO getSku(Product_SKU product_SKU) {
+
+		ProductSkuDTO productSkuDTO= new ProductSkuDTO();
+		productSkuDTO.setId(product_SKU.getId());
+		productSkuDTO.setStock(product_SKU.getStock());
+		productSkuDTO.setSale_limit(product_SKU.getSale_limit());
+		productSkuDTO.setSize(product_SKU.getSize());
 		productSkuDTO.setProduct_id(product_SKU.getProducts().getProduct_id());
 		return productSkuDTO;
 	}
 
 	@Override
 	public List<ProductSkuDTO> getSKUByProductId(String id) {
-		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product found."));
 		Set<Product_SKU> productSKUs = products.getProductSKUs();
 		if (productSKUs.isEmpty())
 			return new ArrayList<ProductSkuDTO>();
@@ -102,7 +112,6 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 		for(Product_SKU p: products.getProductSKUs()) {
 			ProductSkuDTO productSkuDTO= new ProductSkuDTO();
 			productSkuDTO.setId(p.getId());
-			productSkuDTO.setIs_deleted(p.isIs_deleted());
 			productSkuDTO.setSale_limit(p.getSale_limit());
 			productSkuDTO.setSize(p.getSize());
 			productSkuDTO.setStock(p.getStock());
@@ -113,8 +122,8 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 	}
 
 	@Override
-	public Product_SKU createProductSku(String id, ProductSkuDTO productRequest) {
-		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No object found."));
+	public ProductSkuDTO createProductSku(String id, ProductSkuDTO productRequest) {
+		Product products = productRepository.findById(id).orElseThrow(() -> new NullPointerException("Error: No product found."));
 		Set<Product_SKU> product_SKU_List= new HashSet<Product_SKU>();
 
 		Product_SKU product_SKU= new Product_SKU();
@@ -122,12 +131,11 @@ public class ProductSKUServiceImpl implements ProductSKUService{
 		product_SKU.setStock(productRequest.getStock());
 		product_SKU.setSale_limit(productRequest.getSale_limit());
 		product_SKU.setSize(productRequest.getSize());
-		product_SKU.setIs_deleted(productRequest.isIs_deleted());
 		product_SKU.setProducts(productRepository.findById(products.getProduct_id()).get());
 		product_SKU_List.add(product_SKU);
 		products.setProductSKUs(product_SKU_List);
-
-		return productSKURepository.save(product_SKU);
+		productSKURepository.save(product_SKU);
+		return getSku(product_SKU);
 	}
 
 }
