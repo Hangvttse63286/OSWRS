@@ -45,7 +45,7 @@ public class ProductSKUController {
 //		}
 
 	@RequestMapping(value = "/updateProductBySKUId/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> UpdateProductBySKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
+	public ResponseEntity<?> updateProductSKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
 		try {
 			ProductSkuDTO product= productSKUService.updateProductSkuById(id, productSkuDTO);
 			return new ResponseEntity<>(product, HttpStatus.OK);
@@ -55,7 +55,7 @@ public class ProductSKUController {
 	}
 
 	@RequestMapping(value = "/deleteProductBySKUById/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteProductBySKUById(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<?> deleteProductSKUById(@PathVariable(name = "id") Long id) {
 		try {
 			productSKUService.deleteProductSkuById(id);
 			return new ResponseEntity<>("Delete product sku successfully!", HttpStatus.OK);

@@ -170,7 +170,7 @@ public class OrderService {
 
 	public OrderDto getOrderById (Long id) {
 		Order order = orderRepository.findById(id)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
+				.orElseThrow(() -> new NullPointerException("Error: No order found."));
 
 		List<OrderItemDto> orderItemList = new ArrayList<>();
 		OrderDto orderDto = new OrderDto();
