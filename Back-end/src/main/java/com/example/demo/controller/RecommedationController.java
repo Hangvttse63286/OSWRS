@@ -85,25 +85,25 @@ public class RecommedationController {
 		return new ResponseEntity<>("Error: Please log in first!", HttpStatus.UNAUTHORIZED);
 	}
 
-	@GetMapping("/get")
-	public ResponseEntity<?> getLatestBoughtImagesByUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
-    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-    		List<String> imageList = recommendationService.getLatestBoughtImagesByUser(userDetails.getUsername());
-    		String URL = "https://recommendation-system-o7alw.ondigitalocean.app/recommend";
-    		HttpHeaders headers = new HttpHeaders();
-    	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    	    headers.setContentType(MediaType.APPLICATION_JSON);
-    	    HttpEntity<List<String>> entity = new HttpEntity<List<String>>(imageList, headers);
-    	    ResponseEntity<String> response = restTemplate.postForEntity(URL, entity, String.class);
-    		String stringResult = response.getBody().replace(" ", "");
-    		List<String> imageReturnList = Arrays.asList(stringResult.substring(1, stringResult.length() - 2).replace("'", "").split(","));
-    		return new ResponseEntity<>(imageReturnList, HttpStatus.OK);
-    	}
-		return new ResponseEntity<>("Error: Please log in first!", HttpStatus.UNAUTHORIZED);
-	}
+//	@GetMapping("/get")
+//	public ResponseEntity<?> getLatestBoughtImagesByUser() {
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+//    		List<String> imageList = recommendationService.getLatestBoughtImagesByUser(userDetails.getUsername());
+//    		String URL = "https://recommendation-system-o7alw.ondigitalocean.app/recommend";
+//    		HttpHeaders headers = new HttpHeaders();
+//    	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+//    	    headers.setContentType(MediaType.APPLICATION_JSON);
+//    	    HttpEntity<List<String>> entity = new HttpEntity<List<String>>(imageList, headers);
+//    	    ResponseEntity<String> response = restTemplate.postForEntity(URL, entity, String.class);
+//    		String stringResult = response.getBody().replace(" ", "");
+//    		List<String> imageReturnList = Arrays.asList(stringResult.substring(1, stringResult.length() - 2).replace("'", "").split(","));
+//    		return new ResponseEntity<>(imageReturnList, HttpStatus.OK);
+//    	}
+//		return new ResponseEntity<>("Error: Please log in first!", HttpStatus.UNAUTHORIZED);
+//	}
 
 
 	@PostMapping("/get_list_by_product")
@@ -119,7 +119,6 @@ public class RecommedationController {
 		String stringResult = response.getBody().replace(" ", "");
 		List<String> imageReturnList = Arrays
 				.asList(stringResult.substring(1, stringResult.length() - 2).replace("'", "").split(","));
-
 
 		return new ResponseEntity<>(recommendationService.getRecommendedProductList(imageReturnList), HttpStatus.OK);
 	}

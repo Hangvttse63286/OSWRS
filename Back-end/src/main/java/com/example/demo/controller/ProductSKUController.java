@@ -36,7 +36,7 @@ public class ProductSKUController {
 //	}
 
 	@RequestMapping(value = "/getProductBySKUId/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getProductBySKUId(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<?> getProducSKUById(@PathVariable(name = "id") Long id) {
 		try {
 			ProductSkuDTO productSkuDTO= productSKUService.getSkuById(id);
 			return new ResponseEntity<>(productSkuDTO, HttpStatus.OK);

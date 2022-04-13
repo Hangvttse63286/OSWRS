@@ -44,14 +44,10 @@ public class RecommendationService {
 	UserRepository userRepository;
 
 	public List<String> getAllImage() {
-		List<Product_Image> imageList = productImageRepository.findAll();
+		List<Product_Image> imageList = productImageRepository.findByPrimaries(true);
 		if (imageList.isEmpty())
 			return new ArrayList<String>();
-		List<String> imageUrlList = new ArrayList<>();
-		for (Product_Image productImage : imageList) {
-			if(productImage.isPrimary())
-				imageUrlList.add(productImage.getUrl());
-		}
+		List<String> imageUrlList = imageList.stream().map(Product_Image::getUrl).collect(Collectors.toList());
 		return imageUrlList;
 	}
 

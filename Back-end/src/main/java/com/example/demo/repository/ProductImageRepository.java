@@ -16,4 +16,6 @@ public interface ProductImageRepository extends JpaRepository<Product_Image, Lon
 	List<Product_Image> findByProducts(Product product);
 	@EntityGraph(attributePaths = { "products" })
 	Optional<Product_Image> findByUrl(String url);
+	@EntityGraph(attributePaths = { "products" })
+	List<Product_Image> findByPrimaries(boolean primaries);
 }
