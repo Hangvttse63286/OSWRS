@@ -35,7 +35,7 @@ public class OrderControllerUser {
 
 	@GetMapping("/")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getAllOrder() {
+    public ResponseEntity<?> getAllOrderByUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	if (!(authentication instanceof AnonymousAuthenticationToken)) {
     		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -79,7 +79,7 @@ public class OrderControllerUser {
     public ResponseEntity<?> cancelOrder(@RequestBody Long id) {
         if (orderService.getOrderById(id) != null) {
         	orderService.changeOrderStatus(id, new OrderStatusDto("UNSUCCESSFUL", "UNSUCCESSFUL"));
-        	return new ResponseEntity<>("Delete order successfully!", HttpStatus.OK);
+        	return new ResponseEntity<>("Cancel order successfully!", HttpStatus.OK);
         } else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

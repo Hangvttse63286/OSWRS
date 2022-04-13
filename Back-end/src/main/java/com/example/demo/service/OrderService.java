@@ -122,7 +122,8 @@ public class OrderService {
 	}
 
 	public List<OrderUserDto> getOrderListByUser(String username) {
-		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(userRepository.findByUsername(username).get());
+		List<Order> orderList = orderRepository
+				.findByUserOrderByOrderDateDesc(userRepository.findByUsername(username).get());
 		if (orderList.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -144,7 +145,8 @@ public class OrderService {
 				orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 				orderItemDto.setQuantity(orderItem.getQuantity());
 				orderItemDto.setPrice(orderItem.getPrice());
-				if(reviewRepository.existsByUserAndOrderAndProducts(order.getUser(), order, orderItem.getProductSKU().getProducts()))
+				if (reviewRepository.existsByUserAndOrderAndProducts(order.getUser(), order,
+						orderItem.getProductSKU().getProducts()))
 					orderItemDto.setReview(true);
 				else
 					orderItemDto.setReview(false);
@@ -168,13 +170,12 @@ public class OrderService {
 		return orderListDto;
 	}
 
-	public OrderDto getOrderById (Long id) {
+	public OrderDto getOrderById(Long id) {
 		Order order = orderRepository.findById(id)
 				.orElseThrow(() -> new NullPointerException("Error: No order found."));
 
 		List<OrderItemDto> orderItemList = new ArrayList<>();
 		OrderDto orderDto = new OrderDto();
-
 
 		orderDto.setId(order.getId());
 		orderDto.setOrderStatus(order.getOrderStatus().toString());
@@ -208,11 +209,48 @@ public class OrderService {
 		return orderDto;
 	}
 
-	public OrderDto getOrderDto (Order order) {
+	public OrderDto getOrderByIdAndUser(Long id, String username) {
+		User user = userRepository.findByUsername(username).get();
+		Order order = orderRepository.findByIdAndUser(id, user)
+				.orElseThrow(() -> new NullPointerException("Error: No order found."));
 
 		List<OrderItemDto> orderItemList = new ArrayList<>();
 		OrderDto orderDto = new OrderDto();
 
+		orderDto.setId(order.getId());
+		orderDto.setOrderStatus(order.getOrderStatus().toString());
+		orderDto.setUsername(user.getUsername());
+		orderDto.setPaymentStatus(order.getPaymentStatus().toString());
+		orderDto.setPayment(order.getPayment().getName().toString());
+		Set<OrderItem> orderItems = order.getOrderItems();
+		for (OrderItem orderItem : orderItems) {
+			OrderItemDto orderItemDto = new OrderItemDto();
+			orderItemDto.setOrderId(id);
+			orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
+			orderItemDto.setQuantity(orderItem.getQuantity());
+			orderItemDto.setPrice(orderItem.getPrice());
+			orderItemList.add(orderItemDto);
+		}
+		orderDto.setOrderItemDtos(orderItemList);
+		orderDto.setSubTotal(order.getSubTotal());
+		if (order.getVoucher() != null)
+			orderDto.setVoucherCode(order.getVoucher().getCode());
+		orderDto.setDeliveryFeeTotal(order.getDeliveryFeeTotal());
+		orderDto.setPaymentTotal(order.getPaymentTotal());
+		orderDto.setOrderDate(order.getOrderDate());
+		if (order.getPaymentDate() != null)
+			orderDto.setPaymentDate(order.getPaymentDate());
+		Address address = order.getAddress();
+		if (address != null)
+			orderDto.setAddressId(address.getId());
+
+		return orderDto;
+	}
+
+	public OrderDto getOrderDto(Order order) {
+
+		List<OrderItemDto> orderItemList = new ArrayList<>();
+		OrderDto orderDto = new OrderDto();
 
 		orderDto.setId(order.getId());
 		orderDto.setOrderStatus(order.getOrderStatus().toString());
@@ -282,7 +320,7 @@ public class OrderService {
 			Product_SKU productSKU = productSKURepository.findById(orderItemDto.getProductSKUId()).get();
 			if (productSKU.getStock() < orderItemDto.getQuantity())
 				return null;
-			productSKU.setStock(productSKU.getStock()-orderItemDto.getQuantity());
+			productSKU.setStock(productSKU.getStock() - orderItemDto.getQuantity());
 			productSKURepository.save(productSKU);
 			orderItem.setProductSKU(productSKU);
 			orderItem.setQuantity(orderItemDto.getQuantity());
@@ -296,61 +334,58 @@ public class OrderService {
 		return getOrderDto(order);
 	}
 
-	public OrderDto changeOrderStatus (Long id, OrderStatusDto orderStatusDto) {
-		try {
-			Order order = orderRepository.findById(id).get();
-			boolean flag = false;
+	public OrderDto changeOrderStatus(Long id, OrderStatusDto orderStatusDto) {
+		Order order = orderRepository.findById(id)
+				.orElseThrow(() -> new NullPointerException("Error: No order found."));
+		boolean flag = false;
 
-			if (orderStatusDto.getOrderStatus() != null && !orderStatusDto.getOrderStatus().trim().isEmpty()) {
-				switch (orderStatusDto.getOrderStatus()) {
-				case "UNSUCCESSFUL":
-					order.setOrderStatus(EOrderStatus.UNSUCCESSFUL);
-					Set<OrderItem> orderItems = order.getOrderItems();
-		            for (OrderItem orderItem : orderItems) {
-		            	Product_SKU productSKU = orderItem.getProductSKU();
-		            	productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
-		            }
-					break;
-				case "PENDING":
-					order.setOrderStatus(EOrderStatus.PENDING);
-					break;
-				case "CONFIRMED":
-					order.setOrderStatus(EOrderStatus.CONFIRMED);
-					break;
-				case "SUCCESSFUL":
-					order.setOrderStatus(EOrderStatus.SUCCESSFUL);
-					for (OrderItem orderItem : order.getOrderItems()) {
-						Product product = orderItem.getProductSKU().getProducts();
-						product.setSold(product.getSold() + orderItem.getQuantity());
-						productRepository.save(product);
-					}
-					break;
+		if (orderStatusDto.getOrderStatus() != null && !orderStatusDto.getOrderStatus().trim().isEmpty()) {
+			switch (orderStatusDto.getOrderStatus()) {
+			case "UNSUCCESSFUL":
+				order.setOrderStatus(EOrderStatus.UNSUCCESSFUL);
+				Set<OrderItem> orderItems = order.getOrderItems();
+				for (OrderItem orderItem : orderItems) {
+					Product_SKU productSKU = orderItem.getProductSKU();
+					productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
 				}
-				flag = true;
-			}
-
-			if (orderStatusDto.getPaymentStatus() != null && !orderStatusDto.getPaymentStatus().trim().isEmpty()) {
-				switch (orderStatusDto.getPaymentStatus()) {
-				case "UNSUCCESSFUL":
-					order.setPaymentStatus(EPaymentStatus.UNSUCCESSFUL);
-					break;
-				case "PENDING":
-					order.setPaymentStatus(EPaymentStatus.PENDING);
-					break;
-				case "SUCCESSFUL":
-					order.setPaymentStatus(EPaymentStatus.SUCCESSFUL);
-					order.setPaymentDate(Calendar.getInstance().getTime());
-					break;
+				break;
+			case "PENDING":
+				order.setOrderStatus(EOrderStatus.PENDING);
+				break;
+			case "CONFIRMED":
+				order.setOrderStatus(EOrderStatus.CONFIRMED);
+				break;
+			case "SUCCESSFUL":
+				order.setOrderStatus(EOrderStatus.SUCCESSFUL);
+				for (OrderItem orderItem : order.getOrderItems()) {
+					Product product = orderItem.getProductSKU().getProducts();
+					product.setSold(product.getSold() + orderItem.getQuantity());
+					productRepository.save(product);
 				}
-				flag = true;
+				break;
 			}
-
-			if (flag)
-				orderRepository.save(order);
-			return getOrderDto(order);
-		} catch (Exception e) {
-			return null;
+			flag = true;
 		}
+
+		if (orderStatusDto.getPaymentStatus() != null && !orderStatusDto.getPaymentStatus().trim().isEmpty()) {
+			switch (orderStatusDto.getPaymentStatus()) {
+			case "UNSUCCESSFUL":
+				order.setPaymentStatus(EPaymentStatus.UNSUCCESSFUL);
+				break;
+			case "PENDING":
+				order.setPaymentStatus(EPaymentStatus.PENDING);
+				break;
+			case "SUCCESSFUL":
+				order.setPaymentStatus(EPaymentStatus.SUCCESSFUL);
+				order.setPaymentDate(Calendar.getInstance().getTime());
+				break;
+			}
+			flag = true;
+		}
+
+		if (flag)
+			orderRepository.save(order);
+		return getOrderDto(order);
 
 	}
 
@@ -423,14 +458,21 @@ public class OrderService {
 //		return getOrderDto(order);
 //	}
 
-	public void deleteOrder (Long id) {
-		Order order = orderRepository.findById(id)
-				.orElseThrow(() -> new NullPointerException("Error: No object found."));
-		for (OrderItem orderItem : order.getOrderItems()) {
+	public void deleteOrder(Long id, String username) {
+		User user = userRepository.findByUsername(username).get();
+		Order order = orderRepository.findByIdAndUser(id, user)
+				.orElseThrow(() -> new NullPointerException("Error: No order found."));
+		Set<OrderItem> orderItems = order.getOrderItems();
+		for (OrderItem orderItem : orderItems) {
 			Product_SKU productSKU = productSKURepository.findById(orderItem.getProductSKU().getId()).get();
-			productSKU.setStock(productSKU.getStock()+orderItem.getQuantity());
+			productSKU.setStock(productSKU.getStock() + orderItem.getQuantity());
 			productSKURepository.save(productSKU);
 		}
 		orderRepository.deleteById(id);
+	}
+
+	public boolean existsByIdAndUser(Long id, String username) {
+		User user = userRepository.findByUsername(username).get();
+		return orderRepository.existsByIdAndUser(id, user);
 	}
 }
