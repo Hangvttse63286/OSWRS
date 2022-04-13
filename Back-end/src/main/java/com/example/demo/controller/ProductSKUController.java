@@ -35,14 +35,15 @@ public class ProductSKUController {
 //			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //	}
 
-//	@RequestMapping(value = "/getProductBySKUId/{id}", method = RequestMethod.GET)
-//	public ResponseEntity<?> getProductBySKUId(@PathVariable(name = "id") Long id) {
-//		ProductSkuDTO productSkuDTO= productSKUService.getSkuById(id);
-//		if(productSKUService.getSkuById(id) != null)
-//			return new ResponseEntity<>(productSkuDTO, HttpStatus.OK);
-//		else
-//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//		}
+	@RequestMapping(value = "/getProductBySKUId/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getProductBySKUId(@PathVariable(name = "id") Long id) {
+		try {
+			ProductSkuDTO productSkuDTO= productSKUService.getSkuById(id);
+			return new ResponseEntity<>(productSkuDTO, HttpStatus.OK);
+		} catch (NullPointerException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+	}
 
 	@RequestMapping(value = "/updateProductBySKUId/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateProductSKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {

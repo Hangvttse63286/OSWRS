@@ -113,8 +113,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.addAllowedOrigin("https://fec-apstone-project-2kr21d3f0-huytran56.vercel.app");
         configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Origin", "Accept", "Authorization", "Content-type", "X-Auth-Aoken"));
-        configuration.setExposedHeaders(Arrays.asList("X-Auth-Aoken"));
+        configuration.setAllowedHeaders(Arrays.asList("Origin", "Accept", "Authorization", "Content-type", "X-Auth-Token"));
+        configuration.setExposedHeaders(Arrays.asList("X-Auth-Token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
