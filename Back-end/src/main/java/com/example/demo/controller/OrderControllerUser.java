@@ -34,53 +34,68 @@ public class OrderControllerUser {
 	OrderService orderService;
 
 	@GetMapping("/")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getAllOrderByUser() {
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> getAllOrderByUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
-    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		List<OrderUserDto> orderList = orderService.getOrderListByUser(userDetails.getUsername());
-    		if (!orderList.isEmpty())
-            	return new ResponseEntity<>(orderList, HttpStatus.OK);
-            else
-                return new ResponseEntity<>("No order found!", HttpStatus.NOT_FOUND);
-    	}
-    	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			try {
+				List<OrderUserDto> orderList = orderService.getOrderListByUser(userDetails.getUsername());
+				return new ResponseEntity<>(orderList, HttpStatus.OK);
+			} catch (NullPointerException e) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+			}
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-    }
+	}
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getOrder(@PathVariable Long id) {
-        OrderDto order = orderService.getOrderById(id);
-    	if (order != null)
-        	return new ResponseEntity<>(order, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> getOrderByUser(@PathVariable Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			try {
+				OrderDto order = orderService.getOrderByIdAndUser(id, userDetails.getUsername());
+				return new ResponseEntity<>(order, HttpStatus.OK);
+			} catch (NullPointerException e) {
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+			}
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
-    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    		OrderDto result = orderService.createOrder(orderDto, userDetails.getUsername());
-    		if (result != null)
-    			return new ResponseEntity<>(result, HttpStatus.OK);
-    		return new ResponseEntity<>("Error: Some items are out of stock, please check your cart again." ,HttpStatus.NOT_ACCEPTABLE);
-    	}
-    	return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
 
-    }
+	@PostMapping("/create")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			OrderDto result = orderService.createOrder(orderDto, userDetails.getUsername());
+			if (result != null)
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			return new ResponseEntity<>("Error: Some items are out of stock, please check your cart again.",
+					HttpStatus.NOT_ACCEPTABLE);
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-    @PutMapping("/cancel")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> cancelOrder(@RequestBody Long id) {
-        if (orderService.getOrderById(id) != null) {
-        	orderService.changeOrderStatus(id, new OrderStatusDto("UNSUCCESSFUL", "UNSUCCESSFUL"));
-        	return new ResponseEntity<>("Cancel order successfully!", HttpStatus.OK);
-        } else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+	}
+
+	@PutMapping("/cancel")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> cancelOrder(@RequestBody Long id) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			if (orderService.existsByIdAndUser(id, userDetails.getUsername())) {
+				OrderDto result = orderService.changeOrderStatus(id, new OrderStatusDto("UNSUCCESSFUL", "UNSUCCESSFUL"));
+				return new ResponseEntity<>(result, HttpStatus.OK);
+			} else
+				return new ResponseEntity<>("Error: No order found for this user", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+	}
 }

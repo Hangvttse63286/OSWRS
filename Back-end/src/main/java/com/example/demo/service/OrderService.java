@@ -291,15 +291,14 @@ public class OrderService {
 		Order order = new Order();
 		User user = userRepository.findByUsername(orderDto.getUsername()).get();
 		if (orderDto.getPayment().equalsIgnoreCase(EPayment.COD.toString())) {
-			order.setOrderStatus(EOrderStatus.PENDING);
 			order.setPayment(paymentRepository.findByName(EPayment.COD).get());
 			Cart cart = cartRepository.findByUser(user).get();
 			cart.setCartItems(null);
 			cartRepository.saveAndFlush(cart);
 		} else if (orderDto.getPayment().equalsIgnoreCase(EPayment.VNPAY.toString())) {
-			order.setOrderStatus(EOrderStatus.PENDING);
 			order.setPayment(paymentRepository.findByName(EPayment.VNPAY).get());
 		}
+		order.setOrderStatus(EOrderStatus.PENDING);
 		order.setUser(user);
 		order.setPaymentStatus(EPaymentStatus.PENDING);
 

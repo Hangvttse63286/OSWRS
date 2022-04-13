@@ -48,11 +48,11 @@ public class OrderControllerAdmin {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
-    public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-    	return new ResponseEntity<>(orderService.createOrder(orderDto, orderDto.getUsername()), HttpStatus.OK);
-    }
+//    @PostMapping("/create")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
+//    	return new ResponseEntity<>(orderService.createOrder(orderDto, orderDto.getUsername()), HttpStatus.OK);
+//    }
 
     @PutMapping("/change_status/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
