@@ -102,26 +102,6 @@ public class ProductController {
 			return new ResponseEntity<>("Error: No product found!", HttpStatus.NOT_FOUND);
 	}
 
-//	// ok
-//	@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
-//	public ResponseEntity<ProductDetailDTO> getProductById(@PathVariable(name = "id") String id) {
-//		ProductDetailDTO productDetailDTO = productService.getProductByIdUser(id);
-//		if (productService.getProductById(id) != null)
-//			return new ResponseEntity<ProductDetailDTO>(productDetailDTO, HttpStatus.OK);
-//		else
-//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//	}
-
-//		//ok
-//		@RequestMapping(value = "/getProductAllById/{id}", method = RequestMethod.GET)
-//		public ResponseEntity<ProductListDTO> getProductByIdAll(@PathVariable(name = "id") String id) {
-//			if(productService.getProductById(id) != null)
-//				return new ResponseEntity<>(productService.getProductByIdAdmin(id), HttpStatus.OK);
-//			else
-//				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//		}
-
-	//ok
 		@RequestMapping(value = "/getProductById/{id}", method = RequestMethod.GET)
 		public ResponseEntity<?> getProductById(@PathVariable(name = "id") String id) {
 			try {
@@ -153,64 +133,39 @@ public class ProductController {
 			}
 		}
 
-//		@RequestMapping(value = "/admin/createProduct", method = RequestMethod.POST)
-//		public ResponseEntity<?> createProduct(@RequestBody ProductDTO productRequest) {
-//			Product product= productService.createProduct(productRequest);
-//			if( product == null) {
-//				return new ResponseEntity<>(HttpStatus.CONFLICT);
-//			}
-//			else {
-//				return new ResponseEntity<>(HttpStatus.OK);
-//			}
-//		}
-
 		@RequestMapping(value = "/admin/createProductAll", method = RequestMethod.POST,
 				consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 		public ResponseEntity<?> createProductncludeImage(
 				@RequestPart("fileImage") MultipartFile[] multipartFile, ProductCreateDTO productRequest) throws Exception {
 
-			List<ProductImageDTO> listImageDTOs= new ArrayList<ProductImageDTO>();
+			try {
+				List<ProductImageDTO> listImageDTOs= new ArrayList<ProductImageDTO>();
 
-			Helper helper = new Helper();
+				Helper helper = new Helper();
 
-//			for(int i= 0; i < multipartFile.length; i++) {
-	//
-//				ImgurResponse res = helper.getDataImgurResponse(multipartFile[i]);
-//				ProductImageDTO productImageDTO= new ProductImageDTO();
-//				if(i==0) {
-//					System.out.print(i);
-//					productImageDTO.setPrimaries(true);
-//				}
-//				else {
-//					System.out.print(i);
-//					productImageDTO.setPrimaries(false);
-//				}
-//				System.out.print(i);
-//				productImageDTO.setUrl(res.getData().getLink());
-//				productImageDTO.setName(multipartFile[i].getOriginalFilename());
-	//
-//				listImageDTOs.add(productImageDTO);
-//			}
+				for(MultipartFile multi: multipartFile) {
 
-			for(MultipartFile multi: multipartFile) {
+					ImgurResponse res = helper.getDataImgurResponse(multi);
 
-				ImgurResponse res = helper.getDataImgurResponse(multi);
+					ProductImageDTO productImageDTO= new ProductImageDTO();
 
-				ProductImageDTO productImageDTO= new ProductImageDTO();
+					productImageDTO.setUrl(res.getData().getLink());
 
-				productImageDTO.setUrl(res.getData().getLink());
+					productImageDTO.setName(multi.getOriginalFilename());
+					if (multipartFile[0] != null)
+						productImageDTO.setPrimaries(true);
 
-				productImageDTO.setName(multi.getOriginalFilename());
+					listImageDTOs.add(productImageDTO);
+				}
 
-				listImageDTOs.add(productImageDTO);
+				ProductListDTO savedProductIncludeImageDTO = productService.createProductAll(productRequest, listImageDTOs);
+
+				if (savedProductIncludeImageDTO != null)
+					return new ResponseEntity<>(savedProductIncludeImageDTO ,HttpStatus.OK);
+				return new ResponseEntity<>("Error: Product id is existed in database." ,HttpStatus.CONFLICT);
+			} catch (Exception e) {
+				return new ResponseEntity<>("Unknown error." ,HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 
-//			productRequest.setProductImage(listImageDTOs);
-
-			ProductListDTO savedProductIncludeImageDTO = productService.createProductAll(productRequest, listImageDTOs);
-
-			if (savedProductIncludeImageDTO != null)
-				return new ResponseEntity<>(savedProductIncludeImageDTO ,HttpStatus.OK);
-			return new ResponseEntity<>("Error: Product id is existed in database." ,HttpStatus.CONFLICT);
 		}
 }

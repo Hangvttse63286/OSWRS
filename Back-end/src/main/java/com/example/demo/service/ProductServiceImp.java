@@ -156,12 +156,6 @@ public class ProductServiceImp implements ProductService{
 
 		Set<Category> categoryList= new HashSet<Category>();
 
-
-//		Category category= categoryRepository.findByName(productRequest.getCategory().get(0).getCategory_name());
-
-//		List<Product_SKU> product_SKU_List= new ArrayList<Product_SKU>();
-//		Product_SKU product_SKU= new Product_SKU();
-
 		Product products= new Product();
 		List<String> categoryNames = productRequest.getCategory();
 		if (!categoryNames.isEmpty()) {
@@ -177,20 +171,6 @@ public class ProductServiceImp implements ProductService{
 		products.setProduct_name(productRequest.getProduct_name());
 		products.setDescription_details(productRequest.getDescription_details());
 		products.setPrice(productRequest.getPrice());
-//		for(ProductSkuDTO p: productRequest.getProductSKUs()) {
-//			product_SKU.setId(p.getId());
-//			product_SKU.setStock(p.getStock());
-//			product_SKU.setSale_limit(p.getSale_limit());
-//			product_SKU.setSize(p.getSize());
-//			product_SKU.setIs_deleted(p.isIs_deleted());
-//			product_SKU_List.add(product_SKU);
-//		}
-//
-//		Set<Product_SKU> product_SKUs = new HashSet<Product_SKU>();
-//
-//		product_SKU_List.forEach(p -> { product_SKUs.add(p); });
-//
-//		products.setProductSKUs(product_SKUs);
 
 		productRepository.saveAndFlush(products);
 

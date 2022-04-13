@@ -33,10 +33,12 @@ public class VNPayController {
 	@PostMapping("/")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createVnpPayment(@RequestBody VNPayPaymentRequest vnpRequest, HttpServletRequest req) throws IOException {
-		VNPayPaymentResponse vnpResponse = vnpService.vnpCreatePayment(vnpRequest, req);
-    	if(vnpResponse != null)
+		try {	
+			VNPayPaymentResponse vnpResponse = vnpService.vnpCreatePayment(vnpRequest, req);
     		return new ResponseEntity<>(vnpResponse, HttpStatus.OK);
+		} catch (Exception e) {
     	return new ResponseEntity<>("Error: Can't create payment", HttpStatus.BAD_REQUEST);
+		}
     }
 
 	@GetMapping("/return")
