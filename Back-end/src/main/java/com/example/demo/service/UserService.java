@@ -76,7 +76,6 @@ public class UserService {
 		return userDto;
 	}
 
-
 	public void updateInfo (Long id, UpdateUserDto updateUserDto) {
 		User user = userRepository.findById(id).get();
 

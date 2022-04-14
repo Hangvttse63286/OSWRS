@@ -31,4 +31,9 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 	Optional<Order> findByIdAndUser(Long id, User user);
 
 	boolean existsByIdAndUser(Long id, User user);
+
+	@Query("SELECT o FROM Order o " +
+	        "WHERE EXTRACT (month FROM o.orderDate) = :month")
+	@EntityGraph(attributePaths = { "user", "address", "payment", "voucher", "orderItems" })
+	List<Order> findAllByOrderDateMonth(@Param("month") int month);
 }

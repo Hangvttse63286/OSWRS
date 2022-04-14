@@ -106,4 +106,11 @@ public class OrderControllerAdmin {
 //        } else
 //            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    }
+
+    @GetMapping("/statistic_by_month")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    public ResponseEntity<?> GetStatisticByMonth() {
+        return new ResponseEntity<>(orderService.getStatisticCurrentMonth(), HttpStatus.OK);
+
+    }
 }

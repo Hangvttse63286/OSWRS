@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ import com.example.demo.entity.OrderItem;
 import com.example.demo.entity.Product_SKU;
 import com.example.demo.entity.User;
 import com.example.demo.entity.Product;
+import com.example.demo.payload.MonthStatistic;
 import com.example.demo.payload.OrderDto;
 import com.example.demo.payload.OrderItemDto;
 import com.example.demo.payload.OrderItemUserDto;
@@ -473,5 +475,45 @@ public class OrderService {
 	public boolean existsByIdAndUser(Long id, String username) {
 		User user = userRepository.findByUsername(username).get();
 		return orderRepository.existsByIdAndUser(id, user);
+	}
+
+	public MonthStatistic getStatisticCurrentMonth() {
+		List<Order> orderList = orderRepository.findAllByOrderDateMonth(Calendar.getInstance().get(Calendar.MONTH) + 1);
+		if (orderList.isEmpty()) {
+			return new MonthStatistic (0,0,0,0,0,0.0);
+		}
+		int numOfOrder = orderList.size();
+		int numOfSuccessfulOrder = 0;
+		int numOfConfirmedOrder = 0;
+		int numOfPendingOrder = 0;
+		int numOfUnsuccessfulOrder = 0;
+
+		Double totalSale = 0.0;
+
+		for (Order order : orderList) {
+//			Date orderDate= order.getOrderDate();
+//			Calendar cal = Calendar.getInstance();
+//			cal.setTime(orderDate);
+//			int month = cal.get(Calendar.MONTH);
+//			if (month == Calendar.getInstance().get(Calendar.MONTH)) {
+				switch (order.getOrderStatus()) {
+				case UNSUCCESSFUL:
+					numOfUnsuccessfulOrder++;
+					break;
+				case CONFIRMED:
+					numOfConfirmedOrder++;
+					break;
+				case PENDING:
+					numOfPendingOrder++;
+					break;
+				case SUCCESSFUL:
+					numOfSuccessfulOrder++;
+					totalSale += order.getSubTotal();
+					break;
+				}
+//			}
+		}
+
+		return new MonthStatistic(numOfOrder,numOfSuccessfulOrder,numOfConfirmedOrder,numOfPendingOrder,numOfUnsuccessfulOrder,totalSale);
 	}
 }

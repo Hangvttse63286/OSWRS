@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -112,4 +115,20 @@ public class UserController {
     	}
     	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
     }
+
+    @GetMapping("/roles")
+//	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+    public ResponseEntity<?> getRoles() {
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    	if (!(authentication instanceof AnonymousAuthenticationToken)) {
+    		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    		List<String> roles = userDetails.getAuthorities().stream()
+            		.map(item -> item.getAuthority())
+            		.collect(Collectors.toList());
+
+    	    return new ResponseEntity<>(roles, HttpStatus.OK);
+    	}
+    	return new ResponseEntity<>("Error: Logged in first!", HttpStatus.UNAUTHORIZED);
+    }
+
 }
