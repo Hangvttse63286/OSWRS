@@ -28,7 +28,7 @@ public class VoucherController {
 	VoucherService voucherService;
 
 	@GetMapping("/")
-    @PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getAllVoucher() {
 		List<VoucherDto> voucherList = voucherService.getVoucherList();
         if (!voucherList.isEmpty())
@@ -38,7 +38,7 @@ public class VoucherController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getVoucher(@PathVariable Long id) {
         VoucherDto voucher = voucherService.getVoucherById(id);
     	if (voucher != null)

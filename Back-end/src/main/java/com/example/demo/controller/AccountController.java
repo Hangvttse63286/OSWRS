@@ -28,7 +28,7 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getAllUser() {
         List<UserDto> userList = accountService.findAll();
     	if (!userList.isEmpty())
@@ -38,7 +38,7 @@ public class AccountController {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getUser(@PathVariable String username) {
         try {
     		UserDto user = accountService.findByUsername(username);

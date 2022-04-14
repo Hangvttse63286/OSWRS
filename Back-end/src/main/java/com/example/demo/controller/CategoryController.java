@@ -35,6 +35,7 @@ public class CategoryController {
 		this.categoryService= categoryService;
 	}
 
+	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
 		List<CategoryDTO> categoryList = categoryService.listAllCategories();
@@ -66,7 +67,7 @@ public class CategoryController {
 //			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //	}
 
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/admin/updateCategoryById/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateCategoryById(@PathVariable(name = "id") Long id, @RequestBody CategoryDTO categoryDTO) {
 		try {
@@ -81,7 +82,7 @@ public class CategoryController {
 		}
 	}
 
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/admin/createCategory", method = RequestMethod.POST)
 	public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO) {
 		CategoryDTO result = categoryService.createCategory(categoryDTO);
@@ -94,7 +95,7 @@ public class CategoryController {
 
 	}
 
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/admin/deleteCatgoryById/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteCatgoryById(@PathVariable(name = "id") Long id) {
 		try {
