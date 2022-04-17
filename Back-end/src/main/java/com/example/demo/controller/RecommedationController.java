@@ -107,9 +107,9 @@ public class RecommedationController {
 
 
 	@PostMapping("/get_list_by_product")
-	public ResponseEntity<?> getRecommendedProducts(@RequestBody String imageUrl) {
-		List<String> urlList = new ArrayList<>();
-		urlList.add(imageUrl);
+	public ResponseEntity<?> getRecommendedProducts(@RequestBody String product_id) {
+		List<String> urlList = recommendationService.getImageByProduct(product_id);
+
 		String URL = "https://recommendation-system-o7alw.ondigitalocean.app/recommend";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));

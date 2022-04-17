@@ -165,4 +165,11 @@ public class RecommendationService {
 		imageUrlList.addAll(productMap.values());
 		return imageUrlList;
 	}
+
+	public List<String> getImageByProduct(String productId) {
+		Product product = productRepository.getById(productId);
+		List<Product_Image> imageList = productImageRepository.findByProductsAndPrimaries(product, true);
+		List<String> imageUrlList = imageList.stream().map(Product_Image::getUrl).collect(Collectors.toList());
+		return imageUrlList;
+	}
 }
