@@ -305,7 +305,7 @@ public class OrderService {
 		order.setPaymentStatus(EPaymentStatus.PENDING);
 
 		order.setSubTotal(orderDto.getSubTotal());
-		if (orderDto.getVoucherCode() != null)
+		if (orderDto.getVoucherCode() != null && !orderDto.getVoucherCode().trim().isEmpty())
 			order.setVoucher(voucherRepository.findByCode(orderDto.getVoucherCode()).get());
 		order.setDeliveryFeeTotal(orderDto.getDeliveryFeeTotal());
 		order.setPaymentTotal(orderDto.getPaymentTotal());
