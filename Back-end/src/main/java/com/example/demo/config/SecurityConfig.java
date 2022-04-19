@@ -112,6 +112,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("https://fec-apstone-project-2kr21d3f0-huytran56.vercel.app");
+        configuration.addAllowedOrigin("https://fec-apstone-project.vercel.app/");
         configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Origin", "Accept", "Authorization", "Content-type", "X-Auth-Token"));
