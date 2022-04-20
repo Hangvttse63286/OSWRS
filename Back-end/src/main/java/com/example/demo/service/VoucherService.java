@@ -238,7 +238,7 @@ public class VoucherService {
 
 			if (!voucher.isActive())
 				return 1;
-			else if (cartTotal > voucher.getMinSpend())
+			else if (cartTotal < voucher.getMinSpend())
 				return 2;
 			else if (applyDate.before(voucher.getFromDate()))
 				return 3;
