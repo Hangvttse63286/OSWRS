@@ -44,6 +44,9 @@ public class VoucherService {
 			voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 			voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 			voucherDto.setActive(voucher.isActive());
+			voucherDto.setFromDate(voucher.getFromDate());
+			voucherDto.setToDate(voucher.getToDate());
+			voucherDto.setQuantity(voucher.getQuantity());
 
 			voucherDtoList.add(voucherDto);
 		}
@@ -65,6 +68,9 @@ public class VoucherService {
 		voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 		voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 		voucherDto.setActive(voucher.isActive());
+		voucherDto.setFromDate(voucher.getFromDate());
+		voucherDto.setToDate(voucher.getToDate());
+		voucherDto.setQuantity(voucher.getQuantity());
 
 		return voucherDto;
 	}
@@ -86,6 +92,9 @@ public class VoucherService {
 			voucherDto.setMaxDiscount(voucher.getMaxDiscount());
 			voucherDto.setDiscountAmount(voucher.getDiscountAmount());
 			voucherDto.setActive(voucher.isActive());
+			voucherDto.setFromDate(voucher.getFromDate());
+			voucherDto.setToDate(voucher.getToDate());
+			voucherDto.setQuantity(voucher.getQuantity());
 
 			return voucherDto;
 		} catch (Exception e) {
