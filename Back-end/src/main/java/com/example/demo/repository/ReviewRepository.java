@@ -19,5 +19,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 	@EntityGraph(attributePaths = { "user", "order", "products" })
 	List<Review> findByUser(User user);
 
+	@EntityGraph(attributePaths = { "user", "order", "products" })
 	boolean existsByUserAndOrderAndProducts(User user, Order order, Product product);
 }

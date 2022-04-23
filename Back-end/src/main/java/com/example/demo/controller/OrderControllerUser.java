@@ -83,9 +83,9 @@ public class OrderControllerUser {
 
 	}
 
-	@PutMapping("/cancel")
+	@PutMapping("/cancel/{id}")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> cancelOrder(@RequestBody Long id) {
+	public ResponseEntity<?> cancelOrder(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();

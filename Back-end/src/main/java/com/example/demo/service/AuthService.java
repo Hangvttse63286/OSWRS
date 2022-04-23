@@ -183,6 +183,10 @@ public class AuthService {
 
         userRepository.save(user);
 
+        Cart cart = new Cart();
+		cart.setUser(user);
+		cartRepository.saveAndFlush(cart);
+
         sendVerificationEmail(user,req, 0);
 	}
 
@@ -239,9 +243,6 @@ public class AuthService {
 		else {
 			verification.setEnabled(true);
 			verificationRepository.save(verification);
-			Cart cart = new Cart();
-			cart.setUser(verification.getUser());
-			cartRepository.saveAndFlush(cart);
 			return true;
 		}
 	}
