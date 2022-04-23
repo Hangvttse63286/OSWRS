@@ -167,7 +167,7 @@ public class RecommendationService {
 	}
 
 	public List<String> getImageByProduct(String productId) {
-		Product product = productRepository.getById(productId);
+		Product product = productRepository.findById(productId).get();
 		Set<Product_Image> imageList = product.getProduct_Image();
 		List<String> imageUrlList = new ArrayList<>();
 		for(Product_Image image : imageList) {
