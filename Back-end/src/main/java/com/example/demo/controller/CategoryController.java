@@ -35,7 +35,6 @@ public class CategoryController {
 		this.categoryService= categoryService;
 	}
 
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
 	@RequestMapping(value = "/listCategory", method = RequestMethod.GET)
 	public ResponseEntity<?> listCategories() {
 		List<CategoryDTO> categoryList = categoryService.listAllCategories();
