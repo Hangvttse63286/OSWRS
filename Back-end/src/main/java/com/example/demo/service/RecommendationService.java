@@ -168,8 +168,14 @@ public class RecommendationService {
 
 	public List<String> getImageByProduct(String productId) {
 		Product product = productRepository.getById(productId);
-		List<Product_Image> imageList = productImageRepository.findByProductsAndPrimaries(product, true);
-		List<String> imageUrlList = imageList.stream().map(Product_Image::getUrl).collect(Collectors.toList());
+		Set<Product_Image> imageList = product.getProduct_Image();
+		List<String> imageUrlList = new ArrayList<>();
+		for(Product_Image image : imageList) {
+			if (image.isPrimary())
+				imageUrlList.add(image.getUrl());
+		}
+//		List<Product_Image> imageList = productImageRepository.findByProductsAndPrimaries(product, true);
+//		List<String> imageUrlList = imageList.stream().map(Product_Image::getUrl).collect(Collectors.toList());
 		return imageUrlList;
 	}
 }
