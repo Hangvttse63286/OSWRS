@@ -143,7 +143,7 @@ public class RecommendationService {
 			return new ArrayList<String>();
 
 		List<String> imageUrlList = new ArrayList<>();
-		List<Order> orderList = orderRepository.findByUserOrderByOrderDateDesc(user);
+		List<Order> orderList = orderRepository.findByUserOrderByIdDesc(user);
 		Map<Product, String> productMap = new HashMap<>();
 		for (Order order : orderList) {
 			Set<OrderItem> orderItems = order.getOrderItems();

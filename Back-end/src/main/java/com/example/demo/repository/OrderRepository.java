@@ -31,6 +31,8 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 	Optional<Order> findByIdAndUser(Long id, User user);
 	@EntityGraph(attributePaths = { "user", "address", "payment", "voucher", "orderItems" })
 	List<Order> findByUserOrderByIdDesc(User user);
+	@EntityGraph(attributePaths = { "user", "address", "payment", "voucher", "orderItems" })
+	List<Order> findAllByOrderByIdDesc();
 
 	boolean existsByIdAndUser(Long id, User user);
 
