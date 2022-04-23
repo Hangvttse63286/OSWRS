@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,8 +107,8 @@ public class RecommedationController {
 //	}
 
 
-	@PostMapping("/get_list_by_product")
-	public ResponseEntity<?> getRecommendedProducts(@RequestBody String product_id) {
+	@GetMapping("/get_list_by_product/{product_id}")
+	public ResponseEntity<?> getRecommendedProducts(@PathVariable String product_id) {
 		List<String> urlList = recommendationService.getImageByProduct(product_id);
 
 		String URL = "https://recommendation-system-o7alw.ondigitalocean.app/recommend";
