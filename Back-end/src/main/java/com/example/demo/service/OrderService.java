@@ -147,12 +147,12 @@ public class OrderService {
 				orderItemDto.setProductSKUId(orderItem.getProductSKU().getId());
 				orderItemDto.setQuantity(orderItem.getQuantity());
 				orderItemDto.setPrice(orderItem.getPrice());
-				if (order.getOrderStatus().equals(EOrderStatus.SUCCESSFUL))
-					if (reviewRepository.existsByUserAndOrderAndProducts(order.getUser(), order,
-							orderItem.getProductSKU().getProducts()))
-						orderItemDto.setReview(true);
-				else
-					orderItemDto.setReview(false);
+//				if (order.getOrderStatus().equals(EOrderStatus.SUCCESSFUL))
+//					if (reviewRepository.existsByUserAndOrderAndProducts(order.getUser(), order,
+//							orderItem.getProductSKU().getProducts()))
+//						orderItemDto.setReview(true);
+//				else
+//					orderItemDto.setReview(false);
 				orderItemList.add(orderItemDto);
 			}
 			orderDto.setOrderItemDtos(orderItemList);
