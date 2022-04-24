@@ -107,11 +107,14 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        if(!userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get().getVerification().isEnabled())
-        	return null;
-        ResponseCookie  jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
         User user = userRepository.findByUsernameOrEmail(loginDto.getUsernameOrEmail(), loginDto.getUsernameOrEmail()).get();
+
+        if(!user.getVerification().isEnabled())
+        	return null;
+
+//        ResponseCookie  jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
         user.setIs_active(true);
         user.setLast_login(Calendar.getInstance().getTime());
 
@@ -121,7 +124,9 @@ public class AuthService {
         		.map(item -> item.getAuthority())
         		.collect(Collectors.toList());
 
-        return new JwtResponse(jwtCookie.getValue().toString(),
+        String token = jwtUtils.generateToken(user, roles);
+
+        return new JwtResponse(token,
 				 userDetails.getId(),
 				 userDetails.getUsername(),
 				 userDetails.getEmail(),
@@ -183,10 +188,6 @@ public class AuthService {
 
         userRepository.save(user);
 
-        Cart cart = new Cart();
-		cart.setUser(user);
-		cartRepository.saveAndFlush(cart);
-
         sendVerificationEmail(user,req, 0);
 	}
 
@@ -243,6 +244,9 @@ public class AuthService {
 		else {
 			verification.setEnabled(true);
 			verificationRepository.save(verification);
+			Cart cart = new Cart();
+			cart.setUser(verification.getUser());
+			cartRepository.saveAndFlush(cart);
 			return true;
 		}
 	}
