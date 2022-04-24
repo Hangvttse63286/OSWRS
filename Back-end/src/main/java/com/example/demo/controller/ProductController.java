@@ -157,7 +157,8 @@ public class ProductController {
 					if (!flag) {
 						productImageDTO.setPrimaries(true);
 						flag = true;
-					}
+					} else
+						productImageDTO.setPrimaries(false);
 
 					listImageDTOs.add(productImageDTO);
 				}

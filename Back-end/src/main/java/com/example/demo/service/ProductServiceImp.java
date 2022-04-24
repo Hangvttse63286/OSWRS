@@ -179,6 +179,7 @@ public class ProductServiceImp implements ProductService{
 			productImage.setName(p.getName());
 			productImage.setUrl(p.getUrl());
 			productImage.setProducts(products);
+			productImage.setPrimary(p.isPrimaries());
 			productImageList.add(productImage);
 		}
 		products.setProduct_Image(productImageList);
