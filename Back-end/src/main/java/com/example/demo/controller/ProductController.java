@@ -143,6 +143,8 @@ public class ProductController {
 
 				Helper helper = new Helper();
 
+				boolean flag = false;
+
 				for(MultipartFile multi: multipartFile) {
 
 					ImgurResponse res = helper.getDataImgurResponse(multi);
@@ -152,8 +154,10 @@ public class ProductController {
 					productImageDTO.setUrl(res.getData().getLink());
 
 					productImageDTO.setName(multi.getOriginalFilename());
-					if (multipartFile[0] != null)
+					if (!flag) {
 						productImageDTO.setPrimaries(true);
+						flag = true;
+					}
 
 					listImageDTOs.add(productImageDTO);
 				}
