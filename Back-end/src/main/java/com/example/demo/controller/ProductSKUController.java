@@ -45,7 +45,7 @@ public class ProductSKUController {
 		}
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+//	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/updateProductBySKUId/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateProductSKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
 		try {
@@ -66,7 +66,7 @@ public class ProductSKUController {
 		}
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+//	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/createSKU/{product_id}", method = RequestMethod.POST)
 	public ResponseEntity<?> createSKU(@PathVariable(name = "product_id") String product_id, @RequestBody ProductSkuDTO productSkuDTO) {
 		try {

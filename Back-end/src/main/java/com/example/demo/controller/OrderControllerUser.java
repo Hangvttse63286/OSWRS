@@ -34,7 +34,7 @@ public class OrderControllerUser {
 	OrderService orderService;
 
 	@GetMapping("/")
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getAllOrderByUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -51,7 +51,7 @@ public class OrderControllerUser {
 	}
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getOrderByUser(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -68,7 +68,7 @@ public class OrderControllerUser {
 	}
 
 	@PostMapping("/create")
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -84,7 +84,7 @@ public class OrderControllerUser {
 	}
 
 	@PutMapping("/cancel/{id}")
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> cancelOrder(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {

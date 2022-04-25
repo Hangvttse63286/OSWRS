@@ -28,7 +28,7 @@ public class VoucherController {
 	VoucherService voucherService;
 
 	@GetMapping("/")
-	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//	@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getAllVoucher() {
 		List<VoucherDto> voucherList = voucherService.getVoucherList();
         if (!voucherList.isEmpty())
@@ -38,7 +38,7 @@ public class VoucherController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getVoucher(@PathVariable Long id) {
         VoucherDto voucher = voucherService.getVoucherById(id);
     	if (voucher != null)
@@ -48,7 +48,7 @@ public class VoucherController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createVoucher(@RequestBody VoucherDto voucherDto) {
     	VoucherDto voucher = voucherService.createVoucher(voucherDto);
     	if (voucher == null)
@@ -57,7 +57,7 @@ public class VoucherController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateVoucher(@PathVariable Long id, @RequestBody VoucherDto voucherDto) {
     	if (!voucherService.getVoucherById(id).getCode().equals(voucherDto.getCode()))
     		if (voucherService.existsByVoucher(voucherDto.getCode()))
@@ -70,7 +70,7 @@ public class VoucherController {
     }
 
     @PutMapping("/activation/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeActivation(@PathVariable Long id) {
     	VoucherDto updateResult = voucherService.changeVoucherActivation(id);
     	if (updateResult != null)
@@ -80,7 +80,7 @@ public class VoucherController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteVoucher(@PathVariable Long id) {
         if (voucherService.getVoucherById(id) != null) {
         	voucherService.deleteVoucher(id);
@@ -90,7 +90,7 @@ public class VoucherController {
     }
 
     @PostMapping("/validate")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> validateVoucher(@RequestBody ValidateVoucherRequest validateVoucherRequest) {
     	int result = voucherService.validateVoucher(validateVoucherRequest.getVoucherCode(), validateVoucherRequest.getCartTotal());
     	switch (result) {

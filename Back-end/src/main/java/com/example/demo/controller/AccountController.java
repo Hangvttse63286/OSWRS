@@ -28,7 +28,7 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getAllUser() {
         List<UserDto> userList = accountService.findAll();
     	if (!userList.isEmpty())
@@ -38,7 +38,7 @@ public class AccountController {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getUser(@PathVariable String username) {
         try {
     		UserDto user = accountService.findByUsername(username);
@@ -49,7 +49,7 @@ public class AccountController {
     }
 
     @PutMapping("/change_role/{username}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> changeRoles(@PathVariable String username, @RequestBody RoleChangeDto roleChangeDto) {
     	try {
     		String result = accountService.changeRole(username, roleChangeDto);
@@ -62,7 +62,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete/{username}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteAccount(@PathVariable String username) {
     	try	{
     		return new ResponseEntity<>(accountService.deleteAcc(username), HttpStatus.OK);

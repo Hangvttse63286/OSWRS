@@ -45,7 +45,7 @@ public class AddressController {
     }
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
+//	@PreAuthorize("hasRole('USER') or hasRole('STAFF') or hasRole('ADMIN')")
     public ResponseEntity<?> getAddress(@PathVariable Long id) {
 		try {
 			AddressDto address = addressService.getAddressById(id);
@@ -67,7 +67,7 @@ public class AddressController {
     }
 
 	@PutMapping("/update/{id}")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody AddressDto updateAddressDto) {
     	try {
     		AddressDto address = addressService.updateAddress(id, updateAddressDto);
@@ -79,7 +79,7 @@ public class AddressController {
     }
 
 	@DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
 
 		try {

@@ -29,7 +29,7 @@ public class OrderControllerAdmin {
 	OrderService orderService;
 
 	@GetMapping("/")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getAllOrder() {
 		List<OrderDto> orderList = orderService.getOrderList();
 		if (!orderList.isEmpty())
@@ -39,7 +39,7 @@ public class OrderControllerAdmin {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> getOrder(@PathVariable Long id) {
         OrderDto order = orderService.getOrderById(id);
     	if (order != null)
@@ -55,7 +55,7 @@ public class OrderControllerAdmin {
 //    }
 
     @PutMapping("/change_status/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     public ResponseEntity<?> changeOrderStatus(@PathVariable Long id, OrderStatusDto orderStatusDto) {
     	OrderDto updateResult = orderService.changeOrderStatus(id, orderStatusDto);
     	if (updateResult != null)

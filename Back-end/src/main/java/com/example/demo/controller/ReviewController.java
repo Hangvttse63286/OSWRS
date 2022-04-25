@@ -26,7 +26,7 @@ public class ReviewController {
 	ReviewService reviewService;
 
 	@PostMapping("/create")
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> createReview(@RequestBody ReviewRequest reviewRequest) {
 		ReviewDto reviewDto = reviewService.createReview(reviewRequest);
 		return new ResponseEntity<>(reviewDto, HttpStatus.OK);

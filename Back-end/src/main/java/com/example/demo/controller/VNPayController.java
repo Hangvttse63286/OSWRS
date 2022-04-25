@@ -31,9 +31,9 @@ public class VNPayController {
 	private VNPayService vnpService;
 
 	@PostMapping("/")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createVnpPayment(@RequestBody VNPayPaymentRequest vnpRequest, HttpServletRequest req) throws IOException {
-		try {	
+		try {
 			VNPayPaymentResponse vnpResponse = vnpService.vnpCreatePayment(vnpRequest, req);
     		return new ResponseEntity<>(vnpResponse, HttpStatus.OK);
 		} catch (Exception e) {
@@ -42,7 +42,7 @@ public class VNPayController {
     }
 
 	@GetMapping("/return")
-	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getVnpPaymentResult(HttpServletRequest req) throws IOException {
 		int vnpResponse = vnpService.checkResult(req);
     	switch (vnpResponse) {
