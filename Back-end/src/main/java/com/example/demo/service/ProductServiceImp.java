@@ -240,6 +240,7 @@ public class ProductServiceImp implements ProductService{
 			pDto.setName(p.getName());
 			pDto.setProduct_image_id(p.getProduct_image_id());
 			pDto.setUrl(p.getUrl());
+			pDto.setPrimaries(p.isPrimary());
 			pList.add(pDto);
 		}
 		productListDTO.setProductImage(pList);
