@@ -171,6 +171,8 @@ public class AuthService {
 
         user.setRoles(roles);
 
+        userRepository.saveAndFlush(user);
+
         Verification verification = new Verification();
         verification.setEnabled(false);
         verification.setVerificationCode(RandomString.make(64));
@@ -250,9 +252,7 @@ public class AuthService {
 		else {
 			verification.setEnabled(true);
 			verificationRepository.save(verification);
-			Cart cart = new Cart();
-			cart.setUser(verification.getUser());
-			cartRepository.saveAndFlush(cart);
+
 			return true;
 		}
 	}
