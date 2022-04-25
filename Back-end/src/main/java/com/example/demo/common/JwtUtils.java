@@ -41,7 +41,7 @@ public class JwtUtils {
 	private String jwtSecret;
 
 	@Value("${bezkoder.app.jwtExpirationMs}")
-	private int jwtExpirationMs;
+	private Long jwtExpirationMs;
 
 	@Value("${bezkoder.app.jwtCookieName}")
 	private String jwtCookie;

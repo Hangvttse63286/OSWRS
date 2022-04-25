@@ -45,6 +45,7 @@ public class ProductSKUController {
 		}
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/updateProductBySKUId/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateProductSKUById(@PathVariable(name = "id") Long id, @RequestBody ProductSkuDTO productSkuDTO) {
 		try {
