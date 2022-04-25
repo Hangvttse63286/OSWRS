@@ -179,14 +179,20 @@ public class AuthService {
         user.setVerification(verification);
         verificationRepository.save(verification);
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         PasswordResetToken passwordResetToken = new PasswordResetToken();
 		passwordResetToken.setUser(user);
 		user.setPasswordResetToken(passwordResetToken);
 		passwordResetTokenRepository.save(passwordResetToken);
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
+
+        Cart cart = new Cart();
+		cart.setUser(user);
+		cartRepository.saveAndFlush(cart);
+
+		userRepository.saveAndFlush(user);
 
         sendVerificationEmail(user,req, 0);
 	}
